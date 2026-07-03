@@ -6,11 +6,23 @@ import { claimAllowance, fetchCollection } from '../api.js';
 
 const coinBadge = 'radial-gradient(circle at 35% 28%,#FFE9A8,#FFC700 62%,#E0A400)';
 
-export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWallet = () => {}, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {} }) {
+export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWallet = () => {}, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {} }) {
   const [collection, setCollection] = useState([]);
   const [claiming, setClaiming] = useState(false);
   const [claimed, setClaimed] = useState(null);
   const [justAdded, setJustAdded] = useState(null);
+  const [query, setQuery] = useState('');
+  const [priceSort, setPriceSort] = useState(false);
+
+  const searchTerm = query.trim().toLowerCase();
+  const parsePrice = (item) => Number(String(item.price).replace(/,/g, '')) || 0;
+  const visibleCollection = searchTerm
+    ? collection.filter((item) => item.title.toLowerCase().includes(searchTerm))
+    : collection;
+  const visibleShopItems = (searchTerm
+    ? pocketItems.filter((item) => item.name.toLowerCase().includes(searchTerm))
+    : pocketItems
+  ).slice().sort((a, b) => (priceSort ? parsePrice(a) - parsePrice(b) : 0));
 
   const handleAdd = (item) => {
     onAddToCart(item);
@@ -65,13 +77,30 @@ export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWa
           </div>
         </div>
         <div style={s("display:flex;gap:8px;align-items:center")}>
-          <div style={s("flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:11px 13px")}>
+          <div style={s("flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:0 13px;height:44px")}>
             <span className="mi" style={s("font-size:20px;color:#9A8FA6")}>search</span>
-            <span style={s("font:600 13.5px 'Nunito';color:#9A8FA6")}>Search collectibles&hellip;</span>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search collectibles…"
+              aria-label="Search collectibles"
+              style={s("flex:1;min-width:0;border:0;background:transparent;font:600 13.5px 'Nunito';color:#1E1233;outline:none")}
+            />
+            {query && (
+              <button type="button" aria-label="Clear search" onClick={() => setQuery('')} style={s("border:0;background:transparent;padding:0;display:flex;cursor:pointer;color:#9A8FA6")}>
+                <span className="mi" style={s("font-size:18px")}>close</span>
+              </button>
+            )}
           </div>
-          <div style={s("width:44px;height:44px;border-radius:14px;background:#D6F6EF;display:flex;align-items:center;justify-content:center")}>
-            <span className="mi" style={s("font-size:22px;color:#10B5A0")}>tune</span>
-          </div>
+          <button
+            type="button"
+            aria-label={priceSort ? 'Sorted by price — tap to reset' : 'Sort by price'}
+            aria-pressed={priceSort}
+            onClick={() => setPriceSort((current) => !current)}
+            style={s(`width:44px;height:44px;border:0;border-radius:14px;background:${priceSort ? '#10B5A0' : '#D6F6EF'};display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s ease`)}
+          >
+            <span className="mi" style={s(`font-size:22px;color:${priceSort ? '#fff' : '#10B5A0'}`)}>{priceSort ? 'swap_vert' : 'tune'}</span>
+          </button>
         </div>
       </div>
 
@@ -85,7 +114,11 @@ export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWa
               <div style={s("width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font:700 18px 'Fredoka';border:2px solid rgba(255,255,255,.5)")}>7</div>
               <div><div style={s("font:700 16px 'Fredoka'")}>Level 7</div><div style={s("font:600 11.5px 'Nunito';opacity:.9")}>Collector rank</div></div>
             </div>
-            <div style={s("display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.2);padding:6px 11px;border-radius:11px")}><span className="mi" style={s("font-size:18px;color:#FFD23F;font-variation-settings:'FILL' 1")}>redeem</span><span style={s("font:700 12px 'Fredoka'")}>Reward</span></div>
+            <button
+              type="button"
+              onClick={() => onToast('320 XP to go — the Level 8 chest unlocks then!')}
+              style={s("display:flex;align-items:center;gap:5px;border:0;background:rgba(255,255,255,.2);color:#fff;padding:6px 11px;border-radius:11px;cursor:pointer")}
+            ><span className="mi" style={s("font-size:18px;color:#FFD23F;font-variation-settings:'FILL' 1")}>redeem</span><span style={s("font:700 12px 'Fredoka'")}>Reward</span></button>
           </div>
           <div style={s("height:9px;border-radius:99px;background:rgba(255,255,255,.28);overflow:hidden;margin-bottom:6px")}><div style={s("height:100%;width:68%;background:#FFD23F;border-radius:99px;box-shadow:0 0 8px rgba(255,210,63,.6)")} /></div>
           <div style={s("font:600 11px 'Nunito';opacity:.92")}>320 XP to Level 8</div>
@@ -138,7 +171,7 @@ export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWa
               <div style={s("font:700 13px 'Nunito';color:#10B5A0")}>{collection.length} yoink&#8217;d</div>
             </div>
             <div style={s("display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px")}>
-              {collection.map((item) => (
+              {visibleCollection.map((item) => (
                 <div key={item.id} style={s("background:#fff;border-radius:16px;padding:7px;box-shadow:0 4px 14px rgba(30,18,51,.06);animation:ypop .4s ease both")}>
                   <div style={s(`position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;background:${item.imageStripe}`)}>
                     {item.quantity > 1 && (
@@ -159,7 +192,13 @@ export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWa
 
         <div style={s("display:flex;align-items:baseline;justify-content:space-between")}>
           <div style={s("font:700 18px 'Fredoka';color:#1E1233")}>Your collections</div>
-          <div style={s("font:700 13px 'Nunito';color:#10B5A0")}>See all</div>
+          <button
+            type="button"
+            onClick={() => onToast('Both sets are here — finish one for the coin bonus!')}
+            style={s("border:0;background:transparent;padding:0;font:700 13px 'Nunito';color:#10B5A0;cursor:pointer")}
+          >
+            See all
+          </button>
         </div>
 
         {/* collection sets */}
@@ -190,7 +229,7 @@ export default function Pocket({ balance = 0, streak = 0, canClaim = false, onWa
 
         <div style={s("font:700 18px 'Fredoka';color:#1E1233;margin-top:2px")}>Add to your collection</div>
         <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:13px")}>
-          {pocketItems.map((item) => (
+          {visibleShopItems.map((item) => (
             <div key={item.id} style={s("background:#fff;border-radius:22px;box-shadow:0 5px 0 rgba(30,18,51,.05),0 12px 22px rgba(30,18,51,.07);padding:10px")}>
               <div style={s(`position:relative;aspect-ratio:1.1/1;border-radius:15px;overflow:hidden;background:${item.stripe};margin-bottom:9px`)}>
                 <div style={s("position:absolute;bottom:6px;left:50%;transform:translateX(-50%);padding:2px 8px;border-radius:7px;background:rgba(255,255,255,.85);font:600 9.5px ui-monospace,Menlo,monospace;color:#6B5E76;white-space:nowrap")}>{item.img}</div>

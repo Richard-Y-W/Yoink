@@ -62,8 +62,10 @@ test('product detail triggers cart-only motion and count increment from add-to-c
   assert.match(productDetail, /const playCartMotion = \(\) =>/);
   assert.match(productDetail, /onAddToCart\(qty\)/);
   assert.match(productDetail, /<AddToCartMotion playKey=\{cartMotionKey\} cartCount=\{cartCount\}/);
-  assert.match(productDetail, /onClick=\{primaryAddsToCart \? playCartMotion : undefined\}/);
-  assert.match(productDetail, /onClick=\{secondaryAddsToCart \? playCartMotion : undefined\}/);
+  assert.match(productDetail, /const handlePrimary = primaryAddsToCart \? playCartMotion : bidOrOffer/);
+  assert.match(productDetail, /const handleSecondary = secondaryAddsToCart \? playCartMotion : buyNow/);
+  assert.match(productDetail, /onClick=\{handlePrimary\}/);
+  assert.match(productDetail, /onClick=\{handleSecondary\}/);
 });
 
 test('app owns cart items and market header displays the total quantity', () => {

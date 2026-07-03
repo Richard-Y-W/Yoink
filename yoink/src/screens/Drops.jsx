@@ -10,13 +10,22 @@ const coinBadge = 'radial-gradient(circle at 35% 28%,#FFE9A8,#FFC700 62%,#E0A400
 const SPIN_TRAVEL_MS = 2600;
 const FULL_TURNS = 4;
 
-export default function Drops({ balance = 0, streak = 0, canSpin = true, onWallet = () => {} }) {
+export default function Drops({ balance = 0, streak = 0, canSpin = true, onWallet = () => {}, cartCount = 0, onOpenCart = () => {}, onToast = () => {} }) {
   const { dropH, dropM, dropS } = useCountdowns();
   const [drops, setDrops] = useState(dropItems.map((item) => ({ ...item, notifying: false })));
   const [spinning, setSpinning] = useState(false);
   const [spinDeg, setSpinDeg] = useState(0);
   const [reward, setReward] = useState(null);
+  const [query, setQuery] = useState('');
+  const [watchedOnly, setWatchedOnly] = useState(false);
   const rewardTimer = useRef(null);
+
+  const searchTerm = query.trim().toLowerCase();
+  const visibleDrops = drops.filter((item) => {
+    if (watchedOnly && !item.notifying) return false;
+    if (searchTerm && !item.name.toLowerCase().includes(searchTerm)) return false;
+    return true;
+  });
 
   useEffect(() => {
     fetchDrops().then((data) => {
@@ -78,16 +87,42 @@ export default function Drops({ balance = 0, streak = 0, canSpin = true, onWalle
             <div style={s("display:flex;align-items:center;gap:3px;background:#FFE9DF;border:1.5px solid #FFC2A8;border-radius:999px;padding:5px 9px 5px 7px")}>
               <span className="mi" style={s("font-size:17px;color:#FF6B3D;font-variation-settings:'FILL' 1")}>local_fire_department</span><span style={s("font:700 13px 'Fredoka';color:#D2491F")}>{streak}</span>
             </div>
+            <button
+              type="button"
+              aria-label="Open cart"
+              onClick={onOpenCart}
+              style={s("position:relative;width:38px;height:38px;border:0;border-radius:12px;background:#F4EEF4;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0")}
+            >
+              <span className="mi" style={s("font-size:22px;color:#1E1233")}>shopping_bag</span>
+              <span style={s("position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#8B5CF6;color:#fff;font:700 10px 'Fredoka';display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff")}>{cartCount}</span>
+            </button>
           </div>
         </div>
         <div style={s("display:flex;gap:8px;align-items:center")}>
-          <div style={s("flex:1;display:flex;align-items:center;gap:8px;background:#F4EEF4;border-radius:14px;padding:11px 13px")}>
+          <div style={s("flex:1;display:flex;align-items:center;gap:8px;background:#F4EEF4;border-radius:14px;padding:0 13px;height:44px")}>
             <span className="mi" style={s("font-size:20px;color:#9A8FA6")}>search</span>
-            <span style={s("font:600 13.5px 'Nunito';color:#9A8FA6")}>Search drops &amp; rare finds&hellip;</span>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search drops & rare finds…"
+              aria-label="Search drops"
+              style={s("flex:1;min-width:0;border:0;background:transparent;font:600 13.5px 'Nunito';color:#1E1233;outline:none")}
+            />
+            {query && (
+              <button type="button" aria-label="Clear search" onClick={() => setQuery('')} style={s("border:0;background:transparent;padding:0;display:flex;cursor:pointer;color:#9A8FA6")}>
+                <span className="mi" style={s("font-size:18px")}>close</span>
+              </button>
+            )}
           </div>
-          <div style={s("width:44px;height:44px;border-radius:14px;background:#EEE6FF;display:flex;align-items:center;justify-content:center")}>
-            <span className="mi" style={s("font-size:22px;color:#8B5CF6")}>tune</span>
-          </div>
+          <button
+            type="button"
+            aria-label={watchedOnly ? 'Show all drops' : 'Show only drops you watch'}
+            aria-pressed={watchedOnly}
+            onClick={() => setWatchedOnly((current) => !current)}
+            style={s(`width:44px;height:44px;border:0;border-radius:14px;background:${watchedOnly ? '#8B5CF6' : '#EEE6FF'};display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s ease`)}
+          >
+            <span className="mi" style={s(`font-size:22px;color:${watchedOnly ? '#fff' : '#8B5CF6'}`)}>{watchedOnly ? 'notifications_active' : 'tune'}</span>
+          </button>
         </div>
       </div>
 
@@ -153,12 +188,23 @@ export default function Drops({ balance = 0, streak = 0, canSpin = true, onWalle
 
         <div style={s("display:flex;align-items:baseline;justify-content:space-between")}>
           <div style={s("font:700 18px 'Fredoka';color:#1E1233")}>Dropping next</div>
-          <div style={s("font:700 13px 'Nunito';color:#8B5CF6")}>See all</div>
+          <button
+            type="button"
+            onClick={() => onToast(watchedOnly ? 'Showing only drops you watch' : `All ${drops.length} live drops are right here!`)}
+            style={s("border:0;background:transparent;padding:0;font:700 13px 'Nunito';color:#8B5CF6;cursor:pointer")}
+          >
+            See all
+          </button>
         </div>
 
         {/* drops grid */}
+        {visibleDrops.length === 0 && (
+          <div style={s("padding:24px 16px;border:1.5px dashed #E0D4F0;border-radius:16px;background:#fff;text-align:center;font:700 13px 'Nunito';color:#9A8FA6")}>
+            {watchedOnly ? 'You aren’t watching any drops yet — tap a bell!' : 'No drops match that search'}
+          </div>
+        )}
         <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:12px")}>
-          {drops.map((item) => (
+          {visibleDrops.map((item) => (
             <div key={item.id} style={s("background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 0 rgba(30,18,51,.05),0 10px 20px rgba(30,18,51,.06)")}>
               <div style={s(`position:relative;height:116px;background:${item.stripe}`)}>
                 <div style={s("position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:8px;background:#1E1233;color:#fff;font:700 10px 'Fredoka'")}><span style={s("width:6px;height:6px;border-radius:50%;background:#FF6B3D;animation:ydot 1.3s infinite")} />{item.left} left</div>

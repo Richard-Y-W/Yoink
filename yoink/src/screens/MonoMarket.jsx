@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { s } from '../style.js';
-import { appendMarketFeed, makeMarketFeed, MARKET_MAX_ITEMS, MARKET_PAGE_SIZE, marketCats } from '../data.js';
+import { appendMarketFeed, filterMarketFeed, makeMarketFeed, MARKET_MAX_ITEMS, MARKET_MODES, MARKET_PAGE_SIZE, MARKET_SORTS, marketCats, sortMarketFeed } from '../data.js';
 import { fetchFeed } from '../api.js';
 import { marketTheme } from '../marketTheme.js';
 
@@ -17,7 +17,7 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-function ListingCard({ item, onOpenProduct = () => {} }) {
+function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {} }) {
   return (
     <div
       role="button"
@@ -97,9 +97,18 @@ function ListingCard({ item, onOpenProduct = () => {} }) {
           </div>
         </div>
       </div>
-      <div style={s(`position:absolute;top:9px;right:9px;width:26px;height:26px;border-radius:50%;background:${wash};display:flex;align-items:center;justify-content:center`)}>
-        <span className="mi" style={s("font-size:15px;color:#7A7686")}>favorite</span>
-      </div>
+      <button
+        type="button"
+        aria-label={saved ? 'Remove from watching' : 'Watch this listing'}
+        aria-pressed={saved}
+        onClick={(event) => {
+          event.stopPropagation();
+          onToggleSave(item.id);
+        }}
+        style={s(`position:absolute;top:9px;right:9px;width:26px;height:26px;border:0;border-radius:50%;background:${saved ? '#FFE4F1' : wash};display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;${saved ? 'animation:ypop .3s ease both' : ''}`)}
+      >
+        <span className="mi" style={s(`font-size:15px;color:${saved ? '#FF3D9A' : '#7A7686'};${saved ? "font-variation-settings:'FILL' 1" : ''}`)}>favorite</span>
+      </button>
     </div>
   );
 }
@@ -108,6 +117,18 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
   const [feed, setFeed] = useState(() => makeMarketFeed(0, MARKET_PAGE_SIZE));
   const [selectedCategory, setSelectedCategory] = useState('For you');
   const [query, setQuery] = useState('');
+  const [mode, setMode] = useState('All');
+  const [sortIndex, setSortIndex] = useState(0);
+  const [savedIds, setSavedIds] = useState(() => new Set());
+
+  const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
+  const cycleSort = () => setSortIndex((current) => (current + 1) % MARKET_SORTS.length);
+  const toggleSave = (id) => setSavedIds((current) => {
+    const next = new Set(current);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    return next;
+  });
   const feedEndRef = useRef(null);
   const lastLoadRef = useRef(0);
   const hasMore = feed.length < MARKET_MAX_ITEMS;
@@ -134,14 +155,16 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
 
   const categoryChips = useMemo(() => marketCats, []);
   const searchTerm = query.trim().toLowerCase();
-  const visibleFeed = searchTerm
-    ? feed.filter((item) => item.name.toLowerCase().includes(searchTerm) || item.seller.toLowerCase().includes(searchTerm))
-    : feed;
+  const filtersActive = Boolean(searchTerm) || selectedCategory !== 'For you' || mode !== 'All';
+  const visibleFeed = sortMarketFeed(
+    filterMarketFeed(feed, { category: selectedCategory, mode, query }),
+    MARKET_SORTS[sortIndex].id,
+  );
 
-  // While searching, keep paging the backend until enough matches surface.
+  // While filtering, keep paging the backend until enough matches surface.
   useEffect(() => {
-    if (searchTerm && hasMore && visibleFeed.length < MARKET_PAGE_SIZE) loadMore();
-  }, [searchTerm, hasMore, visibleFeed.length, loadMore, feed.length]);
+    if (filtersActive && hasMore && visibleFeed.length < MARKET_PAGE_SIZE) loadMore();
+  }, [filtersActive, hasMore, visibleFeed.length, loadMore, feed.length]);
 
   useEffect(() => {
     let tries = 0;
@@ -216,10 +239,15 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
           </div>
         </div>
         <div style={s(`display:flex;align-items:center;background:${wash};border:1.5px solid ${line};border-radius:12px;overflow:hidden;height:44px`)}>
-          <div style={s(`display:flex;align-items:center;gap:2px;padding:0 11px;height:100%;border-right:1.5px solid ${line}`)}>
-            <span style={s(`font:700 12.5px 'Nunito';color:${ink}`)}>All</span>
+          <button
+            type="button"
+            aria-label={`Listing type: ${mode}. Tap to change`}
+            onClick={cycleMode}
+            style={s(`display:flex;align-items:center;gap:2px;padding:0 11px;height:100%;border:0;border-right:1.5px solid ${line};background:${mode === 'All' ? 'transparent' : '#fff'};cursor:pointer`)}
+          >
+            <span style={s(`font:700 12.5px 'Nunito';color:${mode === 'All' ? ink : brand};white-space:nowrap`)}>{mode}</span>
             <span className="mi" style={s(`font-size:16px;color:${muted}`)}>expand_more</span>
-          </div>
+          </button>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -266,23 +294,36 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
 
         <div style={s("display:flex;align-items:center;justify-content:space-between;padding:13px 13px 8px")}>
           <div style={s(`font:700 16px 'Fredoka';color:${ink}`)}>{searchTerm ? `Finds for "${query.trim()}"` : 'Fresh listings'}</div>
-          <div style={s("display:flex;align-items:center;gap:2px")}>
-            <span style={s(`font:700 12px 'Nunito';color:${ink}`)}>Best match</span>
-            <span className="mi" style={s(`font-size:16px;color:${ink}`)}>expand_more</span>
-          </div>
+          <button
+            type="button"
+            aria-label={`Sort: ${MARKET_SORTS[sortIndex].label}. Tap to change`}
+            onClick={cycleSort}
+            style={s("display:flex;align-items:center;gap:2px;border:0;background:transparent;padding:0;cursor:pointer")}
+          >
+            <span style={s(`font:700 12px 'Nunito';color:${sortIndex === 0 ? ink : brand}`)}>{MARKET_SORTS[sortIndex].label}</span>
+            <span className="mi" style={s(`font-size:16px;color:${sortIndex === 0 ? ink : brand}`)}>swap_vert</span>
+          </button>
         </div>
 
         <div style={s("display:flex;flex-direction:column;gap:10px;padding:0 13px 100px")}>
-          {visibleFeed.map((item) => <ListingCard key={item.id} item={item} onOpenProduct={onOpenProduct} />)}
-          {searchTerm && visibleFeed.length === 0 && !hasMore && (
+          {visibleFeed.map((item) => (
+            <ListingCard
+              key={item.id}
+              item={item}
+              onOpenProduct={onOpenProduct}
+              saved={savedIds.has(item.id)}
+              onToggleSave={toggleSave}
+            />
+          ))}
+          {filtersActive && visibleFeed.length === 0 && !hasMore && (
             <div style={s(`padding:26px 16px;border:1.5px dashed #DCD5EF;border-radius:16px;background:#fff;text-align:center;font:700 13px 'Nunito';color:${muted}`)}>
-              No finds for &ldquo;{query.trim()}&rdquo; — try &ldquo;polaroid&rdquo; or &ldquo;duck&rdquo;
+              No finds match — try &ldquo;polaroid&rdquo;, &ldquo;duck&rdquo;, or clear the filters
             </div>
           )}
           <div ref={feedEndRef} style={s("display:flex;flex-direction:column;align-items:center;gap:9px;padding:20px 0 6px")}>
             {hasMore && <div style={s(`width:28px;height:28px;border-radius:50%;border:3px solid ${line};border-top-color:${ink};animation:yspin .8s linear infinite`)} />}
             <span style={s(`font:700 11px 'Nunito';color:${muted}`)}>
-              {hasMore ? (searchTerm ? 'Searching the market...' : 'Finding more finds...') : 'All finds loaded'}
+              {hasMore ? (filtersActive ? 'Searching the market...' : 'Finding more finds...') : 'All finds loaded'}
             </span>
           </div>
         </div>

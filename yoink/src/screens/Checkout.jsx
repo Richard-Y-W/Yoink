@@ -186,7 +186,7 @@ function CartItemRow({ item }) {
   );
 }
 
-export default function Checkout({ cartItems = [], balance = 0, onBack = () => {}, onPlaceOrder = null }) {
+export default function Checkout({ cartItems = [], balance = 0, onBack = () => {}, onPlaceOrder = null, onToast = () => {} }) {
   const [expandedRow, setExpandedRow] = useState({
     address: false,
     shipping: false,
@@ -390,12 +390,17 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
           </div>
         </div>
 
-        <div style={s(`display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:54px;padding-top:22px;border-top:1.5px solid #EFECF6;font:800 13px/1.45 'Nunito';color:${brand}`)}>
-          <span>Refund policy</span>
-          <span>Shipping</span>
-          <span>Privacy policy</span>
-          <span>Terms of service</span>
-          <span>Cancellations</span>
+        <div style={s(`display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:54px;padding-top:22px;border-top:1.5px solid #EFECF6`)}>
+          {['Refund policy', 'Shipping', 'Privacy policy', 'Terms of service', 'Cancellations'].map((label) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => onToast('It’s all pretend — no fine print, no real money!')}
+              style={s(`border:0;background:transparent;padding:0;font:800 13px/1.45 'Nunito';color:${brand};cursor:pointer`)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 

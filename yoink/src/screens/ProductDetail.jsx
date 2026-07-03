@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { s } from '../style.js';
 import { makeProductDetail, makeStarRow } from '../productDetailData.js';
 import { marketTheme } from '../marketTheme.js';
@@ -36,7 +36,12 @@ function SectionTitle({ children }) {
   return <div style={s(`font:700 18px 'Fredoka';color:${ink};margin:26px 0 9px`)}>{children}</div>;
 }
 
-export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {} }) {
+const POLICY_DETAILS = {
+  'Return policy': 'Changed your mind? Send it back within 30 pretend days for a full coin refund.',
+  'Shipping policy': 'Yoink express: packed in 30 seconds, delivered in about 4 minutes. Watch it in Orders.',
+};
+
+export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {} }) {
   const detail = useMemo(() => makeProductDetail(listing), [listing]);
   const [qty, setQty] = useState(1);
   const [favorite, setFavorite] = useState(false);
@@ -44,11 +49,31 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
   const [descExpanded, setDescExpanded] = useState(false);
   const [reviewsExpanded, setReviewsExpanded] = useState(false);
   const [helpfulVotes, setHelpfulVotes] = useState({});
+  const [activeDot, setActiveDot] = useState(0);
+  const [shipToLocker, setShipToLocker] = useState(false);
+  const [openPolicy, setOpenPolicy] = useState(null);
+  const reviewsRef = useRef(null);
 
   const voteHelpful = (reviewId) => {
     setHelpfulVotes((votes) => ({ ...votes, [reviewId]: !votes[reviewId] }));
   };
   const visibleReviews = reviewsExpanded ? detail.reviews : detail.reviews.slice(0, 2);
+
+  const shareItem = () => {
+    const link = `yoink.app/find/${listing?.id ?? 'walkman'}`;
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).catch(() => {});
+    onToast('Link copied — go brag about this find!');
+  };
+
+  const scrollToReviews = () => reviewsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const togglePolicyRow = (label) => {
+    if (label.startsWith('Visit')) {
+      onToast(`${detail.seller} waves hello — storefronts open soon!`);
+      return;
+    }
+    setOpenPolicy((current) => (current === label ? null : label));
+  };
 
   const incQty = () => setQty((current) => Math.min(current + 1, detail.quantityAvailable));
   const decQty = () => setQty((current) => Math.max(current - 1, 1));
@@ -58,11 +83,23 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
     onAddToCart(qty);
     setCartMotionKey((current) => current + 1);
   };
+  const buyNow = () => {
+    onAddToCart(qty);
+    onOpenCart();
+  };
+  const bidOrOffer = () => {
+    onToast(detail.primaryCta === 'Place bid'
+      ? 'Bidding wars open soon — Buy it now works today!'
+      : 'Haggling opens soon — Add to cart works today!');
+  };
+  const handlePrimary = primaryAddsToCart ? playCartMotion : bidOrOffer;
+  const handleSecondary = secondaryAddsToCart ? playCartMotion : buyNow;
 
   return (
     <div style={s(`position:relative;min-height:100%;overflow:hidden;background:#fff;display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
       <AddToCartMotion playKey={cartMotionKey} cartCount={cartCount} />
-      <div style={s(`position:relative;height:336px;flex:none;background:${detail.imageStripe};border-radius:0 0 26px 26px;overflow:hidden`)}>
+      <div style={s("position:relative;height:336px;flex:none;border-radius:0 0 26px 26px;overflow:hidden")}>
+        <div style={s(`position:absolute;inset:0;background:${detail.imageStripe};filter:hue-rotate(${activeDot * 28}deg);transition:filter .35s ease`)} />
         <div style={s("position:absolute;top:0;left:0;height:100%;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);animation:yshine 4s ease-in-out infinite")} />
         <div style={s("position:absolute;top:52px;left:14px")}>
           <IconButton icon="arrow_back" label="Back to market" onClick={onBack} />
@@ -75,7 +112,7 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
               {cartCount}
             </span>
           </div>
-          <IconButton icon="share" label="Share item" />
+          <IconButton icon="share" label="Share item" onClick={shareItem} />
         </div>
         <div style={s(`position:absolute;top:54px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:5px 12px 5px 9px;border-radius:999px;background:${attentionBadgeBackground};font:700 11px 'Fredoka';color:${attentionBadgeText};box-shadow:0 3px 10px rgba(23,19,38,.14)`)}>
           <span className="mi" style={s("font-size:14px;font-variation-settings:'FILL' 1")}>bolt</span>
@@ -85,7 +122,15 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           {detail.imageLabel}
         </div>
         <div style={s("position:absolute;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:6px")}>
-          {detail.dots.map((dot) => <span key={dot.id} style={s(`width:6px;height:6px;border-radius:50%;background:${dot.color}`)} />)}
+          {detail.dots.map((dot, index) => (
+            <button
+              key={dot.id}
+              type="button"
+              aria-label={`Photo ${index + 1}`}
+              onClick={() => setActiveDot(index)}
+              style={s(`width:${index === activeDot ? 14 : 6}px;height:6px;border:0;padding:0;border-radius:99px;background:${index === activeDot ? '#171326' : '#CFC8DD'};cursor:pointer;transition:width .25s ease,background .25s ease`)}
+            />
+          ))}
         </div>
       </div>
 
@@ -103,7 +148,12 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           </div>
         </div>
 
-        <div style={s("display:flex;align-items:center;gap:7px;margin-top:10px")}>
+        <button
+          type="button"
+          aria-label="Jump to reviews"
+          onClick={scrollToReviews}
+          style={s("display:flex;align-items:center;gap:7px;margin-top:10px;border:0;background:transparent;padding:0;cursor:pointer")}
+        >
           <div style={s("display:flex;gap:1px")}>
             <span className="mi" style={s(`font-size:16px;color:${attentionBadgeBackground};font-variation-settings:'FILL' 1`)}>star</span>
             <span className="mi" style={s(`font-size:16px;color:${attentionBadgeBackground};font-variation-settings:'FILL' 1`)}>star</span>
@@ -113,7 +163,7 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           </div>
           <span style={s(`font:700 13px 'Nunito';color:${ink}`)}>{detail.ratingCount} ratings</span>
           <span className="mi" style={s(`font-size:16px;color:${muted}`)}>chevron_right</span>
-        </div>
+        </button>
 
         <div style={s("display:flex;align-items:center;gap:8px;margin-top:15px")}>
           <span style={s(`width:22px;height:22px;border-radius:50%;background:${brand};display:inline-flex;align-items:center;justify-content:center;font:700 12px 'Fredoka';color:#fff;flex:none`)}>
@@ -166,11 +216,11 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           </button>
         </div>
 
-        <button type="button" onClick={primaryAddsToCart ? playCartMotion : undefined} style={s(`display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;background:${brand};color:#fff;font:700 16px 'Fredoka';padding:16px;border:0;border-radius:16px;box-shadow:0 5px 0 #4B3BA6;cursor:pointer`)}>
+        <button type="button" onClick={handlePrimary} style={s(`display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;background:${brand};color:#fff;font:700 16px 'Fredoka';padding:16px;border:0;border-radius:16px;box-shadow:0 5px 0 #4B3BA6;cursor:pointer`)}>
           <span className="mi" style={s("font-size:20px")}>add_shopping_cart</span>
           {detail.primaryCta}
         </button>
-        <button type="button" onClick={secondaryAddsToCart ? playCartMotion : undefined} style={s(`display:flex;align-items:center;justify-content:center;gap:8px;margin-top:13px;background:${ink};color:#fff;font:700 16px 'Fredoka';padding:16px;border:0;border-radius:16px;box-shadow:0 5px 0 #000;cursor:pointer`)}>
+        <button type="button" onClick={handleSecondary} style={s(`display:flex;align-items:center;justify-content:center;gap:8px;margin-top:13px;background:${ink};color:#fff;font:700 16px 'Fredoka';padding:16px;border:0;border-radius:16px;box-shadow:0 5px 0 #000;cursor:pointer`)}>
           <span className="mi" style={s("font-size:20px;font-variation-settings:'FILL' 1")}>bolt</span>
           {detail.secondaryCta}
         </button>
@@ -187,7 +237,7 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           {descExpanded ? 'Show less' : 'Read more'}
         </button>
 
-        <div style={s("margin-top:22px")}>
+        <div ref={reviewsRef} style={s("margin-top:22px")}>
           <div style={s("display:flex;align-items:center;justify-content:space-between")}>
             <div style={s(`font:700 18px 'Fredoka';color:${ink}`)}>Reviews</div>
             <div style={s("display:flex;align-items:center;gap:5px")}>
@@ -260,16 +310,34 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
             <span className="mi" style={s(`font-size:25px;color:${attentionBadgeBackground};font-variation-settings:'FILL' 1`)}>local_shipping</span>
             <div style={s("flex:1")}>
               <div style={s("font:700 14px 'Fredoka';color:#fff")}>{detail.deliveryEstimate}</div>
-              <div style={s("font:600 11px 'Nunito';color:rgba(255,255,255,.6)")}>{detail.shipTo}</div>
+              <div style={s("font:600 11px 'Nunito';color:rgba(255,255,255,.6)")}>{shipToLocker ? 'Hold at campus locker' : detail.shipTo}</div>
             </div>
-            <span style={s(`font:700 12px 'Nunito';color:${attentionBadgeBackground}`)}>Change</span>
+            <button
+              type="button"
+              onClick={() => setShipToLocker((current) => !current)}
+              style={s(`border:0;background:transparent;padding:0;font:700 12px 'Nunito';color:${attentionBadgeBackground};cursor:pointer`)}
+            >
+              Change
+            </button>
           </div>
           <div style={s(`margin-top:11px;border:1.5px solid #EDEAF6;border-radius:16px;overflow:hidden`)}>
             {detail.policyRows.map((row, index) => (
-              <div key={row.label} style={s(`display:flex;align-items:center;gap:12px;padding:14px 15px;${index < detail.policyRows.length - 1 ? 'border-bottom:1.5px solid #EFECF6' : ''}`)}>
-                <span className="mi" style={s(`font-size:20px;color:${row.accent}`)}>{row.icon}</span>
-                <span style={s(`flex:1;font:700 13px 'Nunito';color:${ink}`)}>{row.label}</span>
-                <span className="mi" style={s(`font-size:20px;color:${muted}`)}>chevron_right</span>
+              <div key={row.label} style={s(`${index < detail.policyRows.length - 1 ? 'border-bottom:1.5px solid #EFECF6' : ''}`)}>
+                <button
+                  type="button"
+                  aria-expanded={openPolicy === row.label}
+                  onClick={() => togglePolicyRow(row.label)}
+                  style={s("width:100%;display:flex;align-items:center;gap:12px;padding:14px 15px;border:0;background:transparent;text-align:left;cursor:pointer")}
+                >
+                  <span className="mi" style={s(`font-size:20px;color:${row.accent}`)}>{row.icon}</span>
+                  <span style={s(`flex:1;font:700 13px 'Nunito';color:${ink}`)}>{row.label}</span>
+                  <span className="mi" style={s(`font-size:20px;color:${muted}`)}>{openPolicy === row.label ? 'expand_less' : 'chevron_right'}</span>
+                </button>
+                {openPolicy === row.label && POLICY_DETAILS[row.label] && (
+                  <div style={s(`padding:0 15px 14px 47px;font:600 12.5px/1.5 'Nunito';color:#5A5566;animation:ypop .25s ease both`)}>
+                    {POLICY_DETAILS[row.label]}
+                  </div>
+                )}
               </div>
             ))}
           </div>

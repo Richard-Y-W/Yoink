@@ -145,6 +145,56 @@ export function appendMarketFeed(current, pageSize = MARKET_PAGE_SIZE, maxItems 
   return current.concat(makeMarketFeed(current.length, nextCount));
 }
 
+// Listing-mode filter behind the search bar's "All" chip.
+export const MARKET_MODES = ['All', 'Auctions', 'Buy now', 'Offers'];
+
+const MODE_MATCHERS = {
+  Auctions: (item) => item.isAuction,
+  'Buy now': (item) => item.isBin,
+  Offers: (item) => item.isOffer,
+};
+
+// Category chips map onto the generated catalog by keyword/condition.
+const CATEGORY_MATCHERS = {
+  Deals: (item) => item.shipFree,
+  'Ending soon': (item) => item.isAuction,
+  'Trading cards': (item) => /charizard|pog|beanie|pin|card/i.test(item.name),
+  'Retro tech': (item) => /polaroid|imac|walkman|console|phone|tamagotchi/i.test(item.name),
+  Vintage: (item) => /used|graded|refurbished/i.test(item.cond),
+  Plushies: (item) => /plush|sanrio|gacha|beanie/i.test(item.name),
+};
+
+export function filterMarketFeed(items, { category = 'For you', mode = 'All', query = '' } = {}) {
+  const term = String(query ?? '').trim().toLowerCase();
+  const byCategory = CATEGORY_MATCHERS[category];
+  const byMode = MODE_MATCHERS[mode];
+
+  return items.filter((item) => {
+    if (byCategory && !byCategory(item)) return false;
+    if (byMode && !byMode(item)) return false;
+    if (term && !item.name.toLowerCase().includes(term) && !item.seller.toLowerCase().includes(term)) return false;
+    return true;
+  });
+}
+
+export const MARKET_SORTS = [
+  { id: 'best', label: 'Best match' },
+  { id: 'price-low', label: 'Price: low first' },
+  { id: 'price-high', label: 'Price: high first' },
+  { id: 'bids', label: 'Most bids' },
+];
+
+const priceOf = (item) => Number(String(item.price).replace(/,/g, '')) || 0;
+
+export function sortMarketFeed(items, sortId = 'best') {
+  if (sortId === 'best') return items;
+  const sorted = [...items];
+  if (sortId === 'price-low') sorted.sort((a, b) => priceOf(a) - priceOf(b));
+  if (sortId === 'price-high') sorted.sort((a, b) => priceOf(b) - priceOf(a));
+  if (sortId === 'bids') sorted.sort((a, b) => Number(b.bids) - Number(a.bids));
+  return sorted;
+}
+
 export const dropItems = [
   mk({ id: 1, name: 'Crystal Boba Keychain',    img: 'boba charm',   hue: 'purple', price: '480',   left: 8,  total: 40 }),
   mk({ id: 2, name: 'Holo Trading Card · Foil', img: 'foil card',    hue: 'pink',   price: '1,250', left: 23, total: 60 }),

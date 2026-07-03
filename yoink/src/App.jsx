@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { s } from './style.js';
 import IOSDevice from './components/IOSDevice.jsx';
 import SplashScreen from './components/SplashScreen.jsx';
@@ -40,12 +40,18 @@ export default function App() {
   const [wallet, setWallet] = useState({ balance: 0, streak: 0, canClaim: false, canSpin: false });
   const [yoinkedOrder, setYoinkedOrder] = useState(null);
   const [ordersInFlight, setOrdersInFlight] = useState(0);
-  const [sellToast, setSellToast] = useState(false);
+  const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
+
+  const showToast = useCallback((message) => {
+    setToast(message);
+    window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(null), 2200);
+  }, []);
 
   const handleSell = useCallback(() => {
-    setSellToast(true);
-    window.setTimeout(() => setSellToast(false), 2200);
-  }, []);
+    showToast('Selling opens soon — keep collecting!');
+  }, [showToast]);
 
   const refreshWallet = useCallback(() => {
     fetchWallet().then((next) => {
@@ -106,6 +112,7 @@ export default function App() {
             balance={wallet.balance}
             onBack={handleCloseCheckout}
             onPlaceOrder={handlePlaceOrder}
+            onToast={showToast}
           />
         ) : isProductDetail ? (
           <ProductDetail
@@ -114,9 +121,18 @@ export default function App() {
             cartCount={cartCount}
             onAddToCart={(quantity) => addToCart(flow.selectedListing, quantity)}
             onOpenCart={handleOpenCart}
+            onToast={showToast}
           />
         ) : flow.screen === APP_SCREENS.drops ? (
-          <Drops balance={wallet.balance} streak={wallet.streak} canSpin={wallet.canSpin} onWallet={setWallet} />
+          <Drops
+            balance={wallet.balance}
+            streak={wallet.streak}
+            canSpin={wallet.canSpin}
+            onWallet={setWallet}
+            cartCount={cartCount}
+            onOpenCart={handleOpenCart}
+            onToast={showToast}
+          />
         ) : flow.screen === APP_SCREENS.pocket ? (
           <Pocket
             balance={wallet.balance}
@@ -126,6 +142,7 @@ export default function App() {
             cartCount={cartCount}
             onAddToCart={addToCart}
             onOpenCart={handleOpenCart}
+            onToast={showToast}
           />
         ) : flow.screen === APP_SCREENS.orders ? (
           <Orders balance={wallet.balance} celebrateOrderId={flow.celebrateOrderId ?? null} />
@@ -137,10 +154,10 @@ export default function App() {
             balance={wallet.balance}
           />
         )}
-        {isTabScreen && sellToast && (
-          <div style={s("position:absolute;left:50%;bottom:108px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:9px;background:#171326;color:#fff;padding:10px 16px;border-radius:999px;box-shadow:0 10px 24px rgba(23,19,38,.35);font:700 12.5px 'Fredoka';white-space:nowrap;animation:ypop .35s ease both")}>
-            <span className="mi" style={s("font-size:17px;color:#FFB84D;font-variation-settings:'FILL' 1")}>storefront</span>
-            Selling opens soon — keep collecting!
+        {toast && (
+          <div style={s("position:absolute;left:50%;bottom:112px;transform:translateX(-50%);z-index:940;display:flex;align-items:center;gap:9px;max-width:86%;background:#171326;color:#fff;padding:10px 16px;border-radius:999px;box-shadow:0 10px 24px rgba(23,19,38,.35);font:700 12.5px 'Fredoka';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:ypop .35s ease both")}>
+            <span className="mi" style={s("font-size:17px;color:#FFB84D;font-variation-settings:'FILL' 1;flex:none")}>auto_awesome</span>
+            {toast}
           </div>
         )}
         {isTabScreen && (
