@@ -210,13 +210,24 @@ export const pocketItems = [
 ];
 
 export const sets = [
-  { id: 1, name: 'Retro Arcade', have: 3, total: 5, reward: '500', accent: '#10B5A0', thumbs: [{ h: 'teal', o: true }, { h: 'yellow', o: true }, { h: 'pink', o: true }, { h: 'purple', o: false }, { h: 'coral', o: false }] },
-  { id: 2, name: 'Kawaii Squad', have: 2, total: 6, reward: '800', accent: '#FF3D9A', thumbs: [{ h: 'pink', o: true }, { h: 'blue', o: true }, { h: 'yellow', o: false }, { h: 'teal', o: false }, { h: 'purple', o: false }, { h: 'coral', o: false }] },
+  { id: 1, name: 'Retro Arcade', have: 3, total: 5, reward: '500', accent: '#6A5ACD', thumbs: [{ h: 'teal', o: true }, { h: 'yellow', o: true }, { h: 'pink', o: true }, { h: 'purple', o: false }, { h: 'coral', o: false }] },
+  { id: 2, name: 'Kawaii Squad', have: 2, total: 6, reward: '800', accent: '#6A5ACD', thumbs: [{ h: 'pink', o: true }, { h: 'blue', o: true }, { h: 'yellow', o: false }, { h: 'teal', o: false }, { h: 'purple', o: false }, { h: 'coral', o: false }] },
 ].map((set) => ({
   ...set,
   pct: Math.round((set.have / set.total) * 100),
   thumbs: set.thumbs.map((th) => ({ ...th, stripe: stripe(TINT[th.h][0], TINT[th.h][1]), locked: !th.o })),
 }));
+
+// Quest board definitions. Progress is demo data like the rest of the
+// catalog; the server layers claim state (per day / per week) on top.
+export const questDefs = [
+  { id: 'd-watch',  period: 'daily',  title: 'Watch 3 listings',        icon: 'favorite',              have: 2, goal: 3, reward: 40 },
+  { id: 'd-cart',   period: 'daily',  title: 'Add an item to your cart', icon: 'shopping_cart',         have: 1, goal: 1, reward: 60 },
+  { id: 'd-browse', period: 'daily',  title: 'Browse 5 categories',      icon: 'category',              have: 3, goal: 5, reward: 30 },
+  { id: 'w-orders', period: 'weekly', title: 'Yoink 2 orders',           icon: 'package_2',             have: 1, goal: 2, reward: 250 },
+  { id: 'w-set',    period: 'weekly', title: 'Finish a collection set',  icon: 'grid_view',             have: 0, goal: 1, reward: 500 },
+  { id: 'w-streak', period: 'weekly', title: 'Keep a 7-day streak',      icon: 'local_fire_department', have: 6, goal: 7, reward: 700 },
+];
 
 export const streak = [
   { d: 'M', done: true }, { d: 'T', done: true }, { d: 'W', done: true },

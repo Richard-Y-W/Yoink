@@ -3,7 +3,9 @@ import { s } from '../style.js';
 import { makeProductDetail, makeStarRow } from '../productDetailData.js';
 import { marketTheme } from '../marketTheme.js';
 import AddToCartMotion from '../components/AddToCartMotion.jsx';
+import ItemArt from '../components/ItemArt.jsx';
 import Mochi from '../components/Mochi.jsx';
+import { artStageBackground, resolveArtKind } from '../itemArt.js';
 
 const { ink, wash, line, muted, brand, attentionBadgeBackground, attentionBadgeText } = marketTheme;
 
@@ -41,8 +43,25 @@ const POLICY_DETAILS = {
   'Shipping policy': 'Yoink express: packed in 30 seconds, delivered in about 4 minutes. Watch it in Orders.',
 };
 
-export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {} }) {
+export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl' }) {
   const detail = useMemo(() => makeProductDetail(listing), [listing]);
+  const artKind = useMemo(() => resolveArtKind(listing) ?? resolveArtKind(detail), [listing, detail]);
+  const [spinDeg, setSpinDeg] = useState(null);
+  const dragRef = useRef(null);
+  const canSpin = artKind && artStyle === 'spin';
+
+  const spinHandlers = canSpin ? {
+    onPointerDown: (event) => {
+      dragRef.current = { startX: event.clientX, base: spinDeg ?? 0 };
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    },
+    onPointerMove: (event) => {
+      if (!dragRef.current) return;
+      setSpinDeg(dragRef.current.base + (event.clientX - dragRef.current.startX) * 0.55);
+    },
+    onPointerUp: () => { dragRef.current = null; },
+    onPointerCancel: () => { dragRef.current = null; },
+  } : {};
   const [qty, setQty] = useState(1);
   const [favorite, setFavorite] = useState(false);
   const [cartMotionKey, setCartMotionKey] = useState(0);
@@ -99,8 +118,22 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
     <div style={s(`position:relative;min-height:100%;overflow:hidden;background:#fff;display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
       <AddToCartMotion playKey={cartMotionKey} cartCount={cartCount} />
       <div style={s("position:relative;height:336px;flex:none;border-radius:0 0 26px 26px;overflow:hidden")}>
-        <div style={s(`position:absolute;inset:0;background:${detail.imageStripe};filter:hue-rotate(${activeDot * 28}deg);transition:filter .35s ease`)} />
-        <div style={s("position:absolute;top:0;left:0;height:100%;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);animation:yshine 4s ease-in-out infinite")} />
+        {artKind ? (
+          <div
+            {...spinHandlers}
+            style={s(`position:absolute;inset:0;background:${artStageBackground(artStyle, artKind)};display:flex;align-items:center;justify-content:center;filter:hue-rotate(${activeDot * 28}deg);transition:filter .35s ease;${canSpin ? 'cursor:grab;touch-action:pan-y' : ''}`)}
+          >
+            <ItemArt kind={artKind} artStyle={artStyle} width={252} animate spinDeg={spinDeg} />
+            {canSpin && (
+              <div style={s("position:absolute;bottom:44px;left:50%;transform:translateX(-50%);padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);font:700 10px 'Nunito';color:#EDEAF6;letter-spacing:.5px;white-space:nowrap;pointer-events:none")}>
+                DRAG TO SPIN · 360°
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={s(`position:absolute;inset:0;background:${detail.imageStripe};filter:hue-rotate(${activeDot * 28}deg);transition:filter .35s ease`)} />
+        )}
+        <div style={s("position:absolute;top:0;left:0;height:100%;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);animation:yshine 4s ease-in-out infinite;pointer-events:none")} />
         <div style={s("position:absolute;top:52px;left:14px")}>
           <IconButton icon="arrow_back" label="Back to market" onClick={onBack} />
         </div>

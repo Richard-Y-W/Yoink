@@ -7,11 +7,12 @@ import YoinkNav from './components/YoinkNav.jsx';
 import { addListingToCart, getCartQuantity } from './cart.js';
 import { fetchOrders, fetchWallet, placeOrder } from './api.js';
 import Checkout from './screens/Checkout.jsx';
-import Drops from './screens/Drops.jsx';
+import Quests from './screens/Quests.jsx';
 import MonoMarket from './screens/MonoMarket.jsx';
 import Orders from './screens/Orders.jsx';
 import Pocket from './screens/Pocket.jsx';
 import ProductDetail from './screens/ProductDetail.jsx';
+import { ART_STYLES } from './itemArt.js';
 import {
   APP_SCREENS,
   TAB_SCREENS,
@@ -26,8 +27,8 @@ import {
 
 const TAB_ACCENTS = {
   [APP_SCREENS.market]: '#6A5ACD',
-  [APP_SCREENS.drops]: '#8B5CF6',
-  [APP_SCREENS.pocket]: '#10B5A0',
+  [APP_SCREENS.quests]: '#6A5ACD',
+  [APP_SCREENS.pocket]: '#6A5ACD',
   [APP_SCREENS.orders]: '#6A5ACD',
 };
 
@@ -42,6 +43,26 @@ export default function App() {
   const [ordersInFlight, setOrdersInFlight] = useState(0);
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
+  const [artStyle, setArtStyle] = useState(() => {
+    try {
+      const fromUrl = new URLSearchParams(window.location.search).get('art');
+      if (ART_STYLES.includes(fromUrl)) return fromUrl;
+      const saved = window.localStorage.getItem('yoink-art-style');
+      return ART_STYLES.includes(saved) ? saved : 'vinyl';
+    } catch {
+      return 'vinyl';
+    }
+  });
+
+  const cycleArtStyle = useCallback(() => {
+    setArtStyle((current) => {
+      const next = ART_STYLES[(ART_STYLES.indexOf(current) + 1) % ART_STYLES.length];
+      try {
+        window.localStorage.setItem('yoink-art-style', next);
+      } catch {}
+      return next;
+    });
+  }, []);
 
   const showToast = useCallback((message) => {
     setToast(message);
@@ -122,11 +143,13 @@ export default function App() {
             onAddToCart={(quantity) => addToCart(flow.selectedListing, quantity)}
             onOpenCart={handleOpenCart}
             onToast={showToast}
+            artStyle={artStyle}
           />
-        ) : flow.screen === APP_SCREENS.drops ? (
-          <Drops
+        ) : flow.screen === APP_SCREENS.quests ? (
+          <Quests
             balance={wallet.balance}
             streak={wallet.streak}
+            canClaim={wallet.canClaim}
             canSpin={wallet.canSpin}
             onWallet={setWallet}
             cartCount={cartCount}
@@ -137,12 +160,11 @@ export default function App() {
           <Pocket
             balance={wallet.balance}
             streak={wallet.streak}
-            canClaim={wallet.canClaim}
-            onWallet={setWallet}
             cartCount={cartCount}
             onAddToCart={addToCart}
             onOpenCart={handleOpenCart}
             onToast={showToast}
+            artStyle={artStyle}
           />
         ) : flow.screen === APP_SCREENS.orders ? (
           <Orders balance={wallet.balance} celebrateOrderId={flow.celebrateOrderId ?? null} />
@@ -152,6 +174,8 @@ export default function App() {
             onOpenCart={handleOpenCart}
             cartCount={cartCount}
             balance={wallet.balance}
+            artStyle={artStyle}
+            onCycleArtStyle={cycleArtStyle}
           />
         )}
         {toast && (

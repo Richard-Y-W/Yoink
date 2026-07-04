@@ -10,7 +10,7 @@ export default function YoinkNav({ tab, onSelectTab = () => {}, accent = '#6A5AC
 
   const tabs = [
     { id: APP_SCREENS.market, icon: 'home', label: 'Home' },
-    { id: APP_SCREENS.drops, icon: 'bolt', label: 'Drops' },
+    { id: APP_SCREENS.quests, icon: 'joystick', label: 'Quests' },
     { id: APP_SCREENS.pocket, icon: 'backpack', label: 'Pocket' },
     { id: APP_SCREENS.orders, icon: 'package_2', label: 'Orders', badge: ordersInFlight },
   ];

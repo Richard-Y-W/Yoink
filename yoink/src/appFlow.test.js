@@ -48,10 +48,10 @@ test('app flow opens checkout from the current screen and returns to the previou
 });
 
 test('bottom nav switches between the four tab screens and ignores stack screens', () => {
-  assert.deepEqual(TAB_SCREENS, ['market', 'drops', 'pocket', 'orders']);
+  assert.deepEqual(TAB_SCREENS, ['market', 'quests', 'pocket', 'orders']);
 
-  const fromMarket = openTab({ screen: APP_SCREENS.market, selectedListing: { id: 'f1' } }, APP_SCREENS.drops);
-  assert.deepEqual(fromMarket, { screen: APP_SCREENS.drops, selectedListing: null });
+  const fromMarket = openTab({ screen: APP_SCREENS.market, selectedListing: { id: 'f1' } }, APP_SCREENS.quests);
+  assert.deepEqual(fromMarket, { screen: APP_SCREENS.quests, selectedListing: null });
 
   const unchanged = openTab({ screen: APP_SCREENS.market }, APP_SCREENS.checkout);
   assert.deepEqual(unchanged, { screen: APP_SCREENS.market });

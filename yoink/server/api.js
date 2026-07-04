@@ -41,6 +41,14 @@ export function createApiMiddleware(store) {
       if (req.method === 'GET' && path === '/api/feed') {
         return json(res, 200, store.getFeed(url.searchParams.get('start'), url.searchParams.get('count')));
       }
+      if (req.method === 'GET' && path === '/api/quests') {
+        return json(res, 200, { quests: store.getQuests() });
+      }
+      const questMatch = path.match(/^\/api\/quests\/([\w-]+)\/claim$/);
+      if (req.method === 'POST' && questMatch) {
+        const result = store.claimQuest(questMatch[1]);
+        return json(res, result.ok ? 200 : 409, result);
+      }
       if (req.method === 'GET' && path === '/api/drops') {
         return json(res, 200, { drops: store.getDrops() });
       }

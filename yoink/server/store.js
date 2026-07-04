@@ -5,7 +5,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { makeMarketFeed, MARKET_MAX_ITEMS, dropItems } from '../src/data.js';
+import { makeMarketFeed, MARKET_MAX_ITEMS, dropItems, questDefs } from '../src/data.js';
 import { getCheckoutTotals } from '../src/cart.js';
 
 export const ALLOWANCE_MIN = 500;
@@ -39,12 +39,20 @@ export function localDay(now = Date.now()) {
   return new Date(now).toLocaleDateString('en-CA');
 }
 
+// Weekly quests reset on Monday; the key is that Monday's date.
+export function localWeek(now = Date.now()) {
+  const date = new Date(now);
+  const sinceMonday = (date.getDay() + 6) % 7;
+  return localDay(now - sinceMonday * 24 * 60 * 60 * 1000);
+}
+
 function defaultState() {
   return {
     wallet: { balance: 2480, streak: 6, lastClaimDay: null, lastSpinDay: null },
     orders: [],
     collection: [],
     dropNotify: [],
+    questClaims: [],
     orderSeq: 1000,
   };
 }
@@ -60,6 +68,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
     }
   }
   if (!data) data = defaultState();
+  if (!Array.isArray(data.questClaims)) data.questClaims = [];
 
   const save = () => {
     if (!file) return;
@@ -106,6 +115,27 @@ export function createStore({ file = null, state = null, random = Math.random } 
     const safeStart = Math.max(0, Math.min(Number(start) || 0, MARKET_MAX_ITEMS));
     const safeCount = Math.max(0, Math.min(Number(count) || 0, MARKET_MAX_ITEMS - safeStart));
     return { items: makeMarketFeed(safeStart, safeCount), total: MARKET_MAX_ITEMS };
+  };
+
+  const questKey = (quest, now) => `${quest.id}|${quest.period === 'weekly' ? localWeek(now) : localDay(now)}`;
+
+  const getQuests = (now = Date.now()) => questDefs.map((quest) => {
+    const claimed = data.questClaims.includes(questKey(quest, now));
+    return { ...quest, claimed, claimable: !claimed && quest.have >= quest.goal };
+  });
+
+  const claimQuest = (questId, now = Date.now()) => {
+    const quest = questDefs.find((candidate) => candidate.id === questId);
+    if (!quest) return { ok: false, error: 'Unknown quest' };
+    if (quest.have < quest.goal) return { ok: false, error: 'Quest not finished yet' };
+    const key = questKey(quest, now);
+    if (data.questClaims.includes(key)) {
+      return { ok: false, error: 'Already claimed', wallet: getWallet(now) };
+    }
+    data.questClaims.push(key);
+    data.wallet.balance += quest.reward;
+    save();
+    return { ok: true, reward: quest.reward, wallet: getWallet(now) };
   };
 
   const getDrops = () => dropItems.map((item) => ({
@@ -218,6 +248,8 @@ export function createStore({ file = null, state = null, random = Math.random } 
     claimAllowance,
     spin,
     getFeed,
+    getQuests,
+    claimQuest,
     getDrops,
     toggleDropNotify,
     placeOrder,

@@ -3,6 +3,8 @@ import { s } from '../style.js';
 import { appendMarketFeed, filterMarketFeed, makeMarketFeed, MARKET_MAX_ITEMS, MARKET_MODES, MARKET_PAGE_SIZE, MARKET_SORTS, marketCats, sortMarketFeed } from '../data.js';
 import { fetchFeed } from '../api.js';
 import { marketTheme } from '../marketTheme.js';
+import ItemArt from '../components/ItemArt.jsx';
+import { ART_STYLE_LABELS, artStageBackground, resolveArtKind } from '../itemArt.js';
 
 const {
   ink,
@@ -17,7 +19,8 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {} }) {
+function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl' }) {
+  const artKind = resolveArtKind(item);
   return (
     <div
       role="button"
@@ -31,7 +34,8 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
       }}
       style={s("position:relative;display:flex;gap:11px;background:#fff;border:1px solid #EDEAF6;border-radius:14px;padding:10px;box-shadow:0 2px 8px rgba(23,19,38,.05);cursor:pointer")}
     >
-      <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${item.stripe}`)}>
+      <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center`)}>
+        {artKind && <ItemArt kind={artKind} artStyle={artStyle} width={86} />}
         <div style={s("position:absolute;bottom:4px;left:4px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.85);font:600 8px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>
           {item.img}
         </div>
@@ -113,7 +117,7 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
   );
 }
 
-export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () => {}, cartCount = 0, balance = 0 }) {
+export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () => {}, cartCount = 0, balance = 0, artStyle = 'vinyl', onCycleArtStyle = () => {} }) {
   const [feed, setFeed] = useState(() => makeMarketFeed(0, MARKET_PAGE_SIZE));
   const [selectedCategory, setSelectedCategory] = useState('For you');
   const [query, setQuery] = useState('');
@@ -294,15 +298,26 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
 
         <div style={s("display:flex;align-items:center;justify-content:space-between;padding:13px 13px 8px")}>
           <div style={s(`font:700 16px 'Fredoka';color:${ink}`)}>{searchTerm ? `Finds for "${query.trim()}"` : 'Fresh listings'}</div>
-          <button
-            type="button"
-            aria-label={`Sort: ${MARKET_SORTS[sortIndex].label}. Tap to change`}
-            onClick={cycleSort}
-            style={s("display:flex;align-items:center;gap:2px;border:0;background:transparent;padding:0;cursor:pointer")}
-          >
-            <span style={s(`font:700 12px 'Nunito';color:${sortIndex === 0 ? ink : brand}`)}>{MARKET_SORTS[sortIndex].label}</span>
-            <span className="mi" style={s(`font-size:16px;color:${sortIndex === 0 ? ink : brand}`)}>swap_vert</span>
-          </button>
+          <div style={s("display:flex;align-items:center;gap:12px")}>
+            <button
+              type="button"
+              aria-label={`Item art style: ${ART_STYLE_LABELS[artStyle]}. Tap to change`}
+              onClick={onCycleArtStyle}
+              style={s(`display:flex;align-items:center;gap:3px;border:1.5px solid ${line};background:#fff;padding:3px 8px;border-radius:8px;cursor:pointer`)}
+            >
+              <span className="mi" style={s(`font-size:14px;color:${brand}`)}>palette</span>
+              <span style={s(`font:700 11px 'Nunito';color:${brand}`)}>{ART_STYLE_LABELS[artStyle]}</span>
+            </button>
+            <button
+              type="button"
+              aria-label={`Sort: ${MARKET_SORTS[sortIndex].label}. Tap to change`}
+              onClick={cycleSort}
+              style={s("display:flex;align-items:center;gap:2px;border:0;background:transparent;padding:0;cursor:pointer")}
+            >
+              <span style={s(`font:700 12px 'Nunito';color:${sortIndex === 0 ? ink : brand}`)}>{MARKET_SORTS[sortIndex].label}</span>
+              <span className="mi" style={s(`font-size:16px;color:${sortIndex === 0 ? ink : brand}`)}>swap_vert</span>
+            </button>
+          </div>
         </div>
 
         <div style={s("display:flex;flex-direction:column;gap:10px;padding:0 13px 100px")}>
@@ -313,6 +328,7 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
               onOpenProduct={onOpenProduct}
               saved={savedIds.has(item.id)}
               onToggleSave={toggleSave}
+              artStyle={artStyle}
             />
           ))}
           {filtersActive && visibleFeed.length === 0 && !hasMore && (

@@ -1,6 +1,6 @@
 export const APP_SCREENS = {
   market: 'market',
-  drops: 'drops',
+  quests: 'quests',
   pocket: 'pocket',
   orders: 'orders',
   productDetail: 'product-detail',
@@ -11,7 +11,7 @@ export const APP_SCREENS = {
 // pushed on top of the current tab.
 export const TAB_SCREENS = [
   APP_SCREENS.market,
-  APP_SCREENS.drops,
+  APP_SCREENS.quests,
   APP_SCREENS.pocket,
   APP_SCREENS.orders,
 ];

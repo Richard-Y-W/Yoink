@@ -112,6 +112,28 @@ test('feed pages come from the shared generator and clamp to the max', () => {
   assert.equal(store.getFeed(page.total, 8).items.length, 0);
 });
 
+test('finished quests pay out once per period and unfinished ones refuse', () => {
+  const store = createStore();
+  const now = Date.UTC(2026, 6, 2, 18);
+  const before = store.getWallet(now).balance;
+
+  const finished = store.getQuests(now).find((quest) => quest.claimable);
+  const unfinished = store.getQuests(now).find((quest) => quest.have < quest.goal);
+
+  const claim = store.claimQuest(finished.id, now);
+  assert.equal(claim.ok, true);
+  assert.equal(claim.reward, finished.reward);
+  assert.equal(store.getWallet(now).balance, before + finished.reward);
+  assert.equal(store.getQuests(now).find((quest) => quest.id === finished.id).claimed, true);
+
+  assert.equal(store.claimQuest(finished.id, now).ok, false, 'no double claim');
+  assert.equal(store.claimQuest(unfinished.id, now).ok, false, 'unfinished refuses');
+  assert.equal(store.claimQuest('nope', now).ok, false, 'unknown quest refuses');
+
+  const nextPeriod = now + 8 * DAY;
+  assert.equal(store.getQuests(nextPeriod).find((quest) => quest.id === finished.id).claimed, false, 'resets next period');
+});
+
 test('drop notify toggles per drop and rejects unknown drops', () => {
   const store = createStore();
   assert.equal(store.toggleDropNotify(1).notifying, true);
