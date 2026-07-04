@@ -12,7 +12,7 @@ function yoinkApi() {
     configureServer(server) {
       const file = fileURLToPath(new URL('./server/db.json', import.meta.url));
       const store = createStore({ file });
-      server.middlewares.use(createApiMiddleware(store));
+      server.middlewares.use(createApiMiddleware(store, { dev: true }));
     },
   };
 }

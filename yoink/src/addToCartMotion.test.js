@@ -77,6 +77,6 @@ test('app owns cart items and market header displays the total quantity', () => 
   assert.match(app, /addListingToCart\(current, listing, quantity\)/);
   assert.match(app, /<ProductDetail[\s\S]*cartCount=\{cartCount\}[\s\S]*onAddToCart=\{\(quantity\) => addToCart\(flow\.selectedListing, quantity\)\}/);
   assert.match(app, /<MonoMarket[\s\S]*onOpenCart=\{handleOpenCart\}[\s\S]*cartCount=\{cartCount\}/);
-  assert.match(monoMarket, /export default function MonoMarket\(\{ onOpenProduct = \(\) => \{\}, onOpenCart = \(\) => \{\}, cartCount = 0, balance = 0, artStyle = 'vinyl', onCycleArtStyle = \(\) => \{\} \}\)/);
+  assert.match(monoMarket, /export default function MonoMarket\(\{[\s\S]*onOpenCart = \(\) => \{\}[\s\S]*cartCount = 0[\s\S]*\}\)/);
   assert.match(monoMarket, /\{cartCount\}/);
 });

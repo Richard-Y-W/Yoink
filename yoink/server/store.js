@@ -7,6 +7,32 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { makeMarketFeed, MARKET_MAX_ITEMS, dropItems, questDefs } from '../src/data.js';
 import { getCheckoutTotals } from '../src/cart.js';
+import { resolveArtKind } from '../src/itemArt.js';
+import {
+  FLOOR_FEE,
+  MIN_BELL_ITEMS_TO_JOIN,
+  SESSION_SELL_CAP,
+  STREAK_FREEZES,
+  bellPriceAt,
+  floorReportFor,
+  lastClosedSession,
+  lineupFor,
+  liveSessionAt,
+  nextSessionAfter,
+  rumorAisleFor,
+  simTradesFor,
+  streetMultiplier,
+} from './bell.js';
+import {
+  TICKERS,
+  MAX_BUYS_PER_TICKER_PER_DAY,
+  MAX_SHARES_PER_TRADE,
+  ROOKIE_TRADES,
+  ROOKIE_MAX_LOSS,
+  candlesFor,
+  decorateTicker,
+  getTicker,
+} from './exchange.js';
 
 export const ALLOWANCE_MIN = 500;
 export const ALLOWANCE_MAX = 1000;
@@ -54,6 +80,8 @@ function defaultState() {
     dropNotify: [],
     questClaims: [],
     orderSeq: 1000,
+    exchange: { positions: {}, trades: [], rookieLeft: ROOKIE_TRADES },
+    bell: { sales: [], attendance: [], streak: 0, streakDay: null, freezes: STREAK_FREEZES, bellsRung: 0 },
   };
 }
 
@@ -69,6 +97,12 @@ export function createStore({ file = null, state = null, random = Math.random } 
   }
   if (!data) data = defaultState();
   if (!Array.isArray(data.questClaims)) data.questClaims = [];
+  if (!data.exchange || typeof data.exchange !== 'object') {
+    data.exchange = { positions: {}, trades: [], rookieLeft: ROOKIE_TRADES };
+  }
+  if (!data.bell || typeof data.bell !== 'object') {
+    data.bell = { sales: [], attendance: [], streak: 0, streakDay: null, freezes: STREAK_FREEZES, bellsRung: 0 };
+  }
 
   const save = () => {
     if (!file) return;
@@ -243,6 +277,363 @@ export function createStore({ file = null, state = null, random = Math.random } 
     return data.collection;
   };
 
+  const buysToday = (tickerId, now) => {
+    const day = localDay(now);
+    return data.exchange.trades.filter((trade) => trade.tickerId === tickerId && trade.day === day && trade.side === 'buy').length;
+  };
+
+  const getExchange = (now = Date.now()) => {
+    const positions = data.exchange.positions;
+    const tickers = TICKERS.map((ticker) => {
+      const decorated = decorateTicker(ticker, now, bellPriceAt);
+      const position = positions[ticker.id];
+      return {
+        ...decorated,
+        shares: position?.shares ?? 0,
+        avgCost: position?.avgCost ?? 0,
+        buysLeftToday: Math.max(0, MAX_BUYS_PER_TICKER_PER_DAY - buysToday(ticker.id, now)),
+      };
+    });
+    let value = 0;
+    let cost = 0;
+    let todayChange = 0;
+    for (const ticker of tickers) {
+      if (ticker.shares <= 0) continue;
+      value += ticker.shares * ticker.price;
+      cost += ticker.shares * ticker.avgCost;
+      todayChange += ticker.shares * (ticker.price - ticker.open);
+    }
+    const today = localDay(now);
+    const realizedToday = data.exchange.trades
+      .filter((trade) => trade.day === today)
+      .reduce((sum, trade) => sum + (trade.realized ?? 0), 0);
+    return {
+      tickers,
+      portfolio: { value, cost, todayChange, realizedToday },
+      rookieLeft: data.exchange.rookieLeft,
+      wallet: getWallet(now),
+    };
+  };
+
+  const getCandles = (tickerId, tf, count, now = Date.now()) => {
+    const ticker = getTicker(String(tickerId ?? ''));
+    if (!ticker) return null;
+    const candles = candlesFor(ticker, tf, count, now, bellPriceAt);
+    if (!candles) return null;
+    return { tickerId: ticker.id, tf, candles, price: bellPriceAt(ticker, now) };
+  };
+
+  const tradeExchange = ({ tickerId, side, shares } = {}, now = Date.now()) => {
+    const ticker = getTicker(String(tickerId ?? ''));
+    if (!ticker) return { ok: false, error: 'Unknown ticker' };
+    if (side !== 'buy' && side !== 'sell') return { ok: false, error: 'Side must be buy or sell' };
+    const qty = Math.floor(Number(shares) || 0);
+    if (qty < 1 || qty > MAX_SHARES_PER_TRADE) {
+      return { ok: false, error: `Trade 1–${MAX_SHARES_PER_TRADE} shares at a time` };
+    }
+
+    const price = bellPriceAt(ticker, now);
+    const positions = data.exchange.positions;
+    const position = positions[ticker.id] ?? { shares: 0, avgCost: 0 };
+    let refund = 0;
+    let realized = 0;
+
+    if (side === 'buy') {
+      // Selling is never capped — you can always exit a position.
+      if (buysToday(ticker.id, now) >= MAX_BUYS_PER_TICKER_PER_DAY) {
+        return { ok: false, error: `$${ticker.id} buys are tapped out today — you can still sell` };
+      }
+      const totalCost = price * qty;
+      if (totalCost > data.wallet.balance) {
+        return { ok: false, error: 'Not enough coins', shortBy: totalCost - data.wallet.balance, wallet: getWallet(now) };
+      }
+      data.wallet.balance -= totalCost;
+      const newShares = position.shares + qty;
+      position.avgCost = Math.round((position.avgCost * position.shares + totalCost) / newShares);
+      position.shares = newShares;
+      positions[ticker.id] = position;
+    } else {
+      if (position.shares < qty) {
+        return { ok: false, error: `You only hold ${position.shares} share${position.shares === 1 ? '' : 's'}` };
+      }
+      let proceeds = price * qty;
+      const basis = position.avgCost * qty;
+      // Rookie Floor: while insured trades remain, a losing sell can't cost
+      // more than ROOKIE_MAX_LOSS of what was paid.
+      if (proceeds < basis && data.exchange.rookieLeft > 0) {
+        const floorProceeds = basis - Math.round(basis * ROOKIE_MAX_LOSS);
+        refund = Math.max(0, floorProceeds - proceeds);
+        proceeds += refund;
+        data.exchange.rookieLeft -= 1;
+      }
+      realized = proceeds - basis;
+      data.wallet.balance += proceeds;
+      position.shares -= qty;
+      if (position.shares === 0) delete positions[ticker.id];
+      else positions[ticker.id] = position;
+    }
+
+    data.exchange.trades.push({ tickerId: ticker.id, side, shares: qty, price, realized, day: localDay(now), at: now });
+    save();
+    return {
+      ok: true,
+      tickerId: ticker.id,
+      side,
+      shares: qty,
+      price,
+      total: price * qty,
+      refund,
+      realized,
+      rookieLeft: data.exchange.rookieLeft,
+      buysLeftToday: Math.max(0, MAX_BUYS_PER_TICKER_PER_DAY - buysToday(ticker.id, now)),
+      position: positions[ticker.id] ?? { shares: 0, avgCost: 0 },
+      wallet: getWallet(now),
+    };
+  };
+
+  // ── The Bell: session floor, attendance streak ─────────────────────────
+
+  const sessionSales = (key) => data.bell.sales.filter((sale) => sale.key === key);
+  const sessionSoldCount = (key) => sessionSales(key).reduce((sum, sale) => sum + sale.qty, 0);
+  const sessionBanked = (key) => sessionSales(key).reduce((sum, sale) => sum + sale.net, 0);
+
+  // Duolingo-style daily streak: consecutive days with at least one bell
+  // attended. A single missed day burns a freeze instead of the streak;
+  // freezes refill at every 7-day milestone.
+  const markAttendance = (session, now) => {
+    if (data.bell.attendance.includes(session.key)) return false;
+    data.bell.attendance.push(session.key);
+    data.bell.bellsRung += 1;
+    const day = localDay(now);
+    if (data.bell.streakDay !== day) {
+      if (!data.bell.streakDay) {
+        data.bell.streak = 1;
+      } else {
+        const gap = Math.round((Date.parse(day) - Date.parse(data.bell.streakDay)) / 86400000);
+        if (gap === 1) {
+          data.bell.streak += 1;
+        } else if (gap === 2 && data.bell.freezes > 0) {
+          data.bell.freezes -= 1;
+          data.bell.streak += 1;
+        } else {
+          data.bell.streak = 1;
+          data.bell.freezes = STREAK_FREEZES;
+        }
+      }
+      if (data.bell.streak % 7 === 0) data.bell.freezes = STREAK_FREEZES;
+      data.bell.streakDay = day;
+    }
+    return true;
+  };
+
+  const holdingsFor = (artKind) => data.collection
+    .filter((entry) => resolveArtKind(entry) === artKind)
+    .map((entry) => ({
+      id: entry.id,
+      title: entry.title,
+      quantity: entry.quantity,
+      unitPrice: Number(entry.unitPrice) || 0,
+    }));
+
+  const decorateLineup = (session, now, revealAll) => lineupFor(session)
+    .filter((entry) => revealAll || entry.role === 'confirmed')
+    .map((entry) => {
+      const price = bellPriceAt(entry.ticker, now);
+      const holdings = holdingsFor(entry.ticker.artKind);
+      return {
+        tickerId: entry.ticker.id,
+        name: entry.ticker.name,
+        artKind: entry.ticker.artKind,
+        role: entry.role,
+        base: entry.ticker.base,
+        price,
+        multPct: Math.round((price / entry.ticker.base - 1) * 100),
+        own: holdings.reduce((sum, holding) => sum + holding.quantity, 0),
+        holdings,
+      };
+    });
+
+  const bellOwnedCount = (session) => lineupFor(session).reduce((sum, entry) => (
+    sum + holdingsFor(entry.ticker.artKind).reduce((holdingSum, holding) => holdingSum + holding.quantity, 0)
+  ), 0);
+
+  const bellEligibility = (session) => {
+    const owned = bellOwnedCount(session);
+    return {
+      owned,
+      required: MIN_BELL_ITEMS_TO_JOIN,
+      ok: owned >= MIN_BELL_ITEMS_TO_JOIN,
+    };
+  };
+
+  const getBell = (now = Date.now()) => {
+    syncDeliveries(now);
+    const live = liveSessionAt(now);
+    const next = nextSessionAfter(now);
+    const closed = lastClosedSession(now);
+    const report = floorReportFor(closed);
+    return {
+      now,
+      live: live
+        ? {
+          key: live.key,
+          endsAt: live.end,
+          closesInMs: Math.max(0, live.end - now),
+          lineup: decorateLineup(live, now, true),
+          sellsLeft: Math.max(0, SESSION_SELL_CAP - sessionSoldCount(live.key)),
+          sellCap: SESSION_SELL_CAP,
+          banked: sessionBanked(live.key),
+          attended: data.bell.attendance.includes(live.key),
+          eligibility: bellEligibility(live),
+          events: simTradesFor(live, 4),
+        }
+        : null,
+      next: {
+        startsAt: next.start,
+        opensInMs: Math.max(0, next.start - now),
+        confirmed: decorateLineup(next, now, false),
+        rumorAisle: rumorAisleFor(next),
+      },
+      lastReport: {
+        ...report,
+        playerBanked: sessionBanked(report.key),
+        attended: data.bell.attendance.includes(report.key),
+      },
+      streak: { days: data.bell.streak, freezes: data.bell.freezes, bellsRung: data.bell.bellsRung },
+    };
+  };
+
+  const bellCheckin = (now = Date.now()) => {
+    const live = liveSessionAt(now);
+    if (!live) return { ok: false, error: 'The floor is closed' };
+    syncDeliveries(now);
+    const eligibility = bellEligibility(live);
+    if (!eligibility.ok) {
+      return {
+        ok: false,
+        error: `Bring at least ${eligibility.required} bell items to join — you have ${eligibility.owned}`,
+        eligibility,
+      };
+    }
+    const first = markAttendance(live, now);
+    save();
+    return {
+      ok: true,
+      first,
+      eligibility,
+      streak: { days: data.bell.streak, freezes: data.bell.freezes, bellsRung: data.bell.bellsRung },
+    };
+  };
+
+  const floorSell = ({ itemId, quantity } = {}, now = Date.now()) => {
+    const live = liveSessionAt(now);
+    if (!live) return { ok: false, error: 'The floor is closed — sell when the bell rings' };
+    syncDeliveries(now);
+    const alreadyAttended = data.bell.attendance.includes(live.key);
+    const eligibility = bellEligibility(live);
+    if (!alreadyAttended && !eligibility.ok) {
+      return {
+        ok: false,
+        error: `The bell needs a couple items to play — you have ${eligibility.owned}/${eligibility.required}`,
+        eligibility,
+      };
+    }
+    const entry = data.collection.find((candidate) => candidate.id === String(itemId ?? ''));
+    if (!entry) return { ok: false, error: 'You don’t own that item' };
+    const kind = resolveArtKind(entry);
+    const lineupEntry = lineupFor(live).find((candidate) => candidate.ticker.artKind === kind);
+    if (!lineupEntry) return { ok: false, error: `${entry.title} isn’t on the floor this session` };
+    const qty = Math.floor(Number(quantity) || 0);
+    if (qty < 1) return { ok: false, error: 'Sell at least 1' };
+    if (qty > entry.quantity) return { ok: false, error: `You only have ${entry.quantity}` };
+    const used = sessionSoldCount(live.key);
+    if (used + qty > SESSION_SELL_CAP) {
+      return { ok: false, error: `The floor takes ${SESSION_SELL_CAP} items per session — ${Math.max(0, SESSION_SELL_CAP - used)} left` };
+    }
+
+    const ticker = lineupEntry.ticker;
+    const basis = Number(entry.unitPrice) || ticker.base;
+    const unit = Math.max(1, Math.round(basis * streetMultiplier(ticker, now)));
+    const gross = unit * qty;
+    const fee = Math.round(gross * FLOOR_FEE);
+    const net = gross - fee;
+    const realized = net - basis * qty;
+
+    data.wallet.balance += net;
+    entry.quantity -= qty;
+    if (entry.quantity <= 0) data.collection = data.collection.filter((candidate) => candidate !== entry);
+    data.bell.sales.push({
+      key: live.key,
+      itemId: entry.id,
+      title: entry.title,
+      tickerId: ticker.id,
+      qty,
+      unit,
+      fee,
+      net,
+      realized,
+      at: now,
+    });
+    markAttendance(live, now);
+    save();
+    return {
+      ok: true,
+      tickerId: ticker.id,
+      qty,
+      unit,
+      gross,
+      fee,
+      net,
+      realized,
+      sellsLeft: Math.max(0, SESSION_SELL_CAP - sessionSoldCount(live.key)),
+      banked: sessionBanked(live.key),
+      wallet: getWallet(now),
+      streak: { days: data.bell.streak, freezes: data.bell.freezes, bellsRung: data.bell.bellsRung },
+    };
+  };
+
+  const seedBellInventory = (now = Date.now(), quantity = 2) => {
+    const live = liveSessionAt(now);
+    if (!live) return { ok: false, error: 'No live bell to seed' };
+    const seeded = [];
+    for (const entry of lineupFor(live)) {
+      const id = `dev-${live.key}-${entry.ticker.id}`;
+      const existing = data.collection.find((candidate) => candidate.id === id);
+      if (existing) {
+        existing.quantity = Math.max(existing.quantity, quantity);
+      } else {
+        data.collection.push({
+          id,
+          title: entry.ticker.name,
+          imageLabel: entry.ticker.name,
+          imageStripe: '',
+          seller: 'dev_floor',
+          unitPrice: entry.ticker.base,
+          quantity,
+          acquiredAt: now,
+        });
+      }
+      seeded.push({
+        id,
+        tickerId: entry.ticker.id,
+        name: entry.ticker.name,
+        role: entry.role,
+        quantity,
+      });
+    }
+    save();
+    return { ok: true, liveKey: live.key, seeded, collection: data.collection };
+  };
+
+  const resetBellSessionSales = (now = Date.now()) => {
+    const live = liveSessionAt(now);
+    if (!live) return { ok: false, error: 'No live bell to reset' };
+    const before = data.bell.sales.length;
+    data.bell.sales = data.bell.sales.filter((sale) => sale.key !== live.key);
+    save();
+    return { ok: true, liveKey: live.key, removed: before - data.bell.sales.length };
+  };
+
   return {
     getWallet,
     claimAllowance,
@@ -256,5 +647,13 @@ export function createStore({ file = null, state = null, random = Math.random } 
     getOrders,
     getOrder,
     getCollection,
+    getExchange,
+    getCandles,
+    tradeExchange,
+    getBell,
+    bellCheckin,
+    floorSell,
+    seedBellInventory,
+    resetBellSessionSales,
   };
 }

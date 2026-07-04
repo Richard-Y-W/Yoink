@@ -2,9 +2,9 @@ import { s } from '../style.js';
 import { APP_SCREENS } from '../appFlow.js';
 
 // Shared bottom nav, styled after the design's market nav. The active tab
-// takes the screen's accent color; the center Sell button stays decorative
-// like the mock.
-export default function YoinkNav({ tab, onSelectTab = () => {}, accent = '#6A5ACD', ordersInFlight = 0, onSell = () => {} }) {
+// takes the screen's accent color; the center button is a Bell shortcut,
+// so the exchange feels like a timed event instead of a fifth tab.
+export default function YoinkNav({ tab, onSelectTab = () => {}, accent = '#6A5ACD', ordersInFlight = 0, onExchange = () => {} }) {
   const idle = '#AFADBA';
   const ink = '#171326';
 
@@ -44,14 +44,14 @@ export default function YoinkNav({ tab, onSelectTab = () => {}, accent = '#6A5AC
       {tabs.slice(0, 2).map(renderTab)}
       <button
         type="button"
-        aria-label="Sell"
-        onClick={onSell}
+        aria-label="Open the Bell"
+        onClick={onExchange}
         style={s("flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:transparent;padding:0;cursor:pointer")}
       >
         <span style={s(`margin-top:-26px;width:58px;height:58px;border-radius:18px;background:${ink};box-shadow:0 7px 16px rgba(23,19,38,.4),0 0 0 4px #fff;display:flex;align-items:center;justify-content:center`)}>
-          <span className="mi" style={s("font-size:30px;color:#fff")}>add</span>
+          <span className="mi" style={s("font-size:28px;color:#FFB84D;font-variation-settings:'FILL' 1")}>notifications_active</span>
         </span>
-        <span style={s(`font:700 10px 'Fredoka';color:${ink};margin-top:-2px`)}>Sell</span>
+        <span style={s(`font:700 10px 'Fredoka';color:${ink};margin-top:-2px`)}>Bell</span>
       </button>
       {tabs.slice(2).map(renderTab)}
     </div>

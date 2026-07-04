@@ -117,7 +117,7 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
   );
 }
 
-export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () => {}, cartCount = 0, balance = 0, artStyle = 'vinyl', onCycleArtStyle = () => {} }) {
+export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () => {}, cartCount = 0, balance = 0, artStyle = 'vinyl', onCycleArtStyle = () => {}, bell = null, onBellTap = () => {} }) {
   const [feed, setFeed] = useState(() => makeMarketFeed(0, MARKET_PAGE_SIZE));
   const [selectedCategory, setSelectedCategory] = useState('For you');
   const [query, setQuery] = useState('');
@@ -216,7 +216,20 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
       <div style={s("position:sticky;top:0;z-index:30;background:#FFFFFF;padding:47px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
         <div style={s("display:flex;align-items:center;justify-content:space-between;margin-bottom:10px")}>
-          <div style={s(`font:700 23px 'Fredoka';color:${brand};letter-spacing:.2px`)}>Yoink!</div>
+          <div style={s("display:flex;align-items:center;gap:8px")}>
+            <div style={s(`font:700 23px 'Fredoka';color:${brand};letter-spacing:.2px`)}>Yoink!</div>
+            {bell && (
+              <button
+                type="button"
+                aria-label={bell.live ? 'The floor is open — trade now' : `Next bell at ${bell.label}`}
+                onClick={onBellTap}
+                style={s(`display:flex;align-items:center;gap:4px;border:0;border-radius:999px;padding:4px 9px 4px 6px;cursor:pointer;background:${bell.live ? attentionBadgeBackground : wash};${bell.live ? 'animation:ypulse 1.6s infinite' : ''}`)}
+              >
+                <span className="mi" style={s(`font-size:14px;color:${bell.live ? attentionBadgeText : brand};font-variation-settings:'FILL' 1`)}>notifications_active</span>
+                <span style={s(`font:700 10.5px 'Fredoka';color:${bell.live ? attentionBadgeText : ink}`)}>{bell.live ? 'FLOOR OPEN' : bell.label}</span>
+              </button>
+            )}
+          </div>
           <div style={s("display:flex;align-items:center;gap:7px")}>
             <div style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px`)}>
               <span style={s(`width:16px;height:16px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;font:700 9px 'Fredoka';color:${currencyButtonBackground};flex:none`)}>Y</span>

@@ -39,5 +39,9 @@ body {
 /* 3D turntable wobble for the "spin" item-art style */
 @keyframes yturn { 0%, 100% { transform: rotateY(-28deg); } 50% { transform: rotateY(28deg); } }
 
+/* Exchange price-tick flashes — orange for up, brand purple for down */
+@keyframes yflashup { 0% { background: rgba(232, 155, 46, .32); } 100% { background: transparent; } }
+@keyframes yflashdn { 0% { background: rgba(106, 90, 205, .26); } 100% { background: transparent; } }
+
 @keyframes mochiBob   { 0%, 100% { transform: translateY(0) rotate(-2.5deg); } 50% { transform: translateY(-6px) rotate(2.5deg); } }
 @keyframes mochiBlink { 0%, 91%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.12); } }

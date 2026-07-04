@@ -5,8 +5,10 @@ import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
 import YoinkNav from './components/YoinkNav.jsx';
 import { addListingToCart, getCartQuantity } from './cart.js';
-import { fetchOrders, fetchWallet, placeOrder } from './api.js';
+import { fetchBell, fetchOrders, fetchWallet, placeOrder } from './api.js';
+import { bellLabel } from './bellView.js';
 import Checkout from './screens/Checkout.jsx';
+import Exchange from './screens/Exchange.jsx';
 import Quests from './screens/Quests.jsx';
 import MonoMarket from './screens/MonoMarket.jsx';
 import Orders from './screens/Orders.jsx';
@@ -16,8 +18,10 @@ import { ART_STYLES } from './itemArt.js';
 import {
   APP_SCREENS,
   TAB_SCREENS,
+  closeExchange,
   getInitialScreen,
   openCheckout,
+  openExchange,
   openOrders,
   openProductDetail,
   openTab,
@@ -41,6 +45,7 @@ export default function App() {
   const [wallet, setWallet] = useState({ balance: 0, streak: 0, canClaim: false, canSpin: false });
   const [yoinkedOrder, setYoinkedOrder] = useState(null);
   const [ordersInFlight, setOrdersInFlight] = useState(0);
+  const [bellStatus, setBellStatus] = useState(null);
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const [artStyle, setArtStyle] = useState(() => {
@@ -70,9 +75,9 @@ export default function App() {
     toastTimer.current = window.setTimeout(() => setToast(null), 2200);
   }, []);
 
-  const handleSell = useCallback(() => {
-    showToast('Selling opens soon — keep collecting!');
-  }, [showToast]);
+  const handleExchange = useCallback(() => {
+    setFlow((current) => (current.screen === APP_SCREENS.exchange ? closeExchange(current) : openExchange(current)));
+  }, []);
 
   const refreshWallet = useCallback(() => {
     fetchWallet().then((next) => {
@@ -86,16 +91,33 @@ export default function App() {
     }).catch(() => {});
   }, []);
 
+  // Ambient bell status for the shop header chip: live now, or the next
+  // bell's time. Light 30s poll — the Exchange screen has its own.
+  const refreshBellStatus = useCallback(() => {
+    fetchBell().then((data) => {
+      if (!data?.next) return;
+      setBellStatus(data.live
+        ? { live: true, label: 'LIVE' }
+        : { live: false, label: bellLabel(data.next.startsAt) });
+    }).catch(() => {});
+  }, []);
+
   useEffect(() => {
     refreshWallet();
     refreshOrdersBadge();
+    refreshBellStatus();
     const timer = window.setInterval(refreshOrdersBadge, 5000);
-    return () => window.clearInterval(timer);
-  }, [refreshWallet, refreshOrdersBadge]);
+    const bellTimer = window.setInterval(refreshBellStatus, 30000);
+    return () => {
+      window.clearInterval(timer);
+      window.clearInterval(bellTimer);
+    };
+  }, [refreshWallet, refreshOrdersBadge, refreshBellStatus]);
 
   const isTabScreen = TAB_SCREENS.includes(flow.screen);
   const isProductDetail = flow.screen === APP_SCREENS.productDetail;
   const isCheckout = flow.screen === APP_SCREENS.checkout;
+  const isExchange = flow.screen === APP_SCREENS.exchange;
   const cartCount = getCartQuantity(cartItems);
   const addToCart = (listing, quantity = 1) => setCartItems((current) => addListingToCart(current, listing, quantity));
   const handleOpenCart = () => setFlow((current) => openCheckout(current));
@@ -145,6 +167,13 @@ export default function App() {
             onToast={showToast}
             artStyle={artStyle}
           />
+        ) : isExchange ? (
+          <Exchange
+            balance={wallet.balance}
+            onWallet={setWallet}
+            onToast={showToast}
+            onBack={handleExchange}
+          />
         ) : flow.screen === APP_SCREENS.quests ? (
           <Quests
             balance={wallet.balance}
@@ -176,6 +205,8 @@ export default function App() {
             balance={wallet.balance}
             artStyle={artStyle}
             onCycleArtStyle={cycleArtStyle}
+            bell={bellStatus}
+            onBellTap={handleExchange}
           />
         )}
         {toast && (
@@ -190,7 +221,7 @@ export default function App() {
             onSelectTab={handleSelectTab}
             accent={TAB_ACCENTS[flow.screen]}
             ordersInFlight={ordersInFlight}
-            onSell={handleSell}
+            onExchange={handleExchange}
           />
         )}
       </IOSDevice>

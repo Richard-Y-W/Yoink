@@ -5,6 +5,7 @@ export const APP_SCREENS = {
   orders: 'orders',
   productDetail: 'product-detail',
   checkout: 'checkout',
+  exchange: 'exchange',
 };
 
 // Screens reachable from the bottom nav; everything else is a stack screen
@@ -47,6 +48,24 @@ export function openProductDetail(selectedListing, trigger = 'listing') {
 export function returnToMarket() {
   return {
     screen: APP_SCREENS.market,
+    selectedListing: null,
+  };
+}
+
+// The Exchange opens from the center nav button on top of whichever tab
+// you were on; tapping the button again (or Back) returns you there.
+export function openExchange(currentFlow) {
+  if (currentFlow.screen === APP_SCREENS.exchange) return currentFlow;
+  return {
+    screen: APP_SCREENS.exchange,
+    selectedListing: null,
+    exchangeReturnScreen: TAB_SCREENS.includes(currentFlow.screen) ? currentFlow.screen : APP_SCREENS.market,
+  };
+}
+
+export function closeExchange(currentFlow) {
+  return {
+    screen: currentFlow.exchangeReturnScreen ?? APP_SCREENS.market,
     selectedListing: null,
   };
 }
