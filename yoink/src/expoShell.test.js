@@ -12,6 +12,7 @@ function readRepoFile(path) {
 
 const expoAppSource = readRepoFile('yoink-expo/App.js');
 const appSource = readRepoFile('yoink/src/App.jsx');
+const appScrollSource = readRepoFile('yoink/src/appScroll.js');
 const indexHtmlSource = readRepoFile('yoink/index.html');
 const expoPackageSource = readRepoFile('yoink-expo/package.json');
 const expoReadmeSource = readRepoFile('yoink-expo/README.md');
@@ -36,14 +37,21 @@ test('expo shell mode removes the desktop phone frame inside WebView', () => {
 test('expo shell uses the native iPhone viewport, not desktop preview padding', () => {
   assert.match(indexHtmlSource, /viewport-fit=cover/);
   assert.match(appSource, /yoink-app-shell--native/);
-  assert.match(appSource, /width:100vw/);
+  assert.match(appSource, /width:100%/);
   assert.match(appSource, /min-height:100dvh/);
   assert.match(appSource, /padding:0/);
   assert.match(iosDeviceSource, /yoink-native-viewport/);
-  assert.match(iosDeviceSource, /width: '100vw'/);
+  assert.match(iosDeviceSource, /width: '100%'/);
   assert.match(iosDeviceSource, /height: '100dvh'/);
-  assert.match(iosDeviceSource, /safe-area-inset-top/);
-  assert.match(iosDeviceSource, /safe-area-inset-bottom/);
+  assert.match(expoAppSource, /SafeAreaView/);
+  assert.match(expoAppSource, /styles\.safeArea/);
+  assert.match(expoAppSource, /bounces/);
+  assert.doesNotMatch(expoAppSource, /bounces=\{false\}/);
+  assert.match(appSource, /overflow:visible/);
+  assert.match(iosDeviceSource, /overflow: 'visible'/);
+  assert.match(appScrollSource, /window\.scrollTo/);
+  assert.doesNotMatch(iosDeviceSource, /className="ynoscroll yoink-native-viewport"/);
+  assert.doesNotMatch(iosDeviceSource, /safe-area-inset/);
   assert.doesNotMatch(iosDeviceSource, /height: '100vh'/);
 });
 

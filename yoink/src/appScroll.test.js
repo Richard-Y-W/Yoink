@@ -60,3 +60,24 @@ test('scrollToScreenTop reports false when no scroll container exists', () => {
 
   assert.equal(scrollToScreenTop(child), false);
 });
+
+test('scrollToScreenTop falls back to document scrolling in the native shell', () => {
+  const calls = [];
+  const previousWindow = globalThis.window;
+  globalThis.window = {
+    scrollTo(options) {
+      calls.push(options);
+    },
+  };
+
+  try {
+    assert.equal(scrollToScreenTop(legacyNode()), true);
+    assert.deepEqual(calls, [{ top: 0, left: 0, behavior: 'auto' }]);
+  } finally {
+    if (previousWindow === undefined) {
+      delete globalThis.window;
+    } else {
+      globalThis.window = previousWindow;
+    }
+  }
+});

@@ -18,7 +18,13 @@ export function findScreenScrollContainer(startNode) {
 
 export function scrollToScreenTop(startNode) {
   const container = findScreenScrollContainer(startNode);
-  if (!container) return false;
+  if (!container) {
+    if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      return true;
+    }
+    return false;
+  }
 
   container.scrollTop = 0;
   if (typeof container.scrollTo === 'function') {

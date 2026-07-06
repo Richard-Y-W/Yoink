@@ -172,7 +172,7 @@ export default function App() {
     ? 'yoink-app-shell yoink-app-shell--native'
     : 'yoink-app-shell yoink-app-shell--preview';
   const shellStyle = nativeShell
-    ? s("width:100vw;min-height:100dvh;height:100dvh;margin:0;padding:0;box-sizing:border-box;display:block;overflow:hidden;background:#fff")
+    ? s("width:100%;min-height:100dvh;height:100dvh;margin:0;padding:0;box-sizing:border-box;display:block;overflow:visible;background:#fff")
     : s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center");
 
   return (

@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 const DEFAULT_MARKET_URL = 'http://127.0.0.1:5173';
@@ -35,7 +35,7 @@ export default function App() {
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <WebView
         style={styles.webview}
@@ -43,7 +43,7 @@ export default function App() {
         onMessage={onMessage}
         originWhitelist={['*']}
         allowsInlineMediaPlayback
-        bounces={false}
+        bounces
         setSupportMultipleWindows={false}
         renderError={() => (
           <View style={styles.error}>
@@ -52,12 +52,12 @@ export default function App() {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#fff',
   },
