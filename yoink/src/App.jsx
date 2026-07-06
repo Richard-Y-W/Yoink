@@ -5,23 +5,18 @@ import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
 import YoinkNav from './components/YoinkNav.jsx';
 import { addListingToCart, getCartQuantity } from './cart.js';
-import { fetchBell, fetchOrders, fetchWallet, placeOrder } from './api.js';
-import { bellLabel } from './bellView.js';
+import { fetchOrders, fetchWallet, placeOrder } from './api.js';
+import Account from './screens/Account.jsx';
 import Checkout from './screens/Checkout.jsx';
-import Exchange from './screens/Exchange.jsx';
-import Quests from './screens/Quests.jsx';
 import MonoMarket from './screens/MonoMarket.jsx';
-import Orders from './screens/Orders.jsx';
-import Pocket from './screens/Pocket.jsx';
 import ProductDetail from './screens/ProductDetail.jsx';
+import Watching from './screens/Watching.jsx';
 import { ART_STYLES } from './itemArt.js';
 import {
   APP_SCREENS,
   TAB_SCREENS,
-  closeExchange,
   getInitialScreen,
   openCheckout,
-  openExchange,
   openOrders,
   openProductDetail,
   openTab,
@@ -30,10 +25,10 @@ import {
 } from './appFlow.js';
 
 const TAB_ACCENTS = {
-  [APP_SCREENS.market]: '#6A5ACD',
-  [APP_SCREENS.quests]: '#6A5ACD',
-  [APP_SCREENS.pocket]: '#6A5ACD',
-  [APP_SCREENS.orders]: '#6A5ACD',
+  [APP_SCREENS.home]: '#6A5ACD',
+  [APP_SCREENS.search]: '#6A5ACD',
+  [APP_SCREENS.watching]: '#6A5ACD',
+  [APP_SCREENS.account]: '#6A5ACD',
 };
 
 export default function App() {
@@ -45,7 +40,6 @@ export default function App() {
   const [wallet, setWallet] = useState({ balance: 0, streak: 0, canClaim: false, canSpin: false });
   const [yoinkedOrder, setYoinkedOrder] = useState(null);
   const [ordersInFlight, setOrdersInFlight] = useState(0);
-  const [bellStatus, setBellStatus] = useState(null);
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const [artStyle, setArtStyle] = useState(() => {
@@ -75,10 +69,6 @@ export default function App() {
     toastTimer.current = window.setTimeout(() => setToast(null), 2200);
   }, []);
 
-  const handleExchange = useCallback(() => {
-    setFlow((current) => (current.screen === APP_SCREENS.exchange ? closeExchange(current) : openExchange(current)));
-  }, []);
-
   const refreshWallet = useCallback(() => {
     fetchWallet().then((next) => {
       if (next && typeof next.balance === 'number') setWallet(next);
@@ -91,33 +81,18 @@ export default function App() {
     }).catch(() => {});
   }, []);
 
-  // Ambient bell status for the shop header chip: live now, or the next
-  // bell's time. Light 30s poll — the Exchange screen has its own.
-  const refreshBellStatus = useCallback(() => {
-    fetchBell().then((data) => {
-      if (!data?.next) return;
-      setBellStatus(data.live
-        ? { live: true, label: 'LIVE' }
-        : { live: false, label: bellLabel(data.next.startsAt) });
-    }).catch(() => {});
-  }, []);
-
   useEffect(() => {
     refreshWallet();
     refreshOrdersBadge();
-    refreshBellStatus();
     const timer = window.setInterval(refreshOrdersBadge, 5000);
-    const bellTimer = window.setInterval(refreshBellStatus, 30000);
     return () => {
       window.clearInterval(timer);
-      window.clearInterval(bellTimer);
     };
-  }, [refreshWallet, refreshOrdersBadge, refreshBellStatus]);
+  }, [refreshWallet, refreshOrdersBadge]);
 
   const isTabScreen = TAB_SCREENS.includes(flow.screen);
   const isProductDetail = flow.screen === APP_SCREENS.productDetail;
   const isCheckout = flow.screen === APP_SCREENS.checkout;
-  const isExchange = flow.screen === APP_SCREENS.exchange;
   const cartCount = getCartQuantity(cartItems);
   const addToCart = (listing, quantity = 1) => setCartItems((current) => addListingToCart(current, listing, quantity));
   const handleOpenCart = () => setFlow((current) => openCheckout(current));
@@ -167,36 +142,20 @@ export default function App() {
             onToast={showToast}
             artStyle={artStyle}
           />
-        ) : isExchange ? (
-          <Exchange
+        ) : flow.screen === APP_SCREENS.watching ? (
+          <Watching
             balance={wallet.balance}
-            onWallet={setWallet}
-            onToast={showToast}
-            onBack={handleExchange}
-          />
-        ) : flow.screen === APP_SCREENS.quests ? (
-          <Quests
-            balance={wallet.balance}
-            streak={wallet.streak}
-            canClaim={wallet.canClaim}
-            canSpin={wallet.canSpin}
-            onWallet={setWallet}
             cartCount={cartCount}
             onOpenCart={handleOpenCart}
-            onToast={showToast}
           />
-        ) : flow.screen === APP_SCREENS.pocket ? (
-          <Pocket
+        ) : flow.screen === APP_SCREENS.account ? (
+          <Account
             balance={wallet.balance}
             streak={wallet.streak}
+            ordersInFlight={ordersInFlight}
             cartCount={cartCount}
-            onAddToCart={addToCart}
             onOpenCart={handleOpenCart}
-            onToast={showToast}
-            artStyle={artStyle}
           />
-        ) : flow.screen === APP_SCREENS.orders ? (
-          <Orders balance={wallet.balance} celebrateOrderId={flow.celebrateOrderId ?? null} />
         ) : (
           <MonoMarket
             onOpenProduct={(listing, trigger) => setFlow(openProductDetail(listing, trigger))}
@@ -205,8 +164,6 @@ export default function App() {
             balance={wallet.balance}
             artStyle={artStyle}
             onCycleArtStyle={cycleArtStyle}
-            bell={bellStatus}
-            onBellTap={handleExchange}
           />
         )}
         {toast && (
@@ -220,8 +177,6 @@ export default function App() {
             tab={flow.screen}
             onSelectTab={handleSelectTab}
             accent={TAB_ACCENTS[flow.screen]}
-            ordersInFlight={ordersInFlight}
-            onExchange={handleExchange}
           />
         )}
       </IOSDevice>

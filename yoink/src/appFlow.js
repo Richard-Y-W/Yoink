@@ -1,20 +1,19 @@
 export const APP_SCREENS = {
-  market: 'market',
-  quests: 'quests',
-  pocket: 'pocket',
-  orders: 'orders',
+  home: 'home',
+  search: 'search',
+  watching: 'watching',
+  account: 'account',
   productDetail: 'product-detail',
   checkout: 'checkout',
-  exchange: 'exchange',
 };
 
 // Screens reachable from the bottom nav; everything else is a stack screen
 // pushed on top of the current tab.
 export const TAB_SCREENS = [
-  APP_SCREENS.market,
-  APP_SCREENS.quests,
-  APP_SCREENS.pocket,
-  APP_SCREENS.orders,
+  APP_SCREENS.home,
+  APP_SCREENS.search,
+  APP_SCREENS.watching,
+  APP_SCREENS.account,
 ];
 
 export function openTab(currentFlow, tab) {
@@ -23,13 +22,13 @@ export function openTab(currentFlow, tab) {
 }
 
 export function openOrders(celebrateOrderId = null) {
-  return { screen: APP_SCREENS.orders, selectedListing: null, celebrateOrderId };
+  return { screen: APP_SCREENS.account, selectedListing: null, celebrateOrderId };
 }
 
 const PRODUCT_OPEN_TRIGGERS = ['listing', 'Buy', 'Bid', 'Offer'];
 
 export function getInitialScreen() {
-  return APP_SCREENS.market;
+  return APP_SCREENS.home;
 }
 
 export function getProductOpenTriggers() {
@@ -47,25 +46,7 @@ export function openProductDetail(selectedListing, trigger = 'listing') {
 
 export function returnToMarket() {
   return {
-    screen: APP_SCREENS.market,
-    selectedListing: null,
-  };
-}
-
-// The Exchange opens from the center nav button on top of whichever tab
-// you were on; tapping the button again (or Back) returns you there.
-export function openExchange(currentFlow) {
-  if (currentFlow.screen === APP_SCREENS.exchange) return currentFlow;
-  return {
-    screen: APP_SCREENS.exchange,
-    selectedListing: null,
-    exchangeReturnScreen: TAB_SCREENS.includes(currentFlow.screen) ? currentFlow.screen : APP_SCREENS.market,
-  };
-}
-
-export function closeExchange(currentFlow) {
-  return {
-    screen: currentFlow.exchangeReturnScreen ?? APP_SCREENS.market,
+    screen: APP_SCREENS.home,
     selectedListing: null,
   };
 }
@@ -81,7 +62,7 @@ export function openCheckout(currentFlow) {
 export function returnFromCheckout(currentFlow) {
   return {
     ...currentFlow,
-    screen: currentFlow.checkoutReturnScreen ?? APP_SCREENS.market,
+    screen: currentFlow.checkoutReturnScreen ?? APP_SCREENS.home,
     checkoutReturnScreen: null,
   };
 }

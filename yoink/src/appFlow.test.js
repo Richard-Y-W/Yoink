@@ -16,7 +16,7 @@ import {
 test('app flow starts on mono market and opens 11a product detail from every listing trigger', () => {
   const listing = { id: 'f12', cta: 'Buy', name: 'Cassette Walkman + 12 tapes' };
 
-  assert.equal(getInitialScreen(), APP_SCREENS.market);
+  assert.equal(getInitialScreen(), APP_SCREENS.home);
   assert.deepEqual(getProductOpenTriggers(), ['listing', 'Buy', 'Bid', 'Offer']);
 
   const detailState = openProductDetail(listing, 'Offer');
@@ -25,7 +25,7 @@ test('app flow starts on mono market and opens 11a product detail from every lis
   assert.equal(detailState.productDetailVariant, '11a');
   assert.equal(detailState.selectedListing, listing);
   assert.equal(detailState.trigger, 'Offer');
-  assert.deepEqual(returnToMarket(), { screen: APP_SCREENS.market, selectedListing: null });
+  assert.deepEqual(returnToMarket(), { screen: APP_SCREENS.home, selectedListing: null });
 });
 
 test('app flow opens checkout from the current screen and returns to the previous screen', () => {
@@ -47,19 +47,26 @@ test('app flow opens checkout from the current screen and returns to the previou
   });
 });
 
-test('bottom nav switches between the four tab screens and ignores stack screens', () => {
-  assert.deepEqual(TAB_SCREENS, ['market', 'quests', 'pocket', 'orders']);
+test('market copy bottom nav switches between the four market tabs and rejects exchange', () => {
+  assert.deepEqual(TAB_SCREENS, ['home', 'search', 'watching', 'account']);
 
-  const fromMarket = openTab({ screen: APP_SCREENS.market, selectedListing: { id: 'f1' } }, APP_SCREENS.quests);
-  assert.deepEqual(fromMarket, { screen: APP_SCREENS.quests, selectedListing: null });
+  const fromHome = openTab({ screen: APP_SCREENS.home, selectedListing: { id: 'f1' } }, APP_SCREENS.search);
+  assert.deepEqual(fromHome, { screen: APP_SCREENS.search, selectedListing: null });
 
-  const unchanged = openTab({ screen: APP_SCREENS.market }, APP_SCREENS.checkout);
-  assert.deepEqual(unchanged, { screen: APP_SCREENS.market });
+  const fromSearch = openTab({ screen: APP_SCREENS.search }, APP_SCREENS.watching);
+  assert.deepEqual(fromSearch, { screen: APP_SCREENS.watching, selectedListing: null });
+
+  const unchangedCheckout = openTab({ screen: APP_SCREENS.home }, APP_SCREENS.checkout);
+  assert.deepEqual(unchangedCheckout, { screen: APP_SCREENS.home });
+
+  assert.equal(APP_SCREENS.exchange, undefined);
+  const unchangedExchange = openTab({ screen: APP_SCREENS.home }, 'exchange');
+  assert.deepEqual(unchangedExchange, { screen: APP_SCREENS.home });
 });
 
-test('placing an order lands on the orders tab with the new order celebrated', () => {
+test('placing an order lands on the account tab with the new order celebrated', () => {
   assert.deepEqual(openOrders('YK-1001'), {
-    screen: APP_SCREENS.orders,
+    screen: APP_SCREENS.account,
     selectedListing: null,
     celebrateOrderId: 'YK-1001',
   });
