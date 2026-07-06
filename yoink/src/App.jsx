@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { s } from './style.js';
+import { scrollToScreenTop } from './appScroll.js';
 import IOSDevice from './components/IOSDevice.jsx';
 import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
@@ -42,6 +43,7 @@ export default function App() {
   const [ordersInFlight, setOrdersInFlight] = useState(0);
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
+  const screenRootRef = useRef(null);
   const [artStyle, setArtStyle] = useState(() => {
     try {
       const fromUrl = new URLSearchParams(window.location.search).get('art');
@@ -90,6 +92,10 @@ export default function App() {
     };
   }, [refreshWallet, refreshOrdersBadge]);
 
+  useLayoutEffect(() => {
+    scrollToScreenTop(screenRootRef.current);
+  }, [flow.screen]);
+
   const isTabScreen = TAB_SCREENS.includes(flow.screen);
   const isProductDetail = flow.screen === APP_SCREENS.productDetail;
   const isCheckout = flow.screen === APP_SCREENS.checkout;
@@ -118,7 +124,7 @@ export default function App() {
   }, [refreshOrdersBadge]);
 
   return (
-    <div style={s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center")}>
+    <div ref={screenRootRef} style={s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center")}>
       <IOSDevice>
         <SplashScreen />
         {yoinkedOrder && (

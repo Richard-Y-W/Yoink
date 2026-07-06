@@ -12,3 +12,9 @@ test('market copy app shell does not import or route to exchange', () => {
   assert.doesNotMatch(appSource, /onExchange=/);
   assert.doesNotMatch(appSource, /onBellTap=/);
 });
+
+test('market copy app shell resets the phone scroll position on screen changes', () => {
+  assert.match(appSource, /scrollToScreenTop/);
+  assert.match(appSource, /screenRootRef/);
+  assert.match(appSource, /\[flow\.screen\]/);
+});
