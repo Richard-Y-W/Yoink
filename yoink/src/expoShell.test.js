@@ -47,3 +47,12 @@ test('expo package and readme document Expo Go iPhone setup', () => {
   assert.match(expoReadmeSource, /npm run dev -- --host 0\.0\.0\.0/);
   assert.match(expoReadmeSource, /ipconfig getifaddr en0/);
 });
+
+test('expo shell targets the wider iPhone-compatible SDK 55 runtime', () => {
+  assert.match(expoPackageSource, /"expo": "~55\./);
+  assert.match(expoPackageSource, /"expo-haptics": "~55\./);
+  assert.match(expoPackageSource, /"expo-status-bar": "~55\./);
+  assert.match(expoPackageSource, /"react-native": "0\.83\./);
+  assert.doesNotMatch(expoPackageSource, /"expo": "~57\./);
+  assert.match(expoReadmeSource, /SDK 55/);
+});

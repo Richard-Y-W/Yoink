@@ -2,6 +2,8 @@
 
 This is a thin iPhone shell for the local Market Copy web app. It opens the Vite app in `react-native-webview` and maps Yoink haptic events to `expo-haptics`.
 
+The wrapper intentionally targets Expo SDK 55 so updated Expo Go installs on older iPhones can open it. SDK 56 and 57 require newer iOS support than some still-updated devices receive.
+
 ## Run on iPhone with Expo Go
 
 1. Start the web app on your Mac's local network:
