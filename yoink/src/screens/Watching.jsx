@@ -63,7 +63,6 @@ function WatchedCard({ item, onOpenProduct, onToggleWatchedListing, artStyle = '
 }
 
 export default function Watching({
-  balance = 0,
   cartCount = 0,
   onOpenCart = () => {},
   watchedListings = [],
@@ -91,7 +90,6 @@ export default function Watching({
             </div>
             <div style={s(`font:800 16px 'Fredoka';color:${ink}`)}>Nothing watched yet</div>
             <div style={s(`margin-top:6px;font:700 13px 'Nunito';color:${muted};line-height:1.35`)}>Heart items from the market later and they will land here.</div>
-            <div style={s(`margin-top:14px;font:800 13px 'Fredoka';color:${brand}`)}>Balance Ȳ{balance}</div>
           </div>
         ) : (
           <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:12px")}>

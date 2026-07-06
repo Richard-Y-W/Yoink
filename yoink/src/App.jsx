@@ -176,7 +176,6 @@ export default function App() {
           />
         ) : flow.screen === APP_SCREENS.watching ? (
           <Watching
-            balance={wallet.balance}
             cartCount={cartCount}
             onOpenCart={handleOpenCart}
             watchedListings={watchedListings}

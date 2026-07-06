@@ -42,4 +42,5 @@ test('watching screen renders saved cards and keeps a cartoon empty state', () =
   assert.match(watchingSource, /onOpenProduct\(item, 'listing'\)/);
   assert.match(watchingSource, /onToggleWatchedListing\(item\)/);
   assert.match(watchingSource, /Nothing watched yet/);
+  assert.doesNotMatch(watchingSource, /Balance/);
 });
