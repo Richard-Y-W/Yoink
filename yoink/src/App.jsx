@@ -1,6 +1,13 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { s } from './style.js';
 import { scrollToScreenTop } from './appScroll.js';
+import {
+  WATCHED_LISTINGS_STORAGE_KEY,
+  parseWatchedListings,
+  serializeWatchedListings,
+  toggleWatchedListing,
+  watchedListingIds,
+} from './watchedListings.js';
 import IOSDevice from './components/IOSDevice.jsx';
 import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
@@ -41,6 +48,13 @@ export default function App() {
   const [wallet, setWallet] = useState({ balance: 0, streak: 0, canClaim: false, canSpin: false });
   const [yoinkedOrder, setYoinkedOrder] = useState(null);
   const [ordersInFlight, setOrdersInFlight] = useState(0);
+  const [watchedListings, setWatchedListings] = useState(() => {
+    try {
+      return parseWatchedListings(window.localStorage.getItem(WATCHED_LISTINGS_STORAGE_KEY));
+    } catch {
+      return [];
+    }
+  });
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const screenRootRef = useRef(null);
@@ -96,14 +110,24 @@ export default function App() {
     scrollToScreenTop(screenRootRef.current);
   }, [flow.screen]);
 
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(WATCHED_LISTINGS_STORAGE_KEY, serializeWatchedListings(watchedListings));
+    } catch {}
+  }, [watchedListings]);
+
   const isTabScreen = TAB_SCREENS.includes(flow.screen);
   const isProductDetail = flow.screen === APP_SCREENS.productDetail;
   const isCheckout = flow.screen === APP_SCREENS.checkout;
   const cartCount = getCartQuantity(cartItems);
   const addToCart = (listing, quantity = 1) => setCartItems((current) => addListingToCart(current, listing, quantity));
+  const watchedIds = useMemo(() => watchedListingIds(watchedListings), [watchedListings]);
   const handleOpenCart = () => setFlow((current) => openCheckout(current));
   const handleCloseCheckout = () => setFlow((current) => returnFromCheckout(current));
   const handleSelectTab = (tab) => setFlow((current) => openTab(current, tab));
+  const handleToggleWatchedListing = useCallback((listing) => {
+    setWatchedListings((current) => toggleWatchedListing(current, listing));
+  }, []);
 
   const handlePlaceOrder = async (options) => {
     const result = await placeOrder({ items: cartItems, ...options });
@@ -147,12 +171,18 @@ export default function App() {
             onOpenCart={handleOpenCart}
             onToast={showToast}
             artStyle={artStyle}
+            isWatched={watchedIds.includes(flow.selectedListing?.id)}
+            onToggleWatchedListing={handleToggleWatchedListing}
           />
         ) : flow.screen === APP_SCREENS.watching ? (
           <Watching
             balance={wallet.balance}
             cartCount={cartCount}
             onOpenCart={handleOpenCart}
+            watchedListings={watchedListings}
+            onOpenProduct={(listing, trigger) => setFlow(openProductDetail(listing, trigger))}
+            onToggleWatchedListing={handleToggleWatchedListing}
+            artStyle={artStyle}
           />
         ) : flow.screen === APP_SCREENS.account ? (
           <Account
@@ -170,6 +200,8 @@ export default function App() {
             balance={wallet.balance}
             artStyle={artStyle}
             onCycleArtStyle={cycleArtStyle}
+            watchedIds={watchedIds}
+            onToggleWatchedListing={handleToggleWatchedListing}
           />
         )}
         {toast && (

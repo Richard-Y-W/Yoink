@@ -1,9 +1,76 @@
 import { s } from '../style.js';
 import { marketTheme } from '../marketTheme.js';
+import ItemArt from '../components/ItemArt.jsx';
+import { artStageBackground, resolveArtKind } from '../itemArt.js';
 
-const { ink, wash, line, muted, brand } = marketTheme;
+const { ink, wash, line, muted, brand, attentionBadgeBackground, attentionBadgeText } = marketTheme;
 
-export default function Watching({ balance = 0, cartCount = 0, onOpenCart = () => {} }) {
+function WatchedCard({ item, onOpenProduct, onToggleWatchedListing, artStyle = 'vinyl' }) {
+  const artKind = resolveArtKind(item);
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpenProduct(item, 'listing')}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onOpenProduct(item, 'listing');
+        }
+      }}
+      style={s("position:relative;background:#fff;border:1.5px solid #EDEAF6;border-radius:8px;overflow:hidden;box-shadow:0 5px 14px rgba(106,90,205,.10);cursor:pointer")}
+    >
+      <div style={s(`height:118px;background:${artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center;position:relative`)}>
+        {artKind && <ItemArt kind={artKind} artStyle={artStyle} width={108} />}
+        <button
+          type="button"
+          aria-label={`Remove ${item.name} from watching`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleWatchedListing(item);
+          }}
+          style={s("position:absolute;top:8px;right:8px;width:32px;height:32px;border:0;border-radius:50%;background:#FFE4F1;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 9px rgba(23,19,38,.16);cursor:pointer;padding:0;animation:ypop .28s ease both")}
+        >
+          <span className="mi" style={s("font-size:18px;color:#FF3D9A;font-variation-settings:'FILL' 1")}>favorite</span>
+        </button>
+        <div style={s("position:absolute;bottom:8px;left:8px;padding:2px 7px;border-radius:7px;background:rgba(255,255,255,.86);font:700 8px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>
+          {item.img}
+        </div>
+      </div>
+      <div style={s("padding:10px 11px 12px")}>
+        <div style={s(`font:800 13px/1.25 'Nunito';color:${ink};height:33px;overflow:hidden`)}>
+          {item.name}
+        </div>
+        <div style={s("display:flex;align-items:center;gap:5px;margin-top:8px")}>
+          <span style={s(`width:17px;height:17px;border-radius:50%;background:${ink};display:inline-flex;align-items:center;justify-content:center;font:900 8.5px 'Fredoka';color:#fff;flex:none`)}>
+            Y
+          </span>
+          <span style={s(`font:900 17px 'Fredoka';color:${ink}`)}>{item.price}</span>
+        </div>
+        <div style={s("display:flex;align-items:center;gap:5px;margin-top:7px;flex-wrap:wrap")}>
+          <span style={s(`font:800 9.5px 'Nunito';color:${ink};background:${wash};padding:3px 7px;border-radius:7px`)}>
+            {item.cond}
+          </span>
+          {item.urgent && (
+            <span style={s(`font:800 9.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:3px 7px;border-radius:7px`)}>
+              ends {item.timeLeft}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Watching({
+  balance = 0,
+  cartCount = 0,
+  onOpenCart = () => {},
+  watchedListings = [],
+  onOpenProduct = () => {},
+  onToggleWatchedListing = () => {},
+  artStyle = 'vinyl',
+}) {
   return (
     <div style={s('min-height:100%;background:#fff;color:#171326;padding-bottom:92px')}>
       <div style={s('position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid #EEEAF6;padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px')}>
@@ -17,11 +84,28 @@ export default function Watching({ balance = 0, cartCount = 0, onOpenCart = () =
         </button>
       </div>
       <div style={s('padding:18px 16px 0')}>
-        <div style={s(`border:1px solid ${line};background:${wash};border-radius:8px;padding:18px`)}>
-          <div style={s(`font:800 16px 'Fredoka';color:${ink}`)}>Nothing watched yet</div>
-          <div style={s(`margin-top:6px;font:700 13px 'Nunito';color:${muted};line-height:1.35`)}>Heart items from the market later and they will land here.</div>
-          <div style={s(`margin-top:14px;font:800 13px 'Fredoka';color:${brand}`)}>Balance Ȳ{balance}</div>
-        </div>
+        {watchedListings.length === 0 ? (
+          <div style={s(`border:1px solid ${line};background:${wash};border-radius:8px;padding:18px`)}>
+            <div style={s(`width:54px;height:54px;border-radius:18px;background:#FFE4F1;display:flex;align-items:center;justify-content:center;margin-bottom:11px;box-shadow:0 5px 0 rgba(255,61,154,.18)`)}>
+              <span className="mi" style={s("font-size:27px;color:#FF3D9A;font-variation-settings:'FILL' 1")}>favorite</span>
+            </div>
+            <div style={s(`font:800 16px 'Fredoka';color:${ink}`)}>Nothing watched yet</div>
+            <div style={s(`margin-top:6px;font:700 13px 'Nunito';color:${muted};line-height:1.35`)}>Heart items from the market later and they will land here.</div>
+            <div style={s(`margin-top:14px;font:800 13px 'Fredoka';color:${brand}`)}>Balance Ȳ{balance}</div>
+          </div>
+        ) : (
+          <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:12px")}>
+            {watchedListings.map((item) => (
+              <WatchedCard
+                key={item.id}
+                item={item}
+                onOpenProduct={onOpenProduct}
+                onToggleWatchedListing={onToggleWatchedListing}
+                artStyle={artStyle}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

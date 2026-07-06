@@ -117,22 +117,26 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
   );
 }
 
-export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () => {}, cartCount = 0, balance = 0, artStyle = 'vinyl', onCycleArtStyle = () => {}, bell = null, onBellTap = () => {} }) {
+export default function MonoMarket({
+  onOpenProduct = () => {},
+  onOpenCart = () => {},
+  cartCount = 0,
+  balance = 0,
+  artStyle = 'vinyl',
+  onCycleArtStyle = () => {},
+  watchedIds = [],
+  onToggleWatchedListing = () => {},
+  bell = null,
+  onBellTap = () => {},
+}) {
   const [feed, setFeed] = useState(() => makeMarketFeed(0, MARKET_PAGE_SIZE));
   const [selectedCategory, setSelectedCategory] = useState('For you');
   const [query, setQuery] = useState('');
   const [mode, setMode] = useState('All');
   const [sortIndex, setSortIndex] = useState(0);
-  const [savedIds, setSavedIds] = useState(() => new Set());
 
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
   const cycleSort = () => setSortIndex((current) => (current + 1) % MARKET_SORTS.length);
-  const toggleSave = (id) => setSavedIds((current) => {
-    const next = new Set(current);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    return next;
-  });
   const feedEndRef = useRef(null);
   const lastLoadRef = useRef(0);
   const hasMore = feed.length < MARKET_MAX_ITEMS;
@@ -339,8 +343,8 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
               key={item.id}
               item={item}
               onOpenProduct={onOpenProduct}
-              saved={savedIds.has(item.id)}
-              onToggleSave={toggleSave}
+              saved={watchedIds.includes(item.id)}
+              onToggleSave={() => onToggleWatchedListing(item)}
               artStyle={artStyle}
             />
           ))}

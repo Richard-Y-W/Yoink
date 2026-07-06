@@ -14,3 +14,11 @@ test('market copy nav exposes four tabs without a center exchange button', () =>
   assert.doesNotMatch(navSource, /notifications_active/);
   assert.doesNotMatch(navSource, /Bell/);
 });
+
+test('market copy nav gives the active tab a strong purple cartoon treatment', () => {
+  assert.match(navSource, /activeTabBackground/);
+  assert.match(navSource, /border-radius:18px/);
+  assert.match(navSource, /transform:\$\{active \? 'translateY\(-3px\) scale\(1\.04\)'/);
+  assert.match(navSource, /box-shadow:\$\{active \? '0 8px 16px rgba\(106,90,205,\.28\)'/);
+  assert.match(navSource, /font-variation-settings:'FILL' 1/);
+});

@@ -43,7 +43,17 @@ const POLICY_DETAILS = {
   'Shipping policy': 'Yoink express: packed in 30 seconds, delivered in about 4 minutes. Watch it in Orders.',
 };
 
-export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl' }) {
+export default function ProductDetail({
+  listing,
+  onBack,
+  cartCount = 0,
+  onAddToCart = () => {},
+  onOpenCart = () => {},
+  onToast = () => {},
+  artStyle = 'vinyl',
+  isWatched = false,
+  onToggleWatchedListing = () => {},
+}) {
   const detail = useMemo(() => makeProductDetail(listing), [listing]);
   const artKind = useMemo(() => resolveArtKind(listing) ?? resolveArtKind(detail), [listing, detail]);
   const [spinDeg, setSpinDeg] = useState(null);
@@ -63,7 +73,6 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
     onPointerCancel: () => { dragRef.current = null; },
   } : {};
   const [qty, setQty] = useState(1);
-  const [favorite, setFavorite] = useState(false);
   const [cartMotionKey, setCartMotionKey] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
   const [reviewsExpanded, setReviewsExpanded] = useState(false);
@@ -138,7 +147,13 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           <IconButton icon="arrow_back" label="Back to market" onClick={onBack} />
         </div>
         <div style={s("position:absolute;top:52px;right:14px;display:flex;gap:8px")}>
-          <IconButton icon="favorite" label="Favorite item" onClick={() => setFavorite((current) => !current)} filled={favorite} color={favorite ? brand : ink} />
+          <IconButton
+            icon="favorite"
+            label={isWatched ? 'Remove from watching' : 'Watch item'}
+            onClick={() => onToggleWatchedListing(listing)}
+            filled={isWatched}
+            color={isWatched ? '#FF3D9A' : ink}
+          />
           <div style={s("position:relative")}>
             <IconButton icon="shopping_cart" label="Open cart" onClick={onOpenCart} />
             <span style={s(`position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:${brand};color:#fff;font:700 9.5px 'Fredoka';display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff`)}>
