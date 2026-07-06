@@ -48,11 +48,12 @@ test('expo package and readme document Expo Go iPhone setup', () => {
   assert.match(expoReadmeSource, /ipconfig getifaddr en0/);
 });
 
-test('expo shell targets the wider iPhone-compatible SDK 55 runtime', () => {
-  assert.match(expoPackageSource, /"expo": "~55\./);
-  assert.match(expoPackageSource, /"expo-haptics": "~55\./);
-  assert.match(expoPackageSource, /"expo-status-bar": "~55\./);
-  assert.match(expoPackageSource, /"react-native": "0\.83\./);
+test('expo shell targets the older iPhone-compatible SDK 54 runtime', () => {
+  assert.match(expoPackageSource, /"expo": "~54\./);
+  assert.match(expoPackageSource, /"expo-haptics": "~15\./);
+  assert.match(expoPackageSource, /"expo-status-bar": "~3\./);
+  assert.match(expoPackageSource, /"react-native": "0\.81\./);
   assert.doesNotMatch(expoPackageSource, /"expo": "~57\./);
-  assert.match(expoReadmeSource, /SDK 55/);
+  assert.doesNotMatch(expoPackageSource, /"expo": "~55\./);
+  assert.match(expoReadmeSource, /SDK 54/);
 });
