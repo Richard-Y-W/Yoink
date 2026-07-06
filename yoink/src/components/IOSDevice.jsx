@@ -1,6 +1,14 @@
 // Simplified iOS 26 device frame, ported from the design's ios-frame.jsx.
 // Trimmed to what the Yoink screens use: bezel, status bar, scroll area, home indicator.
 
+function isExpoShell() {
+  try {
+    return new URLSearchParams(window.location.search).get('shell') === 'expo';
+  } catch {
+    return false;
+  }
+}
+
 function StatusBar({ time = '9:41' }) {
   const c = '#000';
   return (
@@ -35,6 +43,21 @@ function StatusBar({ time = '9:41' }) {
 }
 
 export default function IOSDevice({ children, width = 402, height = 874 }) {
+  const frameless = isExpoShell();
+
+  if (frameless) {
+    return (
+      <div className="ynoscroll" style={{
+        width: '100%', height: '100vh', overflow: 'auto',
+        position: 'relative', background: '#fff',
+        fontFamily: '-apple-system, system-ui, sans-serif',
+        WebkitFontSmoothing: 'antialiased',
+      }}>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div style={{
       width, height, borderRadius: 48, overflow: 'hidden',

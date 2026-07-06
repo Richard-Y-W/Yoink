@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { s } from './style.js';
 import { scrollToScreenTop } from './appScroll.js';
+import { HAPTIC_EVENTS, emitHaptic } from './hapticFeedback.js';
 import {
   WATCHED_LISTINGS_STORAGE_KEY,
   parseWatchedListings,
@@ -120,14 +121,25 @@ export default function App() {
   const isProductDetail = flow.screen === APP_SCREENS.productDetail;
   const isCheckout = flow.screen === APP_SCREENS.checkout;
   const cartCount = getCartQuantity(cartItems);
-  const addToCart = (listing, quantity = 1) => setCartItems((current) => addListingToCart(current, listing, quantity));
+  const addToCart = (listing, quantity = 1) => {
+    emitHaptic(HAPTIC_EVENTS.success);
+    setCartItems((current) => addListingToCart(current, listing, quantity));
+  };
   const watchedIds = useMemo(() => watchedListingIds(watchedListings), [watchedListings]);
-  const handleOpenCart = () => setFlow((current) => openCheckout(current));
+  const handleOpenCart = () => {
+    emitHaptic(HAPTIC_EVENTS.cart);
+    setFlow((current) => openCheckout(current));
+  };
   const handleCloseCheckout = () => setFlow((current) => returnFromCheckout(current));
-  const handleSelectTab = (tab) => setFlow((current) => openTab(current, tab));
+  const handleSelectTab = (tab) => {
+    emitHaptic(HAPTIC_EVENTS.tab);
+    setFlow((current) => openTab(current, tab));
+  };
   const handleToggleWatchedListing = useCallback((listing) => {
+    const alreadyWatched = watchedIds.includes(listing?.id);
+    emitHaptic(alreadyWatched ? HAPTIC_EVENTS.unwatch : HAPTIC_EVENTS.watch);
     setWatchedListings((current) => toggleWatchedListing(current, listing));
-  }, []);
+  }, [watchedIds]);
 
   const handlePlaceOrder = async (options) => {
     const result = await placeOrder({ items: cartItems, ...options });
@@ -189,7 +201,10 @@ export default function App() {
             streak={wallet.streak}
             ordersInFlight={ordersInFlight}
             cartCount={cartCount}
+            watchedCount={watchedListings.length}
             onOpenCart={handleOpenCart}
+            onOpenWatching={() => handleSelectTab(APP_SCREENS.watching)}
+            onToast={showToast}
           />
         ) : (
           <MonoMarket

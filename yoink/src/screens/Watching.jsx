@@ -78,7 +78,7 @@ export default function Watching({
           <div style={s(`font:700 12px 'Nunito';color:${muted}`)}>Saved finds and watched drops</div>
         </div>
         <button type="button" aria-label="Open cart" onClick={onOpenCart} style={s(`border:0;border-radius:16px;background:${brand};color:#fff;padding:8px 11px;font:800 12px 'Fredoka';display:flex;align-items:center;gap:5px;cursor:pointer`)}>
-          <span className="mi" style={s("font-size:16px;font-variation-settings:'FILL' 1")}>shopping_bag</span>
+          <span className="mi" style={s("font-size:16px;font-variation-settings:'FILL' 1")}>shopping_cart</span>
           {cartCount}
         </button>
       </div>
