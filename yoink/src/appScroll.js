@@ -1,5 +1,5 @@
 export function findScreenScrollContainer(startNode) {
-  let node = startNode?.parentElement ?? null;
+  let node = startNode ?? null;
 
   while (node) {
     const classListMatch = node.classList?.contains?.('ynoscroll');
@@ -8,6 +8,8 @@ export function findScreenScrollContainer(startNode) {
       : node._overflowY;
 
     if (classListMatch || overflowY === 'auto' || overflowY === 'scroll') return node;
+    const childScroll = node.querySelector?.('.ynoscroll');
+    if (childScroll) return childScroll;
     node = node.parentElement;
   }
 

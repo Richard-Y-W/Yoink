@@ -40,7 +40,16 @@ const TAB_ACCENTS = {
   [APP_SCREENS.account]: '#6A5ACD',
 };
 
+function isExpoShell() {
+  try {
+    return new URLSearchParams(window.location.search).get('shell') === 'expo';
+  } catch {
+    return false;
+  }
+}
+
 export default function App() {
+  const nativeShell = isExpoShell();
   const [flow, setFlow] = useState(() => ({
     screen: getInitialScreen(),
     selectedListing: null,
@@ -159,8 +168,15 @@ export default function App() {
     refreshOrdersBadge();
   }, [refreshOrdersBadge]);
 
+  const shellClassName = nativeShell
+    ? 'yoink-app-shell yoink-app-shell--native'
+    : 'yoink-app-shell yoink-app-shell--preview';
+  const shellStyle = nativeShell
+    ? s("width:100vw;min-height:100dvh;height:100dvh;margin:0;padding:0;box-sizing:border-box;display:block;overflow:hidden;background:#fff")
+    : s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center");
+
   return (
-    <div ref={screenRootRef} style={s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center")}>
+    <div ref={screenRootRef} className={shellClassName} style={shellStyle}>
       <IOSDevice>
         <SplashScreen />
         {yoinkedOrder && (

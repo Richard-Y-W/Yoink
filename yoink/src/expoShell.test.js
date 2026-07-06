@@ -11,6 +11,8 @@ function readRepoFile(path) {
 }
 
 const expoAppSource = readRepoFile('yoink-expo/App.js');
+const appSource = readRepoFile('yoink/src/App.jsx');
+const indexHtmlSource = readRepoFile('yoink/index.html');
 const expoPackageSource = readRepoFile('yoink-expo/package.json');
 const expoReadmeSource = readRepoFile('yoink-expo/README.md');
 const expoGuardSource = readRepoFile('yoink-expo/scripts/guard-start.js');
@@ -28,7 +30,21 @@ test('expo shell wraps the local market app in a WebView', () => {
 test('expo shell mode removes the desktop phone frame inside WebView', () => {
   assert.match(iosDeviceSource, /shell'\) === 'expo'/);
   assert.match(iosDeviceSource, /frameless/);
-  assert.match(iosDeviceSource, /height: '100vh'/);
+  assert.match(iosDeviceSource, /height: '100dvh'/);
+});
+
+test('expo shell uses the native iPhone viewport, not desktop preview padding', () => {
+  assert.match(indexHtmlSource, /viewport-fit=cover/);
+  assert.match(appSource, /yoink-app-shell--native/);
+  assert.match(appSource, /width:100vw/);
+  assert.match(appSource, /min-height:100dvh/);
+  assert.match(appSource, /padding:0/);
+  assert.match(iosDeviceSource, /yoink-native-viewport/);
+  assert.match(iosDeviceSource, /width: '100vw'/);
+  assert.match(iosDeviceSource, /height: '100dvh'/);
+  assert.match(iosDeviceSource, /safe-area-inset-top/);
+  assert.match(iosDeviceSource, /safe-area-inset-bottom/);
+  assert.doesNotMatch(iosDeviceSource, /height: '100vh'/);
 });
 
 test('expo shell maps Yoink haptic messages to native iPhone feedback', () => {

@@ -47,11 +47,16 @@ export default function IOSDevice({ children, width = 402, height = 874 }) {
 
   if (frameless) {
     return (
-      <div className="ynoscroll" style={{
-        width: '100%', height: '100vh', overflow: 'auto',
+      <div className="ynoscroll yoink-native-viewport" style={{
+        width: '100vw', minHeight: '100dvh', height: '100dvh', overflow: 'auto',
         position: 'relative', background: '#fff',
         fontFamily: '-apple-system, system-ui, sans-serif',
         WebkitFontSmoothing: 'antialiased',
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingRight: 'env(safe-area-inset-right)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingLeft: 'env(safe-area-inset-left)',
+        overscrollBehavior: 'none',
       }}>
         {children}
       </div>
