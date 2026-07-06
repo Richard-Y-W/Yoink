@@ -13,6 +13,8 @@ function readRepoFile(path) {
 const expoAppSource = readRepoFile('yoink-expo/App.js');
 const expoPackageSource = readRepoFile('yoink-expo/package.json');
 const expoReadmeSource = readRepoFile('yoink-expo/README.md');
+const expoGuardSource = readRepoFile('yoink-expo/scripts/guard-start.js');
+const viteConfigSource = readRepoFile('yoink/vite.config.js');
 const iosDeviceSource = readFileSync(new URL('./components/IOSDevice.jsx', import.meta.url), 'utf8');
 
 test('expo shell wraps the local market app in a WebView', () => {
@@ -56,4 +58,21 @@ test('expo shell targets the older iPhone-compatible SDK 54 runtime', () => {
   assert.doesNotMatch(expoPackageSource, /"expo": "~57\./);
   assert.doesNotMatch(expoPackageSource, /"expo": "~55\./);
   assert.match(expoReadmeSource, /SDK 54/);
+});
+
+test('expo start is guarded against missing env and occupied ports', () => {
+  assert.match(expoPackageSource, /"start": "node scripts\/guard-start\.js && expo start --port 8084 --lan --clear"/);
+  assert.match(expoPackageSource, /"check:ports": "node scripts\/guard-start\.js --check-only"/);
+  assert.match(expoGuardSource, /EXPO_PUBLIC_YOINK_URL/);
+  assert.match(expoGuardSource, /expectedExpoPort = 8084/);
+  assert.match(expoGuardSource, /EADDRINUSE/);
+  assert.match(expoGuardSource, /server\.listen/);
+  assert.match(expoGuardSource, /new URL\(webUrl\)/);
+  assert.match(expoGuardSource, /127\.0\.0\.1/);
+});
+
+test('vite dev server is locked to the Expo web port', () => {
+  assert.match(viteConfigSource, /host: '0\.0\.0\.0'/);
+  assert.match(viteConfigSource, /port: 5173/);
+  assert.match(viteConfigSource, /strictPort: true/);
 });

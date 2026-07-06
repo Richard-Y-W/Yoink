@@ -11,8 +11,9 @@
     "react-native-webview": "13.15.0"
   },
   "scripts": {
-    "start": "expo start",
-    "ios": "expo start --ios"
+    "start": "node scripts/guard-start.js && expo start --port 8084 --lan --clear",
+    "check:ports": "node scripts/guard-start.js --check-only",
+    "ios": "node scripts/guard-start.js && expo start --ios --port 8084 --clear"
   },
   "private": true
 }

@@ -13,6 +13,8 @@ cd /Users/byungkim/yoink-market-copy/yoink
 npm run dev -- --host 0.0.0.0
 ```
 
+The Vite config pins this server to `0.0.0.0:5173` and exits if that port is already taken.
+
 2. Get your Mac Wi-Fi IP:
 
 ```bash
@@ -26,12 +28,14 @@ cd /Users/byungkim/yoink-market-copy/yoink-expo
 EXPO_PUBLIC_YOINK_URL=http://<mac-ip>:5173 npm run start
 ```
 
-4. Open Expo Go on the iPhone and scan the QR code from the terminal.
+The start script runs a preflight check first. It refuses to start if `EXPO_PUBLIC_YOINK_URL` is missing, points at localhost, points at the wrong web port, or if Expo port `8084` is already occupied.
 
-For the iOS Simulator on the same Mac, you can usually use:
+To run the same check without starting Expo:
 
 ```bash
-EXPO_PUBLIC_YOINK_URL=http://127.0.0.1:5173 npm run ios
+EXPO_PUBLIC_YOINK_URL=http://<mac-ip>:5173 npm run check:ports
 ```
+
+4. Open Expo Go on the iPhone and scan the QR code from the terminal.
 
 The Expo shell appends `?shell=expo` automatically so the Vite app removes the desktop phone frame.
