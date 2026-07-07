@@ -415,7 +415,6 @@ export default function App() {
             cartCount={cartCount}
             balance={wallet.balance}
             artStyle={artStyle}
-            onCycleArtStyle={cycleArtStyle}
             watchedIds={watchedIds}
             onToggleWatchedListing={handleToggleWatchedListing}
             searchMode={flow.screen === APP_SCREENS.search}

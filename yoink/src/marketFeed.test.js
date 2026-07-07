@@ -7,7 +7,7 @@ test('market feed generates the Yoink drop catalog listing shape', () => {
   const feed = makeMarketFeed(0, 8);
 
   assert.equal(feed.length, 8);
-  assert.equal(MARKET_MAX_ITEMS, 50);
+  assert.ok(MARKET_MAX_ITEMS < 50, 'timed flash drops are excluded from the ordinary feed');
   assert.deepEqual(marketCats, ['Pocket Tech', 'Holo Finds', 'Desk Pets', 'Snack Relics', 'Rare Drops']);
   assert.equal(feed[0].id, 'drop-pocket-tech-pocket-pixel-mp3');
   assert.equal(feed[0].name, 'Pocket Pixel MP3');
@@ -18,6 +18,7 @@ test('market feed generates the Yoink drop catalog listing shape', () => {
   assert.equal(feed[2].cta, 'Buy');
   assert.equal(feed[4].family, 'Snack Relics');
   assert.equal(feed[0].topRated, false);
+  assert.ok(feed.every((item) => !item.flashTier));
   assert.match(feed[0].imageUrl, /^\/yoink-items\/pocket-tech-pocket-pixel-mp3\.png$/);
   assert.match(feed[0].stripe, /^repeating-linear-gradient/);
 });
@@ -32,18 +33,16 @@ test('market feed continues deterministically from an offset', () => {
 });
 
 test('market feed appends in pages and caps at the design limit', () => {
-  const current = makeMarketFeed(0, 48);
+  const current = makeMarketFeed(0, MARKET_MAX_ITEMS - 2);
   const next = appendMarketFeed(current);
 
-  assert.equal(next.length, 50);
-  assert.equal(next[48].id, 'drop-snack-relics-soda-tab-prize');
-  assert.equal(next[49].id, 'drop-snack-relics-bubble-gum-token');
+  assert.equal(next.length, MARKET_MAX_ITEMS);
   assert.equal(appendMarketFeed(next), next);
 });
 
 test('every Yoink drop listing points at a checked-in render asset', () => {
   const feed = makeMarketFeed(0, MARKET_MAX_ITEMS);
-  assert.equal(new Set(feed.map((item) => item.imageUrl)).size, 50);
+  assert.equal(new Set(feed.map((item) => item.imageUrl)).size, MARKET_MAX_ITEMS);
 
   for (const item of feed) {
     const renderFile = new URL(`../public${item.imageUrl}`, import.meta.url);
@@ -55,9 +54,8 @@ test('market feed includes the full generated Yoink art-pack expansion', () => {
   const feed = makeMarketFeed(0, MARKET_MAX_ITEMS);
   const ids = new Set(feed.map((item) => item.id));
 
-  assert.equal(feed.slice(16).length, 34);
-  assert.equal(ids.has('drop-holo-finds-prism-star-foil-card'), true);
-  assert.equal(ids.has('drop-pocket-tech-mint-bubble-crt'), true);
-  assert.equal(ids.has('drop-desk-pets-lilac-tiny-desk-dino'), true);
+  assert.ok(feed.length >= 16);
+  assert.equal(ids.has('drop-holo-finds-prism-star-foil-card'), false);
+  assert.equal(ids.has('drop-desk-pets-cloud-pillow-pal'), true);
   assert.equal(ids.has('drop-snack-relics-bubble-gum-token'), true);
 });

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { s } from '../style.js';
-import { appendMarketFeed, filterMarketFeed, makeMarketFeed, MARKET_MAX_ITEMS, MARKET_MODES, MARKET_PAGE_SIZE, MARKET_SORTS, marketCats, sortMarketFeed } from '../data.js';
+import { appendMarketFeed, DROP_REVEAL_WINDOWS, filterMarketFeed, makeMarketFeed, makeTimedDrop, MARKET_MAX_ITEMS, MARKET_MODES, MARKET_PAGE_SIZE, MARKET_SORTS, marketCats, randomDropDelay, sortMarketFeed } from '../data.js';
 import { fetchFeed } from '../api.js';
 import { marketTheme } from '../marketTheme.js';
 import ItemArt from '../components/ItemArt.jsx';
-import { ART_STYLE_LABELS, artStageBackground, resolveArtKind } from '../itemArt.js';
+import { artStageBackground, resolveArtKind } from '../itemArt.js';
 
 const {
   ink,
@@ -19,35 +19,36 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-function RareDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
+function UltraDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
   if (!item) return null;
+  const artKind = resolveArtKind(item);
 
   return (
-    <div style={s('position:absolute;inset:0;z-index:970;background:rgba(23,19,38,.36);display:flex;align-items:center;justify-content:center;padding:20px;animation:ypop .22s ease both')}>
-      <div style={s("position:relative;width:100%;max-width:360px;overflow:hidden;border:2px solid #FFB84D;border-radius:24px;background:#fff;padding:22px 18px 18px;box-shadow:0 16px 0 rgba(255,184,77,.24),0 18px 40px rgba(23,19,38,.30);text-align:center")}>
-        <div style={s('position:absolute;inset:-80px;background:radial-gradient(circle at 50% 30%,#FFF2C7 0 16%,transparent 17%),radial-gradient(circle at 18% 72%,#FFE4F1 0 10%,transparent 11%),radial-gradient(circle at 86% 78%,#B8F5D0 0 10%,transparent 11%);opacity:.9;pointer-events:none')} />
+    <div style={s('position:fixed;inset:0;z-index:970;background:rgba(23,19,38,.42);display:flex;align-items:center;justify-content:center;padding:18px;animation:ypop .22s ease both')}>
+      <div style={s("position:relative;width:100%;max-width:372px;overflow:hidden;border:2px solid #FF3D9A;border-radius:26px;background:#fff;padding:15px 14px 16px;box-shadow:0 18px 0 rgba(255,61,154,.20),0 24px 46px rgba(23,19,38,.34);text-align:center")}>
+        <div style={s('position:absolute;inset:-90px;background:radial-gradient(circle at 50% 22%,#FFF2C7 0 17%,transparent 18%),radial-gradient(circle at 17% 78%,#FFE4F1 0 12%,transparent 13%),radial-gradient(circle at 90% 78%,#C7F5EC 0 11%,transparent 12%),repeating-linear-gradient(90deg,transparent 0 18px,rgba(255,61,154,.08) 18px 22px);opacity:.98;pointer-events:none')} />
         <div style={s('position:relative;display:flex;flex-direction:column;align-items:center')}>
-          <div style={s("width:58px;height:58px;border-radius:20px;background:#FF3D9A;color:#fff;display:flex;align-items:center;justify-content:center;font:900 36px 'Fredoka';box-shadow:0 7px 0 #D11C77")}>!</div>
-          <div style={s(`margin-top:10px;font:900 25px 'Fredoka';color:${ink}`)}>ULTRA RARE DROP</div>
-          <div style={s(`font:800 12px 'Nunito';color:${muted};margin-top:3px`)}>A one-off style listing just surfaced.</div>
-          <div style={s(`position:relative;width:156px;height:134px;border-radius:32px;background:${item.imageUrl ? '#fff' : item.stripe};border:1.5px solid #EEEAF8;margin:16px 0 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 18px rgba(106,90,205,.16)`)}>
+          <div style={s("width:64px;height:64px;border-radius:22px;background:#FF3D9A;color:#fff;display:flex;align-items:center;justify-content:center;font:900 38px Fredoka;box-shadow:0 8px 0 #D11C77;animation:ypulse 1.35s infinite")}>!</div>
+          <div style={s(`margin-top:11px;font:900 25px/1 Fredoka;color:${ink}`)}>ULTRA RARE SIGNAL</div>
+          <div style={s(`font:900 11px Fredoka;color:${attentionBadgeText};background:${attentionBadgeBackground};border-radius:999px;padding:5px 10px;margin-top:7px`)}>only a tiny window is open</div>
+          <div style={s(`position:relative;width:100%;height:250px;border-radius:28px;background:${item.imageUrl ? item.stripe : artKind ? artStageBackground('vinyl', artKind) : item.stripe};border:1.5px solid #EEEAF8;margin:13px 0 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 12px 24px rgba(106,90,205,.18)`)}>
             {item.imageUrl ? (
-              <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:contain;display:block;padding:10px;box-sizing:border-box')} />
+              <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
             ) : (
-              <ItemArt kind={resolveArtKind(item)} artStyle="vinyl" width={116} />
+              artKind && <ItemArt kind={artKind} artStyle="vinyl" width={184} />
             )}
           </div>
-          <div style={s(`font:900 18px 'Fredoka';color:${ink}`)}>{item.name}</div>
+          <div style={s(`font:900 20px Fredoka;color:${ink}`)}>{item.name}</div>
           <div style={s(`display:flex;align-items:center;gap:6px;margin-top:5px;font:900 13px 'Fredoka';color:${brand}`)}>
             <span style={s(`width:18px;height:18px;border-radius:50%;background:${ink};color:#fff;display:inline-flex;align-items:center;justify-content:center;font:900 10px 'Fredoka'`)}>Y</span>
             {item.price}
             <span style={s(`color:${muted};font:800 11px 'Nunito'`)}>{item.stockLabel}</span>
           </div>
           <div style={s('display:grid;grid-template-columns:1.2fr .9fr;gap:9px;width:100%;margin-top:16px')}>
-            <button type="button" onClick={onView} style={s(`height:48px;border:0;border-radius:15px;background:${brand};color:#fff;font:900 14px 'Fredoka';cursor:pointer;box-shadow:0 5px 0 #4B3BA6`)}>
-              View listing
+            <button type="button" onClick={onView} style={s(`height:50px;border:0;border-radius:15px;background:${brand};color:#fff;font:900 14px Fredoka;cursor:pointer;box-shadow:0 5px 0 #4B3BA6`)}>
+              Open signal
             </button>
-            <button type="button" onClick={onSkip} style={s(`height:48px;border:1.5px solid ${line};border-radius:15px;background:${wash};color:${ink};font:900 14px 'Fredoka';cursor:pointer`)}>
+            <button type="button" onClick={onSkip} style={s(`height:50px;border:1.5px solid ${line};border-radius:15px;background:${wash};color:${ink};font:900 14px Fredoka;cursor:pointer`)}>
               Keep scrolling
             </button>
           </div>
@@ -169,7 +170,6 @@ export default function MonoMarket({
   cartCount = 0,
   balance = 0,
   artStyle = 'vinyl',
-  onCycleArtStyle = () => {},
   watchedIds = [],
   onToggleWatchedListing = () => {},
   searchMode = false,
@@ -186,6 +186,7 @@ export default function MonoMarket({
   const [mode, setMode] = useState('All');
   const [sortIndex, setSortIndex] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [rareFlashItem, setRareFlashItem] = useState(null);
   const [ultraBurstItem, setUltraBurstItem] = useState(null);
 
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
@@ -194,7 +195,9 @@ export default function MonoMarket({
   const searchInputRef = useRef(null);
   const lastLoadRef = useRef(0);
   const loadingMoreRef = useRef(false);
-  const announcedFlashIdsRef = useRef(new Set());
+  const dropTimersRef = useRef([]);
+  const dropClockStartedRef = useRef(false);
+  const revealedDropTiersRef = useRef(new Set());
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
@@ -212,24 +215,39 @@ export default function MonoMarket({
     searchInputRef.current?.focus?.();
   }, [searchMode]);
 
-  useEffect(() => {
-    const newFlashItems = feed.filter((item) => (
-      item.flashTier && !announcedFlashIdsRef.current.has(item.id)
-    ));
-    if (newFlashItems.length === 0) return;
-    newFlashItems.forEach((item) => announcedFlashIdsRef.current.add(item.id));
-    const ultra = newFlashItems.find((item) => item.flashTier === 'ultra');
-    if (ultra) {
-      onUltraRareFlash(ultra);
-      setUltraBurstItem(ultra);
+  const revealTimedDrop = useCallback((tier) => {
+    if (revealedDropTiersRef.current.has(tier)) return;
+    const item = makeTimedDrop(tier);
+    if (!item) return;
+    revealedDropTiersRef.current.add(tier);
+
+    if (tier === 'ultra') {
+      onUltraRareFlash(item);
+      setUltraBurstItem(item);
       return;
     }
-    onRareFlash(newFlashItems[0]);
-  }, [feed, onRareFlash, onUltraRareFlash]);
+
+    onRareFlash(item);
+    setRareFlashItem(item);
+  }, [onRareFlash, onUltraRareFlash]);
+
+  const startDropClock = useCallback(() => {
+    if (dropClockStartedRef.current) return;
+    dropClockStartedRef.current = true;
+    dropTimersRef.current = [
+      window.setTimeout(() => revealTimedDrop('rare'), randomDropDelay(DROP_REVEAL_WINDOWS.rare)),
+      window.setTimeout(() => revealTimedDrop('ultra'), randomDropDelay(DROP_REVEAL_WINDOWS.ultra)),
+    ];
+  }, [revealTimedDrop]);
+
+  useEffect(() => () => {
+    dropTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+  }, []);
 
   // Next pages come from the backend; the local generator (same logic the
   // server uses) stays as an offline fallback so scrolling never dead-ends.
   const loadMore = useCallback(() => {
+    startDropClock();
     if (feedLengthRef.current >= MARKET_MAX_ITEMS) return;
     if (loadingMoreRef.current) return;
     const now = Date.now();
@@ -247,7 +265,7 @@ export default function MonoMarket({
       loadingMoreRef.current = false;
       setLoadingMore(false);
     });
-  }, []);
+  }, [startDropClock]);
 
   const categoryChips = useMemo(() => marketCats, []);
   const searchTerm = query.trim().toLowerCase();
@@ -256,6 +274,16 @@ export default function MonoMarket({
     filterMarketFeed(feed, { category: selectedCategory, mode, query }),
     MARKET_SORTS[sortIndex].id,
   );
+  const visibleFeedWithDrops = useMemo(() => {
+    if (!rareFlashItem) return visibleFeed;
+    if (visibleFeed.some((item) => item.id === rareFlashItem.id)) return visibleFeed;
+    const insertAt = Math.min(3, visibleFeed.length);
+    return [
+      ...visibleFeed.slice(0, insertAt),
+      rareFlashItem,
+      ...visibleFeed.slice(insertAt),
+    ];
+  }, [rareFlashItem, visibleFeed]);
 
   // While filtering, keep paging the backend until enough matches surface.
   useEffect(() => {
@@ -309,8 +337,12 @@ export default function MonoMarket({
   const showSearchSpinner = loadingMore && (!filtersActive || visibleFeed.length === 0);
 
   return (
-    <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
-      <RareDropBurst
+    <div
+      onWheelCapture={startDropClock}
+      onTouchMoveCapture={startDropClock}
+      style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}
+    >
+      <UltraDropBurst
         item={ultraBurstItem}
         onView={() => {
           const item = ultraBurstItem;
@@ -434,15 +466,6 @@ export default function MonoMarket({
           <div style={s("display:flex;align-items:center;gap:12px")}>
             <button
               type="button"
-              aria-label={`Item art style: ${ART_STYLE_LABELS[artStyle]}. Tap to change`}
-              onClick={onCycleArtStyle}
-              style={s(`display:flex;align-items:center;gap:3px;border:1.5px solid ${line};background:#fff;padding:3px 8px;border-radius:8px;cursor:pointer`)}
-            >
-              <span className="mi" style={s(`font-size:14px;color:${brand}`)}>palette</span>
-              <span style={s(`font:700 11px 'Nunito';color:${brand}`)}>{ART_STYLE_LABELS[artStyle]}</span>
-            </button>
-            <button
-              type="button"
               aria-label={`Sort: ${MARKET_SORTS[sortIndex].label}. Tap to change`}
               onClick={cycleSort}
               style={s("display:flex;align-items:center;gap:2px;border:0;background:transparent;padding:0;cursor:pointer")}
@@ -454,11 +477,11 @@ export default function MonoMarket({
         </div>
 
         <div style={s("display:flex;flex-direction:column;gap:10px;padding:0 13px 100px")}>
-          {visibleFeed.map((item) => (
+          {visibleFeedWithDrops.map((item) => (
             <ListingCard
-              key={item.id}
+              key={item.flashTier ? `flash-${item.id}` : item.id}
               item={item}
-              onOpenProduct={onOpenProduct}
+              onOpenProduct={(listing, trigger) => onOpenProduct(listing, listing.flashTier === 'rare' ? 'rare-flash' : trigger)}
               saved={watchedIds.includes(item.id)}
               onToggleSave={() => onToggleWatchedListing(item)}
               artStyle={artStyle}

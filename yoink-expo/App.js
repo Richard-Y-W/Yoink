@@ -23,7 +23,7 @@ const HAPTIC_HANDLERS = {
   orders: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
   'delivery-update': () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
   reward: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
-  'rare-flash': () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
+  'rare-flash': () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
   'ultra-drop': () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning),
 };
 

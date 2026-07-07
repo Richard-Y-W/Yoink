@@ -897,17 +897,30 @@ const MARKET_FEED_ORDER = [
   'drop-snack-relics-bubble-gum-token',
 ];
 
-const MARKET_FEED_CATALOG = MARKET_FEED_ORDER
+const ALL_MARKET_DROP_CATALOG = MARKET_FEED_ORDER
   .map((id) => YOINK_DROP_CATALOG.find((item) => item.id === id))
   .filter(Boolean);
-
-export const MARKET_MAX_ITEMS = MARKET_FEED_CATALOG.length;
 
 const flashTierFor = (rarity) => {
   if (rarity === 'Rare') return 'rare';
   if (rarity === 'Ultra Rare' || rarity === 'One-Off') return 'ultra';
   return null;
 };
+
+const MARKET_FEED_CATALOG = ALL_MARKET_DROP_CATALOG
+  .filter((item) => !flashTierFor(item.rarity));
+
+const TIMED_DROP_POOLS = {
+  rare: ALL_MARKET_DROP_CATALOG.filter((item) => flashTierFor(item.rarity) === 'rare'),
+  ultra: ALL_MARKET_DROP_CATALOG.filter((item) => flashTierFor(item.rarity) === 'ultra'),
+};
+
+export const DROP_REVEAL_WINDOWS = Object.freeze({
+  rare: Object.freeze({ minMs: 5000, maxMs: 10000 }),
+  ultra: Object.freeze({ minMs: 15000, maxMs: 20000 }),
+});
+
+export const MARKET_MAX_ITEMS = MARKET_FEED_CATALOG.length;
 
 function decorateDropListing(item, index) {
   const flashTier = flashTierFor(item.rarity);
@@ -946,6 +959,22 @@ export function appendMarketFeed(current, pageSize = MARKET_PAGE_SIZE, maxItems 
   if (current.length >= maxItems) return current;
   const nextCount = Math.min(pageSize, maxItems - current.length);
   return current.concat(makeMarketFeed(current.length, nextCount));
+}
+
+export function randomDropDelay(window, random = Math.random) {
+  const minMs = Math.max(0, Number(window?.minMs) || 0);
+  const maxMs = Math.max(minMs, Number(window?.maxMs) || minMs);
+  const roll = Math.max(0, Math.min(1, Number(random()) || 0));
+  return minMs + Math.floor(roll * (maxMs - minMs));
+}
+
+export function makeTimedDrop(tier, random = Math.random) {
+  const pool = TIMED_DROP_POOLS[tier] ?? [];
+  if (pool.length === 0) return null;
+  const roll = Math.max(0, Math.min(0.999999, Number(random()) || 0));
+  const item = pool[Math.floor(roll * pool.length)];
+  const index = ALL_MARKET_DROP_CATALOG.findIndex((candidate) => candidate.id === item.id);
+  return decorateDropListing(item, Math.max(0, index));
 }
 
 // Listing-mode filter behind the search bar's "All" chip.
@@ -988,25 +1017,14 @@ export function filterMarketFeed(items, { category = 'For you', mode = 'All', qu
 export const MARKET_SORTS = [
   { id: 'best', label: 'Best match' },
   { id: 'price-low', label: 'Price: low first' },
-  { id: 'price-high', label: 'Price: high first' },
-  { id: 'rarity', label: 'Rare first' },
 ];
 
 const priceOf = (item) => Number(String(item.price).replace(/,/g, '')) || 0;
-const rarityRank = (item) => ({
-  'One-Off': 5,
-  'Ultra Rare': 4,
-  Rare: 3,
-  Uncommon: 2,
-  Common: 1,
-}[item.rarity] ?? 0);
 
 export function sortMarketFeed(items, sortId = 'best') {
   if (sortId === 'best') return items;
   const sorted = [...items];
   if (sortId === 'price-low') sorted.sort((a, b) => priceOf(a) - priceOf(b));
-  if (sortId === 'price-high') sorted.sort((a, b) => priceOf(b) - priceOf(a));
-  if (sortId === 'rarity') sorted.sort((a, b) => rarityRank(b) - rarityRank(a) || priceOf(b) - priceOf(a));
   return sorted;
 }
 

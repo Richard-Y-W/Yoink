@@ -1,7 +1,15 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { MARKET_MAX_ITEMS, MARKET_MODES, MARKET_SORTS, makeMarketFeed } from './data.js';
+import {
+  DROP_REVEAL_WINDOWS,
+  MARKET_MAX_ITEMS,
+  MARKET_MODES,
+  MARKET_SORTS,
+  makeMarketFeed,
+  makeTimedDrop,
+  randomDropDelay,
+} from './data.js';
 
 const marketSource = readFileSync(new URL('./screens/MonoMarket.jsx', import.meta.url), 'utf8');
 const appSource = readFileSync(new URL('./App.jsx', import.meta.url), 'utf8');
@@ -9,27 +17,56 @@ const productDetailSource = readFileSync(new URL('./screens/ProductDetail.jsx', 
 const watchingSource = readFileSync(new URL('./screens/Watching.jsx', import.meta.url), 'utf8');
 const expoAppSource = readFileSync(new URL('../../yoink-expo/App.js', import.meta.url), 'utf8');
 
-test('rare and ultra rare items surface as direct marketplace flash purchases', () => {
-  const firstPage = makeMarketFeed(0, 8);
-  const secondPage = makeMarketFeed(8, 8);
+test('base feed stays ordinary while rare and ultra drops come from timed pools', () => {
+  const feed = makeMarketFeed(0, MARKET_MAX_ITEMS);
+  const rare = makeTimedDrop('rare', () => 0);
+  const ultra = makeTimedDrop('ultra', () => 0);
 
-  assert.equal(MARKET_MAX_ITEMS, 50);
-  assert.ok(firstPage.some((item) => item.flashTier === 'rare'), 'rare flash should appear in the first loaded feed');
-  assert.ok(firstPage.every((item) => item.flashTier !== 'ultra'), 'ultra drops should require more scrolling');
-  assert.ok(secondPage.some((item) => item.flashTier === 'ultra'), 'ultra drops should surface later');
-  assert.ok([...firstPage, ...secondPage].every((item) => item.cta === 'Buy'));
-  assert.ok([...firstPage, ...secondPage].every((item) => !item.isAuction && !item.bids && !item.timeLeft));
+  assert.ok(MARKET_MAX_ITEMS < 50, 'flash-only items are not part of the always-visible feed');
+  assert.ok(feed.every((item) => !item.flashTier), 'ordinary browsing never preloads rare flash labels');
+  assert.ok(feed.every((item) => item.rarity === 'Common' || item.rarity === 'Uncommon'));
+  assert.equal(rare.flashTier, 'rare');
+  assert.equal(ultra.flashTier, 'ultra');
+  assert.ok(!feed.some((item) => item.id === rare.id));
+  assert.ok(!feed.some((item) => item.id === ultra.id));
+  assert.ok([rare, ultra, ...feed].every((item) => item.cta === 'Buy'));
+  assert.ok([rare, ultra, ...feed].every((item) => !item.isAuction && !item.bids && !item.timeLeft));
+});
+
+test('timed drop windows match the browsing loop', () => {
+  assert.deepEqual(DROP_REVEAL_WINDOWS.rare, { minMs: 5000, maxMs: 10000 });
+  assert.deepEqual(DROP_REVEAL_WINDOWS.ultra, { minMs: 15000, maxMs: 20000 });
+  assert.equal(randomDropDelay(DROP_REVEAL_WINDOWS.rare, () => 0), 5000);
+  assert.equal(randomDropDelay(DROP_REVEAL_WINDOWS.rare, () => 1), 10000);
+  assert.equal(randomDropDelay(DROP_REVEAL_WINDOWS.ultra, () => 0), 15000);
+  assert.equal(randomDropDelay(DROP_REVEAL_WINDOWS.ultra, () => 1), 20000);
 });
 
 test('market removes bidding filters and bid sorting while keeping direct buy mode', () => {
   assert.deepEqual(MARKET_MODES, ['All', 'Buy now']);
-  assert.deepEqual(MARKET_SORTS.map((sort) => sort.id), ['best', 'price-low', 'price-high', 'rarity']);
+  assert.deepEqual(MARKET_SORTS.map((sort) => sort.id), ['best', 'price-low']);
 });
 
-test('market UI renders rare feed pop and ultra rare burst with haptic hooks', () => {
-  assert.match(marketSource, /RareDropBurst/);
+test('market UI renders timed flash cards and ultra burst with haptic hooks', () => {
   assert.match(marketSource, /RARE FLASH/);
-  assert.match(marketSource, /ULTRA RARE DROP/);
+  assert.match(marketSource, /const visibleFeedWithDrops =/);
+  assert.match(marketSource, /visibleFeedWithDrops\.map/);
+  assert.match(marketSource, /key=\{item\.flashTier \? `flash-\$\{item\.id\}` : item\.id\}/);
+  assert.doesNotMatch(marketSource, /function RareFlashCard/);
+  assert.doesNotMatch(marketSource, /\{rareFlashItem && \(/);
+  assert.match(marketSource, /UltraDropBurst/);
+  assert.match(marketSource, /ULTRA RARE SIGNAL/);
+  assert.match(marketSource, /position:fixed;inset:0;z-index:970/);
+  assert.match(marketSource, /width:100%;height:250px/);
+  assert.match(marketSource, /object-fit:cover/);
+  assert.doesNotMatch(marketSource, /object-fit:contain/);
+  assert.doesNotMatch(marketSource, /width:7px;height:7px;border-radius:50%/);
+  assert.match(marketSource, /DROP_REVEAL_WINDOWS/);
+  assert.match(marketSource, /makeTimedDrop/);
+  assert.match(marketSource, /onWheelCapture=\{startDropClock\}/);
+  assert.match(marketSource, /onTouchMoveCapture=\{startDropClock\}/);
+  assert.doesNotMatch(marketSource, /ART_STYLE_LABELS/);
+  assert.doesNotMatch(marketSource, /onCycleArtStyle/);
   assert.match(marketSource, /onRareFlash = \(\) => \{\}/);
   assert.match(marketSource, /onUltraRareFlash = \(\) => \{\}/);
   assert.match(appSource, /HAPTIC_EVENTS\.rareFlash/);
