@@ -1,6 +1,6 @@
 {
   "pack": "yoink-drop-art",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "style": {
     "name": "Yoink cartoon collectible shop object",
     "keywords": [
@@ -29,7 +29,12 @@
       "editionSize": 40,
       "dropRole": "hero",
       "price": 420,
-      "traits": ["rounded CRT shell", "grape screen glow", "sticker antenna", "soft vinyl feet"],
+      "traits": [
+        "rounded CRT shell",
+        "grape screen glow",
+        "sticker antenna",
+        "soft vinyl feet"
+      ],
       "renderFile": "renders/pocket-tech-bubble-crt.png",
       "promptFile": "prompts/pocket-tech-bubble-crt.txt"
     },
@@ -41,7 +46,12 @@
       "editionSize": 90,
       "dropRole": "support",
       "price": 260,
-      "traits": ["translucent jelly shell", "tiny charm loop", "bubble keypad", "smiling mini screen"],
+      "traits": [
+        "translucent jelly shell",
+        "tiny charm loop",
+        "bubble keypad",
+        "smiling mini screen"
+      ],
       "renderFile": "renders/pocket-tech-jelly-flip-phone.png",
       "promptFile": "prompts/pocket-tech-jelly-flip-phone.txt"
     },
@@ -53,7 +63,12 @@
       "editionSize": 160,
       "dropRole": "entry",
       "price": 140,
-      "traits": ["rounded music player", "tiny pixel face", "candy buttons", "lanyard nub"],
+      "traits": [
+        "rounded music player",
+        "tiny pixel face",
+        "candy buttons",
+        "lanyard nub"
+      ],
       "renderFile": "renders/pocket-tech-pocket-pixel-mp3.png",
       "promptFile": "prompts/pocket-tech-pocket-pixel-mp3.txt"
     },
@@ -65,7 +80,12 @@
       "editionSize": 18,
       "dropRole": "chase",
       "price": 760,
-      "traits": ["toy camera body", "giant bubble lens", "star flash", "hologlow strap"],
+      "traits": [
+        "toy camera body",
+        "giant bubble lens",
+        "star flash",
+        "hologlow strap"
+      ],
       "renderFile": "renders/pocket-tech-flashpop-toy-camera.png",
       "promptFile": "prompts/pocket-tech-flashpop-toy-camera.txt"
     },
@@ -77,7 +97,12 @@
       "editionSize": 55,
       "dropRole": "hero",
       "price": 390,
-      "traits": ["generic frog icon", "foil card frame", "rounded slab corner", "sparkle flecks"],
+      "traits": [
+        "generic frog icon",
+        "foil card frame",
+        "rounded slab corner",
+        "sparkle flecks"
+      ],
       "renderFile": "renders/holo-finds-frog-foil-card.png",
       "promptFile": "prompts/holo-finds-frog-foil-card.txt"
     },
@@ -89,7 +114,12 @@
       "editionSize": 22,
       "dropRole": "chase",
       "price": 820,
-      "traits": ["clear display slab", "floating star sticker", "iridescent rim", "rounded label block"],
+      "traits": [
+        "clear display slab",
+        "floating star sticker",
+        "iridescent rim",
+        "rounded label block"
+      ],
       "renderFile": "renders/holo-finds-cosmic-sticker-slab.png",
       "promptFile": "prompts/holo-finds-cosmic-sticker-slab.txt"
     },
@@ -101,7 +131,12 @@
       "editionSize": 100,
       "dropRole": "support",
       "price": 210,
-      "traits": ["stacked round tokens", "foil top cap", "tiny lucky marks", "rubbery edges"],
+      "traits": [
+        "stacked round tokens",
+        "foil top cap",
+        "tiny lucky marks",
+        "rubbery edges"
+      ],
       "renderFile": "renders/holo-finds-lucky-pog-stack.png",
       "promptFile": "prompts/holo-finds-lucky-pog-stack.txt"
     },
@@ -113,7 +148,12 @@
       "editionSize": 1,
       "dropRole": "one-off",
       "price": 1800,
-      "traits": ["oversized ticket shape", "foil tear edge", "serial stamp shape", "warm shimmer"],
+      "traits": [
+        "oversized ticket shape",
+        "foil tear edge",
+        "serial stamp shape",
+        "warm shimmer"
+      ],
       "renderFile": "renders/holo-finds-glimmer-ticket-relic.png",
       "promptFile": "prompts/holo-finds-glimmer-ticket-relic.txt"
     },
@@ -125,7 +165,12 @@
       "editionSize": 200,
       "dropRole": "entry",
       "price": 120,
-      "traits": ["squishy blob body", "tiny dot eyes", "stubby feet", "soft blush"],
+      "traits": [
+        "squishy blob body",
+        "tiny dot eyes",
+        "stubby feet",
+        "soft blush"
+      ],
       "renderFile": "renders/desk-pets-mochi-blob.png",
       "promptFile": "prompts/desk-pets-mochi-blob.txt"
     },
@@ -137,7 +182,12 @@
       "editionSize": 44,
       "dropRole": "hero",
       "price": 360,
-      "traits": ["puffy star body", "sleepy face", "tiny keychain loop", "foil cheek patch"],
+      "traits": [
+        "puffy star body",
+        "sleepy face",
+        "tiny keychain loop",
+        "foil cheek patch"
+      ],
       "renderFile": "renders/desk-pets-sleepy-star-charm.png",
       "promptFile": "prompts/desk-pets-sleepy-star-charm.txt"
     },
@@ -149,7 +199,12 @@
       "editionSize": 88,
       "dropRole": "support",
       "price": 240,
-      "traits": ["tiny sprout mascot", "button eyes", "leaf hat", "stitched vinyl base"],
+      "traits": [
+        "tiny sprout mascot",
+        "button eyes",
+        "leaf hat",
+        "stitched vinyl base"
+      ],
       "renderFile": "renders/desk-pets-button-eye-sprout.png",
       "promptFile": "prompts/desk-pets-button-eye-sprout.txt"
     },
@@ -161,7 +216,12 @@
       "editionSize": 16,
       "dropRole": "chase",
       "price": 900,
-      "traits": ["compact dinosaur toy", "tiny keyboard cap saddle", "glow belly", "serial tag"],
+      "traits": [
+        "compact dinosaur toy",
+        "tiny keyboard cap saddle",
+        "glow belly",
+        "serial tag"
+      ],
       "renderFile": "renders/desk-pets-tiny-desk-dino.png",
       "promptFile": "prompts/desk-pets-tiny-desk-dino.txt"
     },
@@ -173,7 +233,12 @@
       "editionSize": 50,
       "dropRole": "hero",
       "price": 350,
-      "traits": ["tiny prize rocket", "rounded fins", "sticker window", "foil exhaust puff"],
+      "traits": [
+        "tiny prize rocket",
+        "rounded fins",
+        "sticker window",
+        "foil exhaust puff"
+      ],
       "renderFile": "renders/snack-relics-cereal-prize-rocket.png",
       "promptFile": "prompts/snack-relics-cereal-prize-rocket.txt"
     },
@@ -185,7 +250,12 @@
       "editionSize": 110,
       "dropRole": "support",
       "price": 190,
-      "traits": ["transparent capsule shell", "soft ghost toy inside", "pastel latch", "tiny prize dots"],
+      "traits": [
+        "transparent capsule shell",
+        "soft ghost toy inside",
+        "pastel latch",
+        "tiny prize dots"
+      ],
       "renderFile": "renders/snack-relics-capsule-ghost-toy.png",
       "promptFile": "prompts/snack-relics-capsule-ghost-toy.txt"
     },
@@ -197,7 +267,12 @@
       "editionSize": 20,
       "dropRole": "chase",
       "price": 700,
-      "traits": ["toy ring shape", "oversized candy gem", "not edible", "shimmer base"],
+      "traits": [
+        "toy ring shape",
+        "oversized candy gem",
+        "not edible",
+        "shimmer base"
+      ],
       "renderFile": "renders/snack-relics-vending-ring-pop-relic.png",
       "promptFile": "prompts/snack-relics-vending-ring-pop-relic.txt"
     },
@@ -209,9 +284,592 @@
       "editionSize": 1,
       "dropRole": "one-off",
       "price": 1600,
-      "traits": ["sealed crinkle pack body", "mascot face", "odd colorway", "signed stamp shape"],
+      "traits": [
+        "sealed crinkle pack body",
+        "mascot face",
+        "odd colorway",
+        "signed stamp shape"
+      ],
       "renderFile": "renders/snack-relics-crinkle-pack-mascot.png",
       "promptFile": "prompts/snack-relics-crinkle-pack-mascot.txt"
+    },
+    {
+      "id": "holo-finds-prism-star-foil-card",
+      "name": "Prism Star Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 12,
+      "dropRole": "expansion-2026-07-07",
+      "price": 1400,
+      "traits": [
+        "slabbed foil card",
+        "prism star icon",
+        "rainbow chrome edge",
+        "serial-stamp shape"
+      ],
+      "renderFile": "renders/holo-finds-prism-star-foil-card.png",
+      "promptFile": "prompts/holo-finds-prism-star-foil-card.txt"
+    },
+    {
+      "id": "holo-finds-chrome-heart-foil-card",
+      "name": "Chrome Heart Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 10,
+      "dropRole": "expansion-2026-07-07",
+      "price": 1500,
+      "traits": [
+        "slabbed foil card",
+        "chrome heart icon",
+        "pink case corners",
+        "rainbow shimmer"
+      ],
+      "renderFile": "renders/holo-finds-chrome-heart-foil-card.png",
+      "promptFile": "prompts/holo-finds-chrome-heart-foil-card.txt"
+    },
+    {
+      "id": "holo-finds-pixel-crown-foil-card",
+      "name": "Pixel Crown Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 9,
+      "dropRole": "expansion-2026-07-07",
+      "price": 1600,
+      "traits": [
+        "slabbed foil card",
+        "pixel crown icon",
+        "cyan case corners",
+        "foil confetti"
+      ],
+      "renderFile": "renders/holo-finds-pixel-crown-foil-card.png",
+      "promptFile": "prompts/holo-finds-pixel-crown-foil-card.txt"
+    },
+    {
+      "id": "holo-finds-moon-jelly-foil-card",
+      "name": "Moon Jelly Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 11,
+      "dropRole": "expansion-2026-07-07",
+      "price": 1450,
+      "traits": [
+        "slabbed foil card",
+        "crescent moon bubble",
+        "lavender glow",
+        "jelly shimmer"
+      ],
+      "renderFile": "renders/holo-finds-moon-jelly-foil-card.png",
+      "promptFile": "prompts/holo-finds-moon-jelly-foil-card.txt"
+    },
+    {
+      "id": "pocket-tech-mint-bubble-crt",
+      "name": "Mint Bubble CRT",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 48,
+      "dropRole": "expansion-2026-07-07",
+      "price": 460,
+      "traits": [
+        "rounded CRT shell",
+        "mint cabinet",
+        "peach screen glow",
+        "sticker buttons"
+      ],
+      "renderFile": "renders/pocket-tech-mint-bubble-crt.png",
+      "promptFile": "prompts/pocket-tech-mint-bubble-crt.txt"
+    },
+    {
+      "id": "pocket-tech-berry-bubble-crt",
+      "name": "Berry Bubble CRT",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 36,
+      "dropRole": "expansion-2026-07-07",
+      "price": 520,
+      "traits": [
+        "rounded CRT shell",
+        "berry cabinet",
+        "aqua screen glow",
+        "star sticker"
+      ],
+      "renderFile": "renders/pocket-tech-berry-bubble-crt.png",
+      "promptFile": "prompts/pocket-tech-berry-bubble-crt.txt"
+    },
+    {
+      "id": "pocket-tech-lime-jelly-flip",
+      "name": "Lime Jelly Flip",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 84,
+      "dropRole": "expansion-2026-07-07",
+      "price": 360,
+      "traits": [
+        "translucent flip shell",
+        "lime keypad",
+        "star charm",
+        "tiny screen face"
+      ],
+      "renderFile": "renders/pocket-tech-lime-jelly-flip.png",
+      "promptFile": "prompts/pocket-tech-lime-jelly-flip.txt"
+    },
+    {
+      "id": "pocket-tech-coral-jelly-flip",
+      "name": "Coral Jelly Flip",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 52,
+      "dropRole": "expansion-2026-07-07",
+      "price": 480,
+      "traits": [
+        "translucent coral shell",
+        "lavender keypad",
+        "moon charm",
+        "glossy hinge"
+      ],
+      "renderFile": "renders/pocket-tech-coral-jelly-flip.png",
+      "promptFile": "prompts/pocket-tech-coral-jelly-flip.txt"
+    },
+    {
+      "id": "pocket-tech-sky-pocket-pixel-mp3",
+      "name": "Sky Pocket Pixel MP3",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 150,
+      "dropRole": "expansion-2026-07-07",
+      "price": 210,
+      "traits": [
+        "sky blue case",
+        "pixel screen",
+        "round play pad",
+        "soft buttons"
+      ],
+      "renderFile": "renders/pocket-tech-sky-pocket-pixel-mp3.png",
+      "promptFile": "prompts/pocket-tech-sky-pocket-pixel-mp3.txt"
+    },
+    {
+      "id": "pocket-tech-grape-pocket-pixel-mp3",
+      "name": "Grape Pocket Pixel MP3",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "expansion-2026-07-07",
+      "price": 330,
+      "traits": [
+        "grape case",
+        "mint screen",
+        "orange play pad",
+        "side sticker"
+      ],
+      "renderFile": "renders/pocket-tech-grape-pocket-pixel-mp3.png",
+      "promptFile": "prompts/pocket-tech-grape-pocket-pixel-mp3.txt"
+    },
+    {
+      "id": "pocket-tech-lemon-flashpop-camera",
+      "name": "Lemon Flashpop Camera",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "expansion-2026-07-07",
+      "price": 540,
+      "traits": [
+        "lemon camera body",
+        "teal lens",
+        "star flash",
+        "wrist charm"
+      ],
+      "renderFile": "renders/pocket-tech-lemon-flashpop-camera.png",
+      "promptFile": "prompts/pocket-tech-lemon-flashpop-camera.txt"
+    },
+    {
+      "id": "pocket-tech-teal-flashpop-camera",
+      "name": "Teal Flashpop Camera",
+      "family": "Pocket Tech",
+      "rarity": "Ultra Rare",
+      "editionSize": 16,
+      "dropRole": "expansion-2026-07-07",
+      "price": 900,
+      "traits": [
+        "teal camera body",
+        "rainbow lens",
+        "pink flash",
+        "foil charm"
+      ],
+      "renderFile": "renders/pocket-tech-teal-flashpop-camera.png",
+      "promptFile": "prompts/pocket-tech-teal-flashpop-camera.txt"
+    },
+    {
+      "id": "pocket-tech-mini-pager-pal",
+      "name": "Mini Pager Pal",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 80,
+      "dropRole": "expansion-2026-07-07",
+      "price": 340,
+      "traits": [
+        "rounded pager",
+        "mint screen",
+        "antenna bead",
+        "soft buttons"
+      ],
+      "renderFile": "renders/pocket-tech-mini-pager-pal.png",
+      "promptFile": "prompts/pocket-tech-mini-pager-pal.txt"
+    },
+    {
+      "id": "pocket-tech-candy-usb-buddy",
+      "name": "Candy USB Buddy",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 140,
+      "dropRole": "expansion-2026-07-07",
+      "price": 240,
+      "traits": [
+        "usb toy",
+        "candy shell",
+        "tiny display",
+        "side plug"
+      ],
+      "renderFile": "renders/pocket-tech-candy-usb-buddy.png",
+      "promptFile": "prompts/pocket-tech-candy-usb-buddy.txt"
+    },
+    {
+      "id": "desk-pets-blueberry-mochi-blob",
+      "name": "Blueberry Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 220,
+      "dropRole": "expansion-2026-07-07",
+      "price": 160,
+      "traits": [
+        "round mochi body",
+        "blueberry vinyl",
+        "tiny feet",
+        "star sticker"
+      ],
+      "renderFile": "renders/desk-pets-blueberry-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-blueberry-mochi-blob.txt"
+    },
+    {
+      "id": "desk-pets-citrus-mochi-blob",
+      "name": "Citrus Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 210,
+      "dropRole": "expansion-2026-07-07",
+      "price": 170,
+      "traits": [
+        "round mochi body",
+        "citrus vinyl",
+        "tiny feet",
+        "heart sticker"
+      ],
+      "renderFile": "renders/desk-pets-citrus-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-citrus-mochi-blob.txt"
+    },
+    {
+      "id": "desk-pets-mint-sleepy-star",
+      "name": "Mint Sleepy Star Charm",
+      "family": "Desk Pets",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "expansion-2026-07-07",
+      "price": 420,
+      "traits": [
+        "sleepy star body",
+        "mint vinyl",
+        "dangling charm",
+        "foil cheek"
+      ],
+      "renderFile": "renders/desk-pets-mint-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-mint-sleepy-star.txt"
+    },
+    {
+      "id": "desk-pets-coral-sleepy-star",
+      "name": "Coral Sleepy Star Charm",
+      "family": "Desk Pets",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "expansion-2026-07-07",
+      "price": 460,
+      "traits": [
+        "sleepy star body",
+        "coral vinyl",
+        "dangling charm",
+        "yellow accent"
+      ],
+      "renderFile": "renders/desk-pets-coral-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-coral-sleepy-star.txt"
+    },
+    {
+      "id": "desk-pets-purple-button-eye-sprout",
+      "name": "Purple Button-Eye Sprout",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 82,
+      "dropRole": "expansion-2026-07-07",
+      "price": 300,
+      "traits": [
+        "sprout body",
+        "purple plush vinyl",
+        "button eyes",
+        "mint leaves"
+      ],
+      "renderFile": "renders/desk-pets-purple-button-eye-sprout.png",
+      "promptFile": "prompts/desk-pets-purple-button-eye-sprout.txt"
+    },
+    {
+      "id": "desk-pets-sunrise-button-eye-sprout",
+      "name": "Sunrise Button-Eye Sprout",
+      "family": "Desk Pets",
+      "rarity": "Rare",
+      "editionSize": 50,
+      "dropRole": "expansion-2026-07-07",
+      "price": 440,
+      "traits": [
+        "sprout body",
+        "sunrise body",
+        "button eyes",
+        "green leaves"
+      ],
+      "renderFile": "renders/desk-pets-sunrise-button-eye-sprout.png",
+      "promptFile": "prompts/desk-pets-sunrise-button-eye-sprout.txt"
+    },
+    {
+      "id": "desk-pets-lilac-tiny-desk-dino",
+      "name": "Lilac Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Ultra Rare",
+      "editionSize": 18,
+      "dropRole": "expansion-2026-07-07",
+      "price": 880,
+      "traits": [
+        "tiny dino silhouette",
+        "lilac body",
+        "star back plates",
+        "foil charm"
+      ],
+      "renderFile": "renders/desk-pets-lilac-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-lilac-tiny-desk-dino.txt"
+    },
+    {
+      "id": "desk-pets-melon-tiny-desk-dino",
+      "name": "Melon Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Rare",
+      "editionSize": 36,
+      "dropRole": "expansion-2026-07-07",
+      "price": 520,
+      "traits": [
+        "tiny dino silhouette",
+        "melon body",
+        "purple back plates",
+        "heart sticker"
+      ],
+      "renderFile": "renders/desk-pets-melon-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-melon-tiny-desk-dino.txt"
+    },
+    {
+      "id": "desk-pets-cloud-pillow-pal",
+      "name": "Cloud Pillow Pal",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 90,
+      "dropRole": "expansion-2026-07-07",
+      "price": 310,
+      "traits": [
+        "pillow body",
+        "cloud corners",
+        "sleepy face",
+        "star sticker"
+      ],
+      "renderFile": "renders/desk-pets-cloud-pillow-pal.png",
+      "promptFile": "prompts/desk-pets-cloud-pillow-pal.txt"
+    },
+    {
+      "id": "desk-pets-pebble-button-charm",
+      "name": "Pebble Button Charm",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 88,
+      "dropRole": "expansion-2026-07-07",
+      "price": 320,
+      "traits": [
+        "pebble body",
+        "button shell",
+        "tiny feet",
+        "round badge"
+      ],
+      "renderFile": "renders/desk-pets-pebble-button-charm.png",
+      "promptFile": "prompts/desk-pets-pebble-button-charm.txt"
+    },
+    {
+      "id": "snack-relics-blue-rocket-prize",
+      "name": "Blue Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 56,
+      "dropRole": "expansion-2026-07-07",
+      "price": 430,
+      "traits": [
+        "cereal prize rocket",
+        "blue body",
+        "orange fins",
+        "porthole face"
+      ],
+      "renderFile": "renders/snack-relics-blue-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-blue-rocket-prize.txt"
+    },
+    {
+      "id": "snack-relics-lime-rocket-prize",
+      "name": "Lime Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 52,
+      "dropRole": "expansion-2026-07-07",
+      "price": 450,
+      "traits": [
+        "cereal prize rocket",
+        "lime body",
+        "pink fins",
+        "star stickers"
+      ],
+      "renderFile": "renders/snack-relics-lime-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-lime-rocket-prize.txt"
+    },
+    {
+      "id": "snack-relics-pink-capsule-ghost",
+      "name": "Pink Capsule Ghost Toy",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 118,
+      "dropRole": "expansion-2026-07-07",
+      "price": 260,
+      "traits": [
+        "capsule dome",
+        "pink base",
+        "tiny ghost shape",
+        "pastel beads"
+      ],
+      "renderFile": "renders/snack-relics-pink-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-pink-capsule-ghost.txt"
+    },
+    {
+      "id": "snack-relics-teal-capsule-ghost",
+      "name": "Teal Capsule Ghost Toy",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 64,
+      "dropRole": "expansion-2026-07-07",
+      "price": 420,
+      "traits": [
+        "capsule dome",
+        "teal base",
+        "tiny ghost shape",
+        "foil bead"
+      ],
+      "renderFile": "renders/snack-relics-teal-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-teal-capsule-ghost.txt"
+    },
+    {
+      "id": "snack-relics-grape-vending-ring",
+      "name": "Grape Vending Ring Relic",
+      "family": "Snack Relics",
+      "rarity": "Ultra Rare",
+      "editionSize": 20,
+      "dropRole": "expansion-2026-07-07",
+      "price": 820,
+      "traits": [
+        "chunky ring",
+        "grape base",
+        "aqua gem",
+        "dangling charm"
+      ],
+      "renderFile": "renders/snack-relics-grape-vending-ring.png",
+      "promptFile": "prompts/snack-relics-grape-vending-ring.txt"
+    },
+    {
+      "id": "snack-relics-sunset-vending-ring",
+      "name": "Sunset Vending Ring Relic",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "expansion-2026-07-07",
+      "price": 560,
+      "traits": [
+        "chunky ring",
+        "sunset base",
+        "mint gem",
+        "small charm"
+      ],
+      "renderFile": "renders/snack-relics-sunset-vending-ring.png",
+      "promptFile": "prompts/snack-relics-sunset-vending-ring.txt"
+    },
+    {
+      "id": "snack-relics-mint-crinkle-pack",
+      "name": "Mint Crinkle Pack Mascot",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "expansion-2026-07-07",
+      "price": 470,
+      "traits": [
+        "crinkle pack",
+        "mint wrapper",
+        "face badge",
+        "foil corner"
+      ],
+      "renderFile": "renders/snack-relics-mint-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-mint-crinkle-pack.txt"
+    },
+    {
+      "id": "snack-relics-berry-crinkle-pack",
+      "name": "Berry Crinkle Pack Mascot",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "expansion-2026-07-07",
+      "price": 490,
+      "traits": [
+        "crinkle pack",
+        "berry wrapper",
+        "face badge",
+        "star sticker"
+      ],
+      "renderFile": "renders/snack-relics-berry-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-berry-crinkle-pack.txt"
+    },
+    {
+      "id": "snack-relics-soda-tab-prize",
+      "name": "Soda Tab Prize",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 160,
+      "dropRole": "expansion-2026-07-07",
+      "price": 190,
+      "traits": [
+        "rounded tab",
+        "toy metal",
+        "inner pull",
+        "sticker star"
+      ],
+      "renderFile": "renders/snack-relics-soda-tab-prize.png",
+      "promptFile": "prompts/snack-relics-soda-tab-prize.txt"
+    },
+    {
+      "id": "snack-relics-bubble-gum-token",
+      "name": "Bubble Gum Token",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "expansion-2026-07-07",
+      "price": 280,
+      "traits": [
+        "round token",
+        "bubble gum colors",
+        "face center",
+        "edge dots"
+      ],
+      "renderFile": "renders/snack-relics-bubble-gum-token.png",
+      "promptFile": "prompts/snack-relics-bubble-gum-token.txt"
     }
   ]
 }

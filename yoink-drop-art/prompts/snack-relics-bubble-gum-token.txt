@@ -1,0 +1,7 @@
+Use case: stylized-concept
+Asset type: Yoink Snack Relics item render
+Primary request: Bubble Gum Token.
+Subject: a round bubble-gum token collectible with raised center face, edge dots, pastel body, and sticker-like details.
+Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl or clay lighting, rounded chunky forms, pastel body colors, one bold accent color, sticker-like details, clean pastel studio background, centered front three-quarter view, no real logos, no readable text.
+Composition/framing: single centered object, square image, generous padding, readable at small mobile-card thumbnail size.
+Constraints: no real brand logos, no exact existing characters, no readable fake text, no watermark, no clutter, no casino or gambling cues.

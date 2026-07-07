@@ -1,0 +1,7 @@
+Use case: stylized-concept
+Asset type: Yoink Holo Finds item render
+Primary request: Chrome Heart Foil Card.
+Subject: an Ultra Rare slabbed foil card with a chunky chrome heart icon, iridescent rainbow frame, polished pink case corners, and a subtle glow.
+Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl or clay lighting, rounded chunky forms, pastel body colors, one bold accent color, sticker-like details, clean pastel studio background, centered front three-quarter view, no real logos, no readable text.
+Composition/framing: single centered object, square image, generous padding, readable at small mobile-card thumbnail size.
+Constraints: no real brand logos, no exact existing characters, no readable fake text, no watermark, no clutter, no casino or gambling cues.
