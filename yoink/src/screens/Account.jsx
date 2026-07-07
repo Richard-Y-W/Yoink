@@ -38,7 +38,7 @@ export default function Account({
   cartCount = 0,
   watchedCount = 0,
   onOpenCart = () => {},
-  onOpenWatching = () => {},
+  onOpenPocket = () => {},
   onOpenOrders = () => {},
   onToast = () => {},
 }) {
@@ -58,13 +58,13 @@ export default function Account({
       onPress: onOpenOrders,
     },
     {
-      label: 'Watching',
+      label: 'Pocket',
       detail: `${watchedCount} saved find${watchedCount === 1 ? '' : 's'}`,
-      icon: 'favorite',
-      bg: '#FFE4F1',
-      tint: '#FF3D9A',
-      shadow: 'rgba(255,61,154,.20)',
-      onPress: onOpenWatching,
+      icon: 'inventory_2',
+      bg: '#C7F5EC',
+      tint: '#12865A',
+      shadow: 'rgba(18,134,90,.20)',
+      onPress: onOpenPocket,
     },
     {
       label: 'Wallet',

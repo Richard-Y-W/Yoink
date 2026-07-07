@@ -21,8 +21,8 @@ import Account from './screens/Account.jsx';
 import Checkout from './screens/Checkout.jsx';
 import MonoMarket from './screens/MonoMarket.jsx';
 import Orders from './screens/Orders.jsx';
+import Pocket from './screens/Pocket.jsx';
 import ProductDetail from './screens/ProductDetail.jsx';
-import Watching from './screens/Watching.jsx';
 import { ART_STYLES } from './itemArt.js';
 import {
   APP_SCREENS,
@@ -40,7 +40,7 @@ const TAB_ACCENTS = {
   [APP_SCREENS.home]: '#6A5ACD',
   [APP_SCREENS.search]: '#6A5ACD',
   [APP_SCREENS.orders]: '#6A5ACD',
-  [APP_SCREENS.watching]: '#6A5ACD',
+  [APP_SCREENS.pocket]: '#6A5ACD',
   [APP_SCREENS.account]: '#6A5ACD',
 };
 
@@ -394,14 +394,15 @@ function YoinkApp() {
             isWatched={watchedIds.includes(flow.selectedListing?.id)}
             onToggleWatchedListing={handleToggleWatchedListing}
           />
-        ) : flow.screen === APP_SCREENS.watching ? (
-          <Watching
+        ) : flow.screen === APP_SCREENS.pocket ? (
+          <Pocket
+            balance={wallet.balance}
             cartCount={cartCount}
             onOpenCart={handleOpenCart}
+            onOpenMarket={() => handleSelectTab(APP_SCREENS.home)}
+            onToast={showToast}
             watchedListings={watchedListings}
-            onOpenProduct={(listing, trigger) => setFlow(openProductDetail(listing, trigger))}
             onToggleWatchedListing={handleToggleWatchedListing}
-            artStyle={artStyle}
           />
         ) : flow.screen === APP_SCREENS.orders ? (
           <Orders
@@ -417,7 +418,7 @@ function YoinkApp() {
             cartCount={cartCount}
             watchedCount={watchedListings.length}
             onOpenCart={handleOpenCart}
-            onOpenWatching={() => handleSelectTab(APP_SCREENS.watching)}
+            onOpenPocket={() => handleSelectTab(APP_SCREENS.pocket)}
             onOpenOrders={() => handleSelectTab(APP_SCREENS.orders)}
             onToast={showToast}
           />

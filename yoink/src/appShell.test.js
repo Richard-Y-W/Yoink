@@ -18,3 +18,10 @@ test('market copy app shell resets the phone scroll position on screen changes',
   assert.match(appSource, /screenRootRef/);
   assert.match(appSource, /\[flow\.screen\]/);
 });
+
+test('market copy app shell routes active collection surface to Pocket', () => {
+  assert.match(appSource, /screens\/Pocket/);
+  assert.match(appSource, /flow\.screen === APP_SCREENS\.pocket/);
+  assert.doesNotMatch(appSource, /screens\/Watching/);
+  assert.doesNotMatch(appSource, /APP_SCREENS\.watching/);
+});
