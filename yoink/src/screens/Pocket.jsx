@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchCollection } from '../api.js';
 import PocketShelf from '../components/PocketShelf.jsx';
 import HoloTrophyViewer from '../components/HoloTrophyViewer.jsx';
@@ -81,6 +81,28 @@ function EmptyPocket({ onOpenMarket }) {
   );
 }
 
+function ErrorPocket({ onRetry }) {
+  return (
+    <div role="status" aria-live="polite" style={s('background:#fff;border:1.5px solid #EDEAF6;border-radius:22px;padding:22px 18px 20px;min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 8px 0 rgba(255,61,154,.10),0 8px 20px rgba(23,19,38,.08)')}>
+      <div style={s('width:72px;height:72px;border-radius:24px;background:#FFE4F1;border:2px solid #FFD0E4;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 rgba(255,61,154,.15);margin-bottom:14px')}>
+        <span className="mi" style={s("font-size:35px;color:#FF3D9A;font-variation-settings:'FILL' 1")}>wifi_off</span>
+      </div>
+      <div style={s(`font:900 20px/1.08 'Fredoka';color:${ink}`)}>Pocket could not load right now.</div>
+      <div style={s(`margin-top:8px;max-width:250px;font:800 13px/1.35 'Nunito';color:${muted}`)}>
+        The shelf is still yours. Try again in a moment.
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        style={s(`margin-top:17px;border:0;border-radius:15px;background:${brand};color:#fff;font:900 13px 'Fredoka';padding:11px 16px;display:inline-flex;align-items:center;gap:5px;box-shadow:0 5px 0 #4B3BA6;cursor:pointer`)}
+      >
+        <span className="mi" style={s("font-size:17px;font-variation-settings:'FILL' 1")}>refresh</span>
+        Try again
+      </button>
+    </div>
+  );
+}
+
 export default function Pocket({
   balance = 0,
   cartCount = 0,
@@ -89,27 +111,46 @@ export default function Pocket({
   onToast = noop,
 }) {
   const [collection, setCollection] = useState(null);
+  const [loadError, setLoadError] = useState(false);
+  const [loadRequest, setLoadRequest] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [viewerItem, setViewerItem] = useState(null);
 
+  const retryPocketLoad = useCallback(() => {
+    setLoadRequest((current) => current + 1);
+  }, []);
+  const closeViewer = useCallback(() => {
+    setViewerItem(null);
+  }, []);
+
   useEffect(() => {
     let alive = true;
+    setCollection(null);
+    setLoadError(false);
 
     fetchCollection()
       .then((data) => {
         if (!alive) return;
-        setCollection(Array.isArray(data?.collection) ? data.collection : []);
+        if (data?.ok === false || !Array.isArray(data?.collection)) {
+          setCollection([]);
+          setLoadError(true);
+          onToast('Pocket could not load right now.');
+          return;
+        }
+        setCollection(data.collection);
+        setLoadError(false);
       })
       .catch(() => {
         if (!alive) return;
         setCollection([]);
+        setLoadError(true);
         onToast('Pocket could not load right now.');
       });
 
     return () => {
       alive = false;
     };
-  }, [onToast]);
+  }, [loadRequest, onToast]);
 
   const holoItems = useMemo(() => makePocketHoloItems(collection ?? []), [collection]);
   const holoImagesReady = holoItems.some((item) => item.imageUrl);
@@ -132,6 +173,8 @@ export default function Pocket({
 
         {collection === null ? (
           <LoadingPocket />
+        ) : loadError ? (
+          <ErrorPocket onRetry={retryPocketLoad} />
         ) : holoItems.length > 0 ? (
           <PocketShelf
             items={holoItems}
@@ -144,7 +187,7 @@ export default function Pocket({
         )}
       </main>
 
-      <HoloTrophyViewer item={viewerItem} onClose={() => setViewerItem(null)} />
+      <HoloTrophyViewer item={viewerItem} onClose={closeViewer} />
     </div>
   );
 }

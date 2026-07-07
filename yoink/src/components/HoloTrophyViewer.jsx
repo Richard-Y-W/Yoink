@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { s } from '../style.js';
 import { marketTheme } from '../marketTheme.js';
 
@@ -6,13 +7,41 @@ const { ink, wash, line, muted, brand } = marketTheme;
 const noop = () => {};
 
 export default function HoloTrophyViewer({ item = null, onClose = noop }) {
+  const dialogRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (!item || typeof document === 'undefined') return undefined;
+
+    previousFocusRef.current = document.activeElement;
+    dialogRef.current?.focus?.();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus?.();
+      previousFocusRef.current = null;
+    };
+  }, [item, onClose]);
+
   if (!item) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={item.name} style={s('position:absolute;inset:0;z-index:960;background:rgba(23,19,38,.24);display:flex;align-items:flex-end;justify-content:center;padding:16px;animation:ypop .18s ease both')}>
-      <button
-        type="button"
-        aria-label="Close trophy viewer"
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.name}
+      tabIndex={-1}
+      style={s('position:absolute;inset:0;z-index:960;background:rgba(23,19,38,.24);display:flex;align-items:flex-end;justify-content:center;padding:16px;animation:ypop .18s ease both;outline:none')}
+    >
+      <div
+        role="presentation"
+        aria-hidden="true"
         onClick={onClose}
         style={s('position:absolute;inset:0;border:0;background:transparent;cursor:pointer')}
       />

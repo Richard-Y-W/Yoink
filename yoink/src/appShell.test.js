@@ -26,7 +26,9 @@ test('market copy app shell routes active collection surface to Pocket', () => {
   assert.ok(pocketRouteMatch);
   const pocketRouteSource = pocketRouteMatch[0];
 
-  assert.match(pocketRouteSource, /<Pocket[\s\S]*balance=\{wallet\.balance\}[\s\S]*streak=\{wallet\.streak\}[\s\S]*cartCount=\{cartCount\}[\s\S]*onAddToCart=\{addToCart\}[\s\S]*onOpenCart=\{handleOpenCart\}[\s\S]*onToast=\{showToast\}/);
+  assert.match(pocketRouteSource, /<Pocket[\s\S]*balance=\{wallet\.balance\}[\s\S]*cartCount=\{cartCount\}[\s\S]*onOpenCart=\{handleOpenCart\}[\s\S]*onOpenMarket=\{\(\) => handleSelectTab\(APP_SCREENS\.home\)\}[\s\S]*onToast=\{showToast\}/);
+  assert.doesNotMatch(pocketRouteSource, /streak=\{wallet\.streak\}/);
+  assert.doesNotMatch(pocketRouteSource, /onAddToCart=\{addToCart\}/);
   assert.doesNotMatch(pocketRouteSource, /watchedListings=\{watchedListings\}/);
   assert.doesNotMatch(pocketRouteSource, /onToggleWatchedListing=\{handleToggleWatchedListing\}/);
   assert.doesNotMatch(appSource, /screens\/Watching/);

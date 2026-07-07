@@ -18,7 +18,11 @@ function shelfCardStyle({ offset, isActive }) {
   const opacity = distance > 2 ? 0 : isActive ? 1 : 0.82;
   const zIndex = 20 - distance;
 
-  return s(`position:absolute;left:50%;top:${isActive ? '10px' : '42px'};width:${isActive ? '202px' : '136px'};height:${isActive ? '284px' : '214px'};border:0;border-radius:${isActive ? '24px' : '19px'};padding:${isActive ? '10px' : '8px'};background:#fff;box-shadow:${isActive ? '0 9px 0 rgba(106,90,205,.16),0 14px 30px rgba(23,19,38,.18)' : '0 5px 0 rgba(106,90,205,.10),0 8px 18px rgba(23,19,38,.10)'};cursor:pointer;transform:translateX(calc(-50% + ${translateX}px)) scale(${scale}) rotateY(${rotateY}deg);transform-style:preserve-3d;transition:transform .24s ease, opacity .2s ease, top .24s ease;opacity:${opacity};z-index:${zIndex};display:flex;flex-direction:column;align-items:stretch;text-align:left;${isActive ? 'animation:ypop .34s ease both;' : ''}`);
+  return s(`position:absolute;left:50%;top:${isActive ? '10px' : '42px'};width:${isActive ? '202px' : '136px'};height:${isActive ? '284px' : '214px'};border:0;border-radius:${isActive ? '24px' : '19px'};padding:${isActive ? '10px' : '8px'};background:#fff;box-shadow:${isActive ? '0 9px 0 rgba(106,90,205,.16),0 14px 30px rgba(23,19,38,.18)' : '0 5px 0 rgba(106,90,205,.10),0 8px 18px rgba(23,19,38,.10)'};cursor:pointer;transform:translateX(calc(-50% + ${translateX}px)) scale(${scale}) rotateY(${rotateY}deg);transform-style:preserve-3d;transition:transform .24s ease, opacity .2s ease, top .24s ease;opacity:${opacity};z-index:${zIndex};display:flex;flex-direction:column;align-items:stretch;text-align:left`);
+}
+
+function activeCardContentStyle(isActive) {
+  return s(`display:flex;flex:1;min-height:0;flex-direction:column;align-items:stretch;${isActive ? 'animation:ypop .34s ease both;' : ''}`);
 }
 
 function ItemImage({ item, isActive }) {
@@ -54,26 +58,28 @@ function PocketShelfCard({ item, index, offset, isActive, onSelect, onOpen }) {
       }}
       style={shelfCardStyle({ offset, isActive })}
     >
-      <ItemImage item={item} isActive={isActive} />
-      <div style={s(`min-height:${isActive ? '74px' : '55px'};display:flex;flex-direction:column;justify-content:space-between;margin-top:${isActive ? '10px' : '7px'}`)}>
-        <div style={s(`font:900 ${isActive ? '18px' : '11.5px'}/1.04 'Fredoka';color:${ink};max-height:${isActive ? '40px' : '25px'};overflow:hidden;text-align:${isActive ? 'center' : 'left'}`)}>
-          {item.name}
-        </div>
-        <div style={s(`display:flex;align-items:center;justify-content:${isActive ? 'center' : 'flex-start'};gap:5px;flex-wrap:wrap;margin-top:7px`)}>
-          <span style={s(`font:900 ${isActive ? '10.5px' : '8.5px'} 'Nunito';color:${brand};background:${wash};border:1px solid ${line};border-radius:999px;padding:${isActive ? '4px 8px' : '3px 6px'}`)}>
-            {item.ownedLabel}
+      <span style={activeCardContentStyle(isActive)}>
+        <ItemImage item={item} isActive={isActive} />
+        <span style={s(`min-height:${isActive ? '74px' : '55px'};display:flex;flex-direction:column;justify-content:space-between;margin-top:${isActive ? '10px' : '7px'}`)}>
+          <span style={s(`font:900 ${isActive ? '18px' : '11.5px'}/1.04 'Fredoka';color:${ink};max-height:${isActive ? '40px' : '25px'};overflow:hidden;text-align:${isActive ? 'center' : 'left'}`)}>
+            {item.name}
           </span>
-          <span style={s(`font:900 ${isActive ? '10.5px' : '8.5px'} 'Nunito';color:${ink};background:#FFF3D1;border-radius:999px;padding:${isActive ? '4px 8px' : '3px 6px'}`)}>
-            {item.editionLabel}
+          <span style={s(`display:flex;align-items:center;justify-content:${isActive ? 'center' : 'flex-start'};gap:5px;flex-wrap:wrap;margin-top:7px`)}>
+            <span style={s(`font:900 ${isActive ? '10.5px' : '8.5px'} 'Nunito';color:${brand};background:${wash};border:1px solid ${line};border-radius:999px;padding:${isActive ? '4px 8px' : '3px 6px'}`)}>
+              {item.ownedLabel}
+            </span>
+            <span style={s(`font:900 ${isActive ? '10.5px' : '8.5px'} 'Nunito';color:${ink};background:#FFF3D1;border-radius:999px;padding:${isActive ? '4px 8px' : '3px 6px'}`)}>
+              {item.editionLabel}
+            </span>
           </span>
-        </div>
-      </div>
-      {isActive && (
-        <span style={s(`margin-top:auto;height:34px;border-radius:13px;background:${brand};color:#fff;font:900 12px 'Fredoka';display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 4px 0 #4B3BA6`)}>
-          <span className="mi" style={s("font-size:16px;font-variation-settings:'FILL' 1")}>view_in_ar</span>
-          Open
         </span>
-      )}
+        {isActive && (
+          <span style={s(`margin-top:auto;height:34px;border-radius:13px;background:${brand};color:#fff;font:900 12px 'Fredoka';display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 4px 0 #4B3BA6`)}>
+            <span className="mi" style={s("font-size:16px;font-variation-settings:'FILL' 1")}>view_in_ar</span>
+            Open
+          </span>
+        )}
+      </span>
     </button>
   );
 }
