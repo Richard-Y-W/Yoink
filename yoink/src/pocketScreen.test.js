@@ -59,6 +59,10 @@ test('placeholder trophy viewer manages dialog focus without duplicate close lab
   assert.match(viewerSource, /dialogRef/);
   assert.match(viewerSource, /previousFocusRef/);
   assert.match(viewerSource, /Escape/);
+  assert.match(viewerSource, /event\.key === 'Tab'/);
+  assert.match(viewerSource, /querySelectorAll/);
+  assert.match(viewerSource, /focusable/);
+  assert.match(viewerSource, /preventDefault/);
   assert.equal(viewerSource.match(/aria-label="Close trophy viewer"/g)?.length, 1);
 });
 

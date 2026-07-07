@@ -17,7 +17,33 @@ export default function HoloTrophyViewer({ item = null, onClose = noop }) {
     dialogRef.current?.focus?.();
 
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const dialog = dialogRef.current;
+        const focusable = Array.from(dialog?.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') ?? [])
+          .filter((node) => !node.disabled && node.getAttribute('aria-hidden') !== 'true');
+
+        if (focusable.length === 0) {
+          event.preventDefault();
+          dialog?.focus?.();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
