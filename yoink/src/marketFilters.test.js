@@ -6,13 +6,13 @@ const feed = makeMarketFeed(0, 32);
 const price = (item) => Number(String(item.price).replace(/,/g, ''));
 
 test('category chips narrow the feed to matching listings', () => {
-  const retro = filterMarketFeed(feed, { category: 'Retro tech' });
-  assert.ok(retro.length > 0);
-  assert.ok(retro.every((item) => /polaroid|imac|walkman|console|phone|tamagotchi/i.test(item.name)));
+  const pocketTech = filterMarketFeed(feed, { category: 'Pocket Tech' });
+  assert.equal(pocketTech.length, 4);
+  assert.ok(pocketTech.every((item) => item.family === 'Pocket Tech'));
 
-  const ending = filterMarketFeed(feed, { category: 'Ending soon' });
-  assert.ok(ending.length > 0);
-  assert.ok(ending.every((item) => item.isAuction));
+  const rareDrops = filterMarketFeed(feed, { category: 'Rare Drops' });
+  assert.ok(rareDrops.length > 0);
+  assert.ok(rareDrops.every((item) => ['Rare', 'Ultra Rare', 'One-Off'].includes(item.rarity)));
 
   assert.equal(filterMarketFeed(feed, { category: 'For you' }).length, feed.length);
 });
@@ -25,8 +25,8 @@ test('the All chip cycles through real listing modes', () => {
 });
 
 test('filters compose: category + mode + query', () => {
-  const filtered = filterMarketFeed(feed, { category: 'Deals', mode: 'Buy now', query: 'duck' });
-  assert.ok(filtered.every((item) => item.shipFree && item.isBin && /duck/i.test(item.name)));
+  const filtered = filterMarketFeed(feed, { category: 'Pocket Tech', mode: 'Buy now', query: 'crt' });
+  assert.deepEqual(filtered.map((item) => item.name), ['Bubble CRT']);
 });
 
 test('sort options reorder without mutating the input', () => {

@@ -62,7 +62,9 @@ function OrderCard({ order, celebrate }) {
       <div style={s("display:flex;align-items:center;gap:10px;margin-top:12px")}>
         <div style={s("display:flex")}>
           {order.items.slice(0, 3).map((item, index) => (
-            <div key={item.id} style={s(`width:44px;height:44px;border-radius:12px;border:2px solid #fff;background:${item.imageStripe};margin-left:${index === 0 ? '0' : '-12px'};box-shadow:0 2px 6px rgba(23,19,38,.1)`)} />
+            <div key={item.id} style={s(`width:44px;height:44px;border-radius:12px;border:2px solid #fff;background:${item.imageStripe};margin-left:${index === 0 ? '0' : '-12px'};box-shadow:0 2px 6px rgba(23,19,38,.1);overflow:hidden`)}>
+              {item.imageUrl && <img src={item.imageUrl} alt={item.title} style={s('width:100%;height:100%;object-fit:cover;display:block')} />}
+            </div>
           ))}
         </div>
         <div style={s("flex:1;min-width:0")}>

@@ -150,7 +150,11 @@ function CartSummary({ cartItems, itemLabel }) {
   return (
     <div style={s("display:flex;align-items:center;gap:13px")}>
       <div style={s(`position:relative;width:58px;height:58px;border-radius:17px;background:${firstItem.imageStripe};border:1.5px solid #EEEAF8;overflow:hidden;flex:none;box-shadow:0 8px 18px rgba(106,90,205,.12)`)}>
-        <div style={s("position:absolute;left:50%;top:50%;width:27px;height:36px;border-radius:8px 8px 11px 11px;background:#fff;transform:translate(-50%,-55%);box-shadow:0 13px 0 -5px #FF9DB2")} />
+        {firstItem.imageUrl ? (
+          <img src={firstItem.imageUrl} alt={firstItem.title} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
+        ) : (
+          <div style={s("position:absolute;left:50%;top:50%;width:27px;height:36px;border-radius:8px 8px 11px 11px;background:#fff;transform:translate(-50%,-55%);box-shadow:0 13px 0 -5px #FF9DB2")} />
+        )}
         <span style={s(`position:absolute;right:-5px;top:-5px;min-width:23px;height:23px;border-radius:999px;background:${brand};border:2px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font:900 11px 'Fredoka'`)}>
           {getCartQuantity(cartItems)}
         </span>
@@ -169,6 +173,7 @@ function CartItemRow({ item }) {
   return (
     <div style={s("display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1.5px solid #EFECF6")}>
       <div style={s(`position:relative;width:54px;height:54px;border-radius:15px;background:${item.imageStripe};border:1.5px solid #EEEAF8;overflow:hidden;flex:none`)}>
+        {item.imageUrl && <img src={item.imageUrl} alt={item.title} style={s('width:100%;height:100%;object-fit:cover;display:block')} />}
         <span style={s(`position:absolute;right:-5px;top:-5px;min-width:23px;height:23px;border-radius:999px;background:${brand};border:2px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font:900 11px 'Fredoka'`)}>
           {item.quantity}
         </span>

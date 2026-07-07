@@ -127,7 +127,11 @@ export default function ProductDetail({
     <div style={s(`position:relative;min-height:100%;overflow:hidden;background:#fff;display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
       <AddToCartMotion playKey={cartMotionKey} cartCount={cartCount} />
       <div style={s("position:relative;height:336px;flex:none;border-radius:0 0 26px 26px;overflow:hidden")}>
-        {artKind ? (
+        {detail.imageUrl ? (
+          <div style={s(`position:absolute;inset:0;background:${detail.imageStripe};display:flex;align-items:center;justify-content:center;filter:hue-rotate(${activeDot * 8}deg);transition:filter .35s ease`)}>
+            <img src={detail.imageUrl} alt={detail.title} style={s('width:100%;height:100%;object-fit:contain;display:block;padding:22px;box-sizing:border-box')} />
+          </div>
+        ) : artKind ? (
           <div
             {...spinHandlers}
             style={s(`position:absolute;inset:0;background:${artStageBackground(artStyle, artKind)};display:flex;align-items:center;justify-content:center;filter:hue-rotate(${activeDot * 28}deg);transition:filter .35s ease;${canSpin ? 'cursor:grab;touch-action:pan-y' : ''}`)}

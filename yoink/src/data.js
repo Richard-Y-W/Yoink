@@ -35,108 +35,306 @@ export const bazaarItems = [
 
 export const chips = ['Y2K', 'Retro', 'Oddities', 'Plushies', 'Stickers', 'Tech'];
 
-export const marketCats = ['Deals', 'Ending soon', 'Trading cards', 'Retro tech', 'Vintage', 'Plushies'];
+export const marketCats = ['Pocket Tech', 'Holo Finds', 'Desk Pets', 'Snack Relics', 'Rare Drops'];
 
 export const MARKET_PAGE_SIZE = 8;
-export const MARKET_MAX_ITEMS = 240;
+
+const YOINK_DROP_CATALOG = [
+  {
+    id: 'drop-pocket-tech-bubble-crt',
+    name: 'Bubble CRT',
+    family: 'Pocket Tech',
+    rarity: 'Rare',
+    editionSize: 40,
+    stockLeft: 7,
+    price: 420,
+    img: 'bubble crt',
+    imageUrl: '/yoink-items/pocket-tech-bubble-crt.png',
+    hue: 'purple',
+    mode: 'bin',
+    seller: 'yoink_lab',
+    traits: ['rounded CRT shell', 'grape screen glow', 'sticker antenna', 'foil trim'],
+    description: 'A grape-purple desk CRT toy with a tiny pixel face and rare foil trim around the glassy screen.',
+  },
+  {
+    id: 'drop-pocket-tech-jelly-flip-phone',
+    name: 'Jelly Flip Phone',
+    family: 'Pocket Tech',
+    rarity: 'Uncommon',
+    editionSize: 90,
+    stockLeft: 22,
+    price: 260,
+    img: 'jelly flip phone',
+    imageUrl: '/yoink-items/pocket-tech-jelly-flip-phone.png',
+    hue: 'teal',
+    mode: 'bin',
+    seller: 'yoink_lab',
+    traits: ['translucent shell', 'bubble keypad', 'mini screen smile', 'charm loop'],
+    description: 'A translucent gummy flip phone with bubble keys, a tiny smiling screen, and a dangling charm loop.',
+  },
+  {
+    id: 'drop-pocket-tech-pocket-pixel-mp3',
+    name: 'Pocket Pixel MP3',
+    family: 'Pocket Tech',
+    rarity: 'Common',
+    editionSize: 160,
+    stockLeft: 58,
+    price: 140,
+    img: 'pocket pixel mp3',
+    imageUrl: '/yoink-items/pocket-tech-pocket-pixel-mp3.png',
+    hue: 'yellow',
+    mode: 'bin',
+    seller: 'yoink_lab',
+    traits: ['pixel face', 'candy buttons', 'matte toy finish', 'lanyard nub'],
+    description: 'A tiny yellow music-player toy with candy buttons and a cheerful pixel screen face.',
+  },
+  {
+    id: 'drop-pocket-tech-flashpop-toy-camera',
+    name: 'Flashpop Toy Camera',
+    family: 'Pocket Tech',
+    rarity: 'Ultra Rare',
+    editionSize: 18,
+    stockLeft: 3,
+    price: 760,
+    img: 'flashpop toy camera',
+    imageUrl: '/yoink-items/pocket-tech-flashpop-toy-camera.png',
+    hue: 'pink',
+    mode: 'auction',
+    seller: 'yoink_lab',
+    traits: ['giant teal lens', 'star flash', 'hologlow strap', 'shimmer rim'],
+    description: 'An ultra-rare bubblegum camera with a giant teal lens, star flash, and hologlow strap.',
+  },
+  {
+    id: 'drop-holo-finds-frog-foil-card',
+    name: 'Frog Foil Card',
+    family: 'Holo Finds',
+    rarity: 'Rare',
+    editionSize: 55,
+    stockLeft: 11,
+    price: 390,
+    img: 'frog foil card',
+    imageUrl: '/yoink-items/holo-finds-frog-foil-card.png',
+    hue: 'pink',
+    mode: 'bin',
+    seller: 'foil_friends',
+    traits: ['original frog icon', 'rounded slab', 'rainbow foil frame', 'sparkle flecks'],
+    description: 'A shiny slabbed card with an original frog icon, rainbow foil frame, and chunky case corners.',
+  },
+  {
+    id: 'drop-holo-finds-cosmic-sticker-slab',
+    name: 'Cosmic Sticker Slab',
+    family: 'Holo Finds',
+    rarity: 'Ultra Rare',
+    editionSize: 22,
+    stockLeft: 4,
+    price: 820,
+    img: 'cosmic sticker slab',
+    imageUrl: '/yoink-items/holo-finds-cosmic-sticker-slab.png',
+    hue: 'purple',
+    mode: 'auction',
+    seller: 'foil_friends',
+    traits: ['clear display slab', 'puffy star sticker', 'iridescent rim', 'soft glow'],
+    description: 'A clear display slab with a floating puffy star sticker and a soft cosmic shimmer.',
+  },
+  {
+    id: 'drop-holo-finds-lucky-pog-stack',
+    name: 'Lucky Pog Stack',
+    family: 'Holo Finds',
+    rarity: 'Uncommon',
+    editionSize: 100,
+    stockLeft: 31,
+    price: 210,
+    img: 'lucky pog stack',
+    imageUrl: '/yoink-items/holo-finds-lucky-pog-stack.png',
+    hue: 'coral',
+    mode: 'offer',
+    seller: 'foil_friends',
+    traits: ['stacked tokens', 'foil top cap', 'lucky marks', 'rubbery edges'],
+    description: 'A stacked token collectible with rubbery pastel edges and a shiny lucky top cap.',
+  },
+  {
+    id: 'drop-holo-finds-glimmer-ticket-relic',
+    name: 'Glimmer Ticket Relic',
+    family: 'Holo Finds',
+    rarity: 'One-Off',
+    editionSize: 1,
+    stockLeft: 1,
+    price: 1800,
+    img: 'glimmer ticket relic',
+    imageUrl: '/yoink-items/holo-finds-glimmer-ticket-relic.png',
+    hue: 'yellow',
+    mode: 'bin',
+    seller: 'foil_friends',
+    traits: ['oversized ticket shape', 'foil tear edge', 'serial stamp shape', 'teal edge'],
+    description: 'A one-off oversized ticket relic with warm shimmer, teal edging, and a tiny serial stamp shape.',
+  },
+  {
+    id: 'drop-desk-pets-mochi-blob',
+    name: 'Mochi Blob',
+    family: 'Desk Pets',
+    rarity: 'Common',
+    editionSize: 200,
+    stockLeft: 83,
+    price: 120,
+    img: 'mochi blob',
+    imageUrl: '/yoink-items/desk-pets-mochi-blob.png',
+    hue: 'pink',
+    mode: 'bin',
+    seller: 'desk_pet_co',
+    traits: ['squishy body', 'dot eyes', 'stubby feet', 'soft blush'],
+    description: 'A soft pink desk pet with tiny feet, dot eyes, and a clean matte toy finish.',
+  },
+  {
+    id: 'drop-desk-pets-sleepy-star-charm',
+    name: 'Sleepy Star Charm',
+    family: 'Desk Pets',
+    rarity: 'Rare',
+    editionSize: 44,
+    stockLeft: 9,
+    price: 360,
+    img: 'sleepy star charm',
+    imageUrl: '/yoink-items/desk-pets-sleepy-star-charm.png',
+    hue: 'purple',
+    mode: 'bin',
+    seller: 'desk_pet_co',
+    traits: ['puffy star body', 'sleepy face', 'keychain loop', 'foil cheek patch'],
+    description: 'A lavender puffy star charm with sleepy eyes, a tiny loop, and rare foil cheek patches.',
+  },
+  {
+    id: 'drop-desk-pets-button-eye-sprout',
+    name: 'Button-Eye Sprout',
+    family: 'Desk Pets',
+    rarity: 'Uncommon',
+    editionSize: 88,
+    stockLeft: 26,
+    price: 240,
+    img: 'button-eye sprout',
+    imageUrl: '/yoink-items/desk-pets-button-eye-sprout.png',
+    hue: 'teal',
+    mode: 'offer',
+    seller: 'desk_pet_co',
+    traits: ['button eyes', 'leaf hat', 'stitched base', 'coral cheeks'],
+    description: 'A sprout mascot with button eyes, a leafy hat, and a stitched vinyl base.',
+  },
+  {
+    id: 'drop-desk-pets-tiny-desk-dino',
+    name: 'Tiny Desk Dino',
+    family: 'Desk Pets',
+    rarity: 'Ultra Rare',
+    editionSize: 16,
+    stockLeft: 2,
+    price: 900,
+    img: 'tiny desk dino',
+    imageUrl: '/yoink-items/desk-pets-tiny-desk-dino.png',
+    hue: 'blue',
+    mode: 'auction',
+    seller: 'desk_pet_co',
+    traits: ['keyboard saddle', 'glow belly', 'serial tag shape', 'purple spine bumps'],
+    description: 'An ultra-rare teal desk dinosaur with a keyboard-key saddle and a soft glowing belly.',
+  },
+  {
+    id: 'drop-snack-relics-cereal-prize-rocket',
+    name: 'Cereal Prize Rocket',
+    family: 'Snack Relics',
+    rarity: 'Rare',
+    editionSize: 50,
+    stockLeft: 12,
+    price: 350,
+    img: 'cereal prize rocket',
+    imageUrl: '/yoink-items/snack-relics-cereal-prize-rocket.png',
+    hue: 'coral',
+    mode: 'bin',
+    seller: 'snack_relics',
+    traits: ['rounded fins', 'sticker window', 'foil exhaust puff', 'prize toy finish'],
+    description: 'A tiny prize rocket toy with chunky fins, a sticker window, and a foil exhaust puff.',
+  },
+  {
+    id: 'drop-snack-relics-capsule-ghost-toy',
+    name: 'Capsule Ghost Toy',
+    family: 'Snack Relics',
+    rarity: 'Uncommon',
+    editionSize: 110,
+    stockLeft: 37,
+    price: 190,
+    img: 'capsule ghost toy',
+    imageUrl: '/yoink-items/snack-relics-capsule-ghost-toy.png',
+    hue: 'purple',
+    mode: 'offer',
+    seller: 'snack_relics',
+    traits: ['clear capsule', 'friendly ghost', 'pastel latch', 'prize dots'],
+    description: 'A vending capsule with a friendly ghost toy tucked inside a glossy pastel shell.',
+  },
+  {
+    id: 'drop-snack-relics-vending-ring-pop-relic',
+    name: 'Vending Ring Pop Relic',
+    family: 'Snack Relics',
+    rarity: 'Ultra Rare',
+    editionSize: 20,
+    stockLeft: 5,
+    price: 700,
+    img: 'vending ring pop relic',
+    imageUrl: '/yoink-items/snack-relics-vending-ring-pop-relic.png',
+    hue: 'teal',
+    mode: 'auction',
+    seller: 'snack_relics',
+    traits: ['toy ring shape', 'faceted gem', 'purple base', 'teal shimmer'],
+    description: 'An ultra-rare toy ring relic with a faceted gem, chunky purple base, and teal shimmer.',
+  },
+  {
+    id: 'drop-snack-relics-crinkle-pack-mascot',
+    name: 'Crinkle Pack Mascot',
+    family: 'Snack Relics',
+    rarity: 'One-Off',
+    editionSize: 1,
+    stockLeft: 1,
+    price: 1600,
+    img: 'crinkle pack mascot',
+    imageUrl: '/yoink-items/snack-relics-crinkle-pack-mascot.png',
+    hue: 'yellow',
+    mode: 'bin',
+    seller: 'snack_relics',
+    traits: ['sealed crinkle pack', 'mascot face', 'odd colorway', 'stamp shape'],
+    description: 'A one-off sealed crinkle-pack mascot in an odd blackcurrant-lime colorway.',
+  },
+];
+
+export const MARKET_MAX_ITEMS = YOINK_DROP_CATALOG.length;
+
+function decorateDropListing(item, index) {
+  const isAuction = item.mode === 'auction';
+  const isOffer = item.mode === 'offer';
+  const isBin = item.mode === 'bin';
+  const urgent = isAuction && item.stockLeft <= 5;
+
+  return {
+    ...item,
+    cond: `${item.rarity} Drop`,
+    cta: isAuction ? 'Bid' : isOffer ? 'Offer' : 'Buy',
+    isAuction,
+    isOffer,
+    isBin,
+    urgent,
+    calm: isAuction && !urgent,
+    bids: String(5 + index * 3),
+    timeLeft: urgent ? `${12 + index}m` : `${1 + (index % 4)}d ${6 + index}h`,
+    price: item.price.toLocaleString(),
+    shipFree: item.rarity !== 'One-Off',
+    paidShip: item.rarity === 'One-Off',
+    ship: '+80 ship',
+    fb: `${98 + (index % 2)}.${index % 10}%`,
+    topRated: item.rarity === 'Rare' || item.rarity === 'Ultra Rare',
+    stripe: stripe(TINT[item.hue][0], TINT[item.hue][1]),
+    editionLabel: `Edition of ${item.editionSize}`,
+    stockLabel: `${item.stockLeft}/${item.editionSize} left`,
+  };
+}
 
 export function makeMarketFeed(start, count) {
-  const tints = [
-    ['#F0EEF8', '#E6E3F2'],
-    ['#F2F0F9', '#E9E6F4'],
-    ['#ECE9F5', '#E0DCEE'],
-    ['#F4F2FA', '#EBE8F4'],
-    ['#EEEBF6', '#E2DEEF'],
-    ['#E8E5F2', '#DBD6EA'],
-  ];
-  const names = [
-    'Vintage Polaroid SX-70 — tested',
-    'Holo Charizard 1st Ed · PSA 8',
-    'Y2K Bedazzled Flip Phone (works)',
-    'Rubber Duck Army — 50-pc lot',
-    'Lava Lamp · Galaxy Edition',
-    'Pixel Mini Console + 200 games',
-    'Sanrio Gachapon Mystery Lot',
-    'Translucent iMac G3 (works)',
-    'Beanie Baby — rare tag error',
-    'Tamagotchi Angel 1997',
-    'Sticker Bomb Pack · 200 pc',
-    'Brass Pocket Kaleidoscope',
-    'Cassette Walkman + 12 tapes',
-    'Holographic Pog Slammer Set',
-    'Glass Marble Jar · 80 pc',
-    'Enamel Pin Grab Bag',
-  ];
-  const imgs = [
-    'polaroid sx-70',
-    'graded slab',
-    'flip phone',
-    'duck lot',
-    'lava lamp',
-    'mini console',
-    'gacha lot',
-    'imac g3',
-    'beanie baby',
-    'tamagotchi',
-    'sticker pack',
-    'kaleidoscope',
-    'walkman',
-    'pog set',
-    'marble jar',
-    'pin bag',
-  ];
-  const sellers = [
-    'retro_optics',
-    'cardvault',
-    'y2k_dreams',
-    'odd.goods',
-    'glowco',
-    '8bit_lab',
-    'tokyo_finds',
-    'vault77',
-    'nostalgia.co',
-    'pixelpawn',
-  ];
-  const conds = ['New', 'Used · Good', 'Used · Fair', 'Refurbished', 'Graded'];
-  const modes = ['bin', 'auction', 'offer', 'bin', 'auction', 'bin'];
-  const prices = [120, 18400, 4800, 340, 520, 2900, 260, 1500, 90, 210, 75, 640, 430, 180, 120, 55];
-  const out = [];
-
-  for (let i = 0; i < count; i += 1) {
-    const k = start + i;
-    const mode = modes[k % modes.length];
-    const isAuction = mode === 'auction';
-    const isOffer = mode === 'offer';
-    const isBin = mode === 'bin';
-    const urgent = isAuction && k % 4 === 1;
-    const shipFree = k % 3 !== 1;
-
-    out.push({
-      id: `f${k}`,
-      name: names[k % names.length],
-      img: imgs[k % imgs.length],
-      cond: conds[k % conds.length],
-      mode,
-      isAuction,
-      isOffer,
-      isBin,
-      urgent,
-      calm: isAuction && !urgent,
-      cta: isAuction ? 'Bid' : isOffer ? 'Offer' : 'Buy',
-      bids: String(3 + (k % 28)),
-      timeLeft: urgent ? `${8 + (k % 50)}m` : `${1 + (k % 6)}d ${k % 23}h`,
-      price: (prices[k % prices.length] + (k % 7) * 15).toLocaleString(),
-      shipFree,
-      paidShip: !shipFree,
-      ship: `+${40 + (k % 6) * 10} ship`,
-      seller: sellers[k % sellers.length],
-      fb: `${97 + (k % 3)}.${k % 10}%`,
-      topRated: k % 5 === 0,
-      stripe: stripe(tints[k % tints.length][0], tints[k % tints.length][1]),
-    });
-  }
-
-  return out;
+  const safeStart = Math.max(0, Math.min(Number(start) || 0, MARKET_MAX_ITEMS));
+  const safeCount = Math.max(0, Math.min(Number(count) || 0, MARKET_MAX_ITEMS - safeStart));
+  return YOINK_DROP_CATALOG
+    .slice(safeStart, safeStart + safeCount)
+    .map((item, index) => decorateDropListing(item, safeStart + index));
 }
 
 export function appendMarketFeed(current, pageSize = MARKET_PAGE_SIZE, maxItems = MARKET_MAX_ITEMS) {
@@ -156,12 +354,11 @@ const MODE_MATCHERS = {
 
 // Category chips map onto the generated catalog by keyword/condition.
 const CATEGORY_MATCHERS = {
-  Deals: (item) => item.shipFree,
-  'Ending soon': (item) => item.isAuction,
-  'Trading cards': (item) => /charizard|pog|beanie|pin|card/i.test(item.name),
-  'Retro tech': (item) => /polaroid|imac|walkman|console|phone|tamagotchi/i.test(item.name),
-  Vintage: (item) => /used|graded|refurbished/i.test(item.cond),
-  Plushies: (item) => /plush|sanrio|gacha|beanie/i.test(item.name),
+  'Pocket Tech': (item) => item.family === 'Pocket Tech',
+  'Holo Finds': (item) => item.family === 'Holo Finds',
+  'Desk Pets': (item) => item.family === 'Desk Pets',
+  'Snack Relics': (item) => item.family === 'Snack Relics',
+  'Rare Drops': (item) => ['Rare', 'Ultra Rare', 'One-Off'].includes(item.rarity),
 };
 
 export function filterMarketFeed(items, { category = 'For you', mode = 'All', query = '' } = {}) {
@@ -172,7 +369,15 @@ export function filterMarketFeed(items, { category = 'For you', mode = 'All', qu
   return items.filter((item) => {
     if (byCategory && !byCategory(item)) return false;
     if (byMode && !byMode(item)) return false;
-    if (term && !item.name.toLowerCase().includes(term) && !item.seller.toLowerCase().includes(term)) return false;
+    const searchable = [
+      item.name,
+      item.seller,
+      item.family,
+      item.rarity,
+      item.img,
+      ...(item.traits ?? []),
+    ].join(' ').toLowerCase();
+    if (term && !searchable.includes(term)) return false;
     return true;
   });
 }

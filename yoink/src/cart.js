@@ -13,6 +13,7 @@ export function makeCartItem(listing, quantity = 1) {
     id: listing.id ?? listing.name ?? 'yoink-item',
     title: listing.name ?? 'Yoink item',
     imageLabel: listing.img ?? 'item',
+    imageUrl: listing.imageUrl ?? '',
     imageStripe: listing.stripe ?? 'repeating-linear-gradient(135deg,#F0EEF8 0 11px,#E6E3F2 11px 22px)',
     seller: listing.seller ?? 'yoink_seller',
     feedback: listing.fb ?? '99.0%',

@@ -20,8 +20,10 @@ function WatchedCard({ item, onOpenProduct, onToggleWatchedListing, artStyle = '
       }}
       style={s("position:relative;background:#fff;border:1.5px solid #EDEAF6;border-radius:8px;overflow:hidden;box-shadow:0 5px 14px rgba(106,90,205,.10);cursor:pointer")}
     >
-      <div style={s(`height:118px;background:${artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center;position:relative`)}>
-        {artKind && <ItemArt kind={artKind} artStyle={artStyle} width={108} />}
+      <div style={s(`height:118px;background:${item.imageUrl ? '#fff' : artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden`)}>
+        {item.imageUrl ? (
+          <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
+        ) : artKind && <ItemArt kind={artKind} artStyle={artStyle} width={108} />}
         <button
           type="button"
           aria-label={`Remove ${item.name} from watching`}

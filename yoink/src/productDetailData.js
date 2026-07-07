@@ -10,10 +10,10 @@ export const productDots = [
 ];
 
 export const reviewHighlights = [
-  { label: 'Works great', count: 94 },
+  { label: 'Looks cute', count: 94 },
   { label: 'Fast shipping', count: 72 },
   { label: 'As described', count: 68 },
-  { label: 'Nostalgic', count: 41 },
+  { label: 'Drop quality', count: 41 },
 ];
 
 export const reviewThread = [
@@ -24,7 +24,7 @@ export const reviewThread = [
     avatar: stripe('#FFE0C2', '#FFCDA6'),
     initial: 'M',
     rating: 5,
-    text: 'Great condition for the age. Minor wear, but it works perfectly and the sound is exactly what I wanted.',
+    text: 'The render matched the item perfectly. It looks even cuter in the order tracker.',
     helpful: 11,
   },
   {
@@ -34,7 +34,7 @@ export const reviewThread = [
     avatar: stripe('#CFE4FF', '#AFD2FF'),
     initial: 'R',
     rating: 4,
-    text: 'Packed carefully, shipped fast, and the tapes were a fun bonus. The buttons feel clean after the service.',
+    text: 'Packed fast and the edition count was clear before checkout. I liked knowing exactly what drop it came from.',
     helpful: 8,
   },
   {
@@ -44,7 +44,7 @@ export const reviewThread = [
     avatar: stripe('#E9DEFF', '#D6C2FF'),
     initial: 'A',
     rating: 5,
-    text: 'Exactly as described. The restored belt makes it feel reliable, and the photos matched the item.',
+    text: 'The colors are very Yoink. No weird surprise mechanics, just a clean collectible with visible stock.',
     helpful: 6,
   },
 ];
@@ -72,35 +72,40 @@ export function makeProductDetail(listing = {}) {
   const isAuction = listing.cta === 'Bid' || listing.isAuction;
   const isOffer = listing.cta === 'Offer' || listing.isOffer;
 
+  const seller = listing.seller ?? 'pixelpawn';
+
   return {
     variant: productDetailVariant,
     title: listing.name ?? 'Retro Cassette Walkman',
     imageLabel: listing.img ?? 'walkman photo',
+    imageUrl: listing.imageUrl ?? '',
     imageStripe: listing.stripe ?? stripe('#EEEBF6', '#E0DCEE'),
     price: listing.price ?? '640',
-    seller: listing.seller ?? 'pixelpawn',
+    seller,
     sellerFeedback: listing.fb ?? '100%',
     primaryCta: isAuction ? 'Place bid' : isOffer ? 'Make offer' : 'Add to cart',
     secondaryCta: isAuction ? 'Buy it now' : isOffer ? 'Add to cart' : 'Buy now',
     salePrice: listing.price ?? '640',
     originalPrice: '900',
     discount: '29% off',
-    socialProof: '500+ yoinked this month',
+    socialProof: listing.editionLabel ?? '500+ yoinked this month',
     eyeing: '18',
     coinBack: '+64 coins',
-    scarcity: isAuction ? `${listing.bids ?? '23'} bids` : 'Only 8 left',
+    scarcity: isAuction ? `${listing.bids ?? '23'} bids` : listing.stockLabel ?? 'Only 8 left',
     dealEnds: listing.timeLeft ? `Deal ends ${listing.timeLeft}` : 'Deal ends 12:08',
     rating: '4.5',
     ratingCount: '290',
-    quantityAvailable: 8,
-    description:
-      'Rewind to analog bliss. This fully-restored cassette Walkman was serviced end-to-end: new belt, cleaned heads, fresh foam pads, and 12 hand-picked mixtapes from the golden era.',
-    deliveryEstimate: 'Arrives Jul 3 - Jul 6',
+    quantityAvailable: listing.stockLeft ?? 8,
+    description: listing.description ??
+      'This Yoink collectible is part of a limited transparent drop with visible stock and edition counts.',
+    deliveryEstimate: 'Ships after drop packing',
     shipTo: 'Ship to 80841',
     dots: productDots,
     reviewHighlights,
     reviews: reviewThread,
     deliveryBenefits,
-    policyRows,
+    policyRows: policyRows.map((row) => (
+      row.icon === 'storefront' ? { ...row, label: `Visit ${seller}` } : row
+    )),
   };
 }

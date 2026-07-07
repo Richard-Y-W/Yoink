@@ -5,23 +5,25 @@ import test from 'node:test';
 const cartUrl = new URL('./cart.js', import.meta.url);
 
 const polaroid = {
-  id: 'f0',
-  name: 'Vintage Polaroid SX-70 - tested',
-  img: 'polaroid sx-70',
+  id: 'drop-pocket-tech-bubble-crt',
+  name: 'Bubble CRT',
+  img: 'bubble crt',
   price: '120',
-  seller: 'retro_optics',
+  seller: 'yoink_drops',
   fb: '97.0%',
   stripe: 'linear-gradient(#fff,#eee)',
+  imageUrl: '/yoink-items/pocket-tech-bubble-crt.png',
 };
 
 const charizard = {
-  id: 'f1',
-  name: 'Holo Charizard 1st Ed - PSA 8',
-  img: 'graded slab',
+  id: 'drop-holo-finds-frog-foil-card',
+  name: 'Frog Foil Card',
+  img: 'frog foil card',
   price: '18,415',
-  seller: 'cardvault',
+  seller: 'yoink_drops',
   fb: '98.1%',
   stripe: 'linear-gradient(#fee,#eef)',
+  imageUrl: '/yoink-items/holo-finds-frog-foil-card.png',
 };
 
 test('cart helpers add listings once and increment repeated listings', async () => {
@@ -37,6 +39,15 @@ test('cart helpers add listings once and increment repeated listings', async () 
   assert.equal(repeated[0].quantity, 2);
   assert.equal(twoItems.length, 2);
   assert.equal(getCartQuantity(twoItems), 3);
+});
+
+test('cart items preserve generated render image URLs', async () => {
+  assert.equal(existsSync(cartUrl), true, 'missing cart helpers');
+  const { makeCartItem } = await import(cartUrl);
+
+  const item = makeCartItem(polaroid);
+
+  assert.equal(item.imageUrl, '/yoink-items/pocket-tech-bubble-crt.png');
 });
 
 test('cart helpers compute subtotal, shipping, total, and display labels', async () => {

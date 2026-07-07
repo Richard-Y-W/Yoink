@@ -34,8 +34,10 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
       }}
       style={s("position:relative;display:flex;gap:11px;background:#fff;border:1px solid #EDEAF6;border-radius:14px;padding:10px;box-shadow:0 2px 8px rgba(23,19,38,.05);cursor:pointer")}
     >
-      <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center`)}>
-        {artKind && <ItemArt kind={artKind} artStyle={artStyle} width={86} />}
+      <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${item.imageUrl ? '#fff' : artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center`)}>
+        {item.imageUrl ? (
+          <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
+        ) : artKind && <ItemArt kind={artKind} artStyle={artStyle} width={86} />}
         <div style={s("position:absolute;bottom:4px;left:4px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.85);font:600 8px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>
           {item.img}
         </div>

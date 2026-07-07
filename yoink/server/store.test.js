@@ -13,11 +13,12 @@ import {
 const DAY = 24 * 60 * 60 * 1000;
 
 const makeItems = (price = 100, quantity = 1) => [{
-  id: 'f1',
-  title: 'Holo Charizard 1st Ed',
-  imageLabel: 'graded slab',
+  id: 'drop-holo-finds-frog-foil-card',
+  title: 'Frog Foil Card',
+  imageLabel: 'frog foil card',
+  imageUrl: '/yoink-items/holo-finds-frog-foil-card.png',
   imageStripe: 'repeating-linear-gradient(135deg,#F0EEF8 0 11px,#E6E3F2 11px 22px)',
-  seller: 'cardvault',
+  seller: 'yoink_drops',
   unitPrice: price,
   quantity,
 }];
@@ -74,6 +75,16 @@ test('placing an order deducts coins and rejects overspending with shortBy', () 
   assert.equal(store.placeOrder({ items: [] }, now).ok, false, 'empty cart rejected');
 });
 
+test('orders preserve generated render image URLs', () => {
+  const store = createStore({ random: () => 0 });
+  const now = Date.UTC(2026, 6, 2, 18);
+
+  const order = store.placeOrder({ items: makeItems(120, 1), shippingPrice: 3 }, now);
+
+  assert.equal(order.ok, true);
+  assert.equal(order.order.items[0].imageUrl, '/yoink-items/holo-finds-frog-foil-card.png');
+});
+
 test('orders advance through accelerated tracking stages', () => {
   const placedAt = Date.UTC(2026, 6, 2, 18);
   assert.equal(orderStage(placedAt, placedAt).id, 'processing');
@@ -108,7 +119,7 @@ test('feed pages come from the shared generator and clamp to the max', () => {
   const store = createStore();
   const page = store.getFeed(8, 8);
   assert.equal(page.items.length, 8);
-  assert.equal(page.items[0].id, 'f8');
+  assert.equal(page.items[0].id, 'drop-desk-pets-mochi-blob');
   assert.equal(store.getFeed(page.total, 8).items.length, 0);
 });
 
