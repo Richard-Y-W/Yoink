@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import { s } from '../style.js';
-import ItemArt from '../components/ItemArt.jsx';
-import Mochi from '../components/Mochi.jsx';
-import { sets, pocketItems } from '../data.js';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchCollection } from '../api.js';
-import { artStageBackground, resolveArtKind } from '../itemArt.js';
+import PocketShelf from '../components/PocketShelf.jsx';
+import HoloTrophyViewer from '../components/HoloTrophyViewer.jsx';
+import { makePocketHoloItems } from '../pocketItems.js';
+import { s } from '../style.js';
 import { marketTheme } from '../marketTheme.js';
 
 const {
@@ -19,189 +18,133 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-export default function Pocket({ balance = 0, streak = 0, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl' }) {
-  const [collection, setCollection] = useState([]);
-  const [justAdded, setJustAdded] = useState(null);
-  const [query, setQuery] = useState('');
-  const [priceSort, setPriceSort] = useState(false);
+const noop = () => {};
 
-  const searchTerm = query.trim().toLowerCase();
-  const parsePrice = (item) => Number(String(item.price).replace(/,/g, '')) || 0;
-  const visibleCollection = searchTerm
-    ? collection.filter((item) => item.title.toLowerCase().includes(searchTerm))
-    : collection;
-  const visibleShopItems = (searchTerm
-    ? pocketItems.filter((item) => item.name.toLowerCase().includes(searchTerm))
-    : pocketItems
-  ).slice().sort((a, b) => (priceSort ? parsePrice(a) - parsePrice(b) : 0));
+function PocketHeader({ balance, cartCount, onOpenCart }) {
+  return (
+    <div style={s('position:sticky;top:0;z-index:30;background:#fff;padding:47px 13px 12px;box-shadow:0 3px 14px rgba(23,19,38,.06)')}>
+      <div style={s('display:flex;align-items:center;justify-content:space-between;gap:10px')}>
+        <div style={s('min-width:0')}>
+          <div style={s(`font:800 24px/1 'Fredoka';color:${brand}`)}>Pocket</div>
+          <div style={s(`margin-top:3px;font:800 11.5px/1.2 'Nunito';color:${muted}`)}>Owned Holo Finds</div>
+        </div>
+        <div style={s('display:flex;align-items:center;gap:7px;flex:none')}>
+          <div style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px`)}>
+            <span style={s(`width:16px;height:16px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;font:800 9px 'Fredoka';color:${currencyButtonBackground};flex:none`)}>Y</span>
+            <span style={s("font:800 12px 'Fredoka';color:#fff")}>{balance.toLocaleString()}</span>
+          </div>
+          <button
+            type="button"
+            aria-label="Open cart"
+            onClick={onOpenCart}
+            style={s(`position:relative;width:38px;height:38px;border:0;border-radius:13px;background:${wash};display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;box-shadow:0 3px 0 #E3DDF7`)}
+          >
+            <span className="mi" style={s(`font-size:21px;color:${ink}`)}>shopping_cart</span>
+            <span style={s(`position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:${cartCountBackground};color:#fff;font:800 9.5px 'Fredoka';display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff`)}>{cartCount}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const handleAdd = (item) => {
-    onAddToCart(item);
-    setJustAdded(item.id);
-    window.setTimeout(() => setJustAdded((current) => (current === item.id ? null : current)), 900);
-  };
+function LoadingPocket() {
+  return (
+    <div style={s('background:#fff;border:1.5px solid #EDEAF6;border-radius:20px;padding:26px 18px;min-height:188px;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 14px rgba(106,90,205,.10)')}>
+      <div style={s('display:flex;flex-direction:column;align-items:center;gap:11px')}>
+        <span style={s(`width:38px;height:38px;border:4px solid ${line};border-top-color:${brand};border-radius:50%;display:block;animation:yspin .8s linear infinite`)} />
+        <span style={s(`font:800 13px 'Nunito';color:${muted}`)}>Loading Pocket</span>
+      </div>
+    </div>
+  );
+}
+
+function EmptyPocket({ onOpenMarket }) {
+  return (
+    <div style={s('background:#fff;border:1.5px solid #EDEAF6;border-radius:22px;padding:22px 18px 20px;min-height:296px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 8px 0 rgba(106,90,205,.10),0 8px 20px rgba(23,19,38,.08)')}>
+      <div style={s(`width:82px;height:82px;border-radius:26px;background:linear-gradient(135deg,#E7F8FF,#FFE4F1 58%,#FFF3D1);border:2px solid ${line};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 #DCD5EF;margin-bottom:15px`)}>
+        <span className="mi" style={s(`font-size:39px;color:${brand};font-variation-settings:'FILL' 1`)}>auto_awesome</span>
+      </div>
+      <div style={s(`font:900 22px/1.05 'Fredoka';color:${ink}`)}>Your Pocket is waiting</div>
+      <div style={s(`margin-top:8px;max-width:250px;font:800 13px/1.35 'Nunito';color:${muted}`)}>
+        Yoink a Holo Finds drop and it will land on this shelf.
+      </div>
+      <button
+        type="button"
+        onClick={onOpenMarket}
+        style={s(`margin-top:17px;border:0;border-radius:15px;background:${brand};color:#fff;font:900 13px 'Fredoka';padding:11px 16px;display:inline-flex;align-items:center;gap:5px;box-shadow:0 5px 0 #4B3BA6;cursor:pointer`)}
+      >
+        <span className="mi" style={s("font-size:17px;font-variation-settings:'FILL' 1")}>storefront</span>
+        Back to market
+      </button>
+    </div>
+  );
+}
+
+export default function Pocket({
+  balance = 0,
+  cartCount = 0,
+  onOpenCart = noop,
+  onOpenMarket = noop,
+  onToast = noop,
+}) {
+  const [collection, setCollection] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [viewerItem, setViewerItem] = useState(null);
 
   useEffect(() => {
-    fetchCollection().then((data) => {
-      if (Array.isArray(data.collection)) setCollection(data.collection);
-    }).catch(() => {});
-  }, []);
+    let alive = true;
+
+    fetchCollection()
+      .then((data) => {
+        if (!alive) return;
+        setCollection(Array.isArray(data?.collection) ? data.collection : []);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setCollection([]);
+        onToast('Pocket could not load right now.');
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [onToast]);
+
+  const holoItems = useMemo(() => makePocketHoloItems(collection ?? []), [collection]);
+  const holoImagesReady = holoItems.some((item) => item.imageUrl);
 
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
+      <PocketHeader balance={balance} cartCount={cartCount} onOpenCart={onOpenCart} />
 
-      {/* ── header ── */}
-      <div style={s("position:sticky;top:0;z-index:30;background:#fff;padding:47px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
-        <div style={s("display:flex;align-items:center;justify-content:space-between;margin-bottom:10px")}>
-          <div style={s(`font:700 23px 'Fredoka';color:${brand};letter-spacing:.2px`)}>Yoink!</div>
-          <div style={s("display:flex;align-items:center;gap:7px")}>
-            <div style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px`)}>
-              <span style={s(`width:16px;height:16px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;font:700 9px 'Fredoka';color:${currencyButtonBackground};flex:none`)}>Y</span>
-              <span style={s("font:700 12px 'Fredoka';color:#fff")}>{balance.toLocaleString()}</span>
-            </div>
-            <div style={s(`display:flex;align-items:center;gap:3px;background:${attentionBadgeBackground};border-radius:999px;padding:4px 9px 4px 6px`)}>
-              <span className="mi" style={s(`font-size:16px;color:${attentionBadgeText};font-variation-settings:'FILL' 1`)}>local_fire_department</span><span style={s(`font:700 12px 'Fredoka';color:${attentionBadgeText}`)}>{streak}</span>
-            </div>
-            <button
-              type="button"
-              aria-label="Open cart"
-              onClick={onOpenCart}
-              style={s(`position:relative;width:36px;height:36px;border:0;border-radius:11px;background:${wash};display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0`)}
-            >
-              <span className="mi" style={s(`font-size:21px;color:${ink}`)}>shopping_cart</span>
-              <span style={s(`position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:${cartCountBackground};color:#fff;font:700 9.5px 'Fredoka';display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff`)}>{cartCount}</span>
-            </button>
+      <main
+        data-holo-images={holoImagesReady ? 'ready' : 'empty'}
+        style={s('flex:1;padding:15px 14px 98px;display:flex;flex-direction:column;gap:14px')}
+      >
+        <div style={s(`display:flex;align-items:center;justify-content:space-between;gap:10px;background:${attentionBadgeBackground};border-radius:16px;padding:10px 12px;box-shadow:0 4px 0 rgba(255,184,77,.32)`)}>
+          <div style={s('display:flex;align-items:center;gap:8px;min-width:0')}>
+            <span className="mi" style={s(`font-size:22px;color:${attentionBadgeText};font-variation-settings:'FILL' 1`)}>workspace_premium</span>
+            <span style={s(`font:900 13px 'Fredoka';color:${attentionBadgeText};white-space:nowrap`)}>Holo shelf</span>
           </div>
+          <span style={s(`font:900 12px 'Nunito';color:${attentionBadgeText};white-space:nowrap`)}>{holoItems.length} owned</span>
         </div>
-        <div style={s("display:flex;gap:8px;align-items:center")}>
-          <div style={s(`flex:1;display:flex;align-items:center;gap:8px;background:${wash};border:1.5px solid ${line};border-radius:12px;padding:0 13px;height:44px`)}>
-            <span className="mi" style={s(`font-size:20px;color:${muted}`)}>search</span>
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search collectibles…"
-              aria-label="Search collectibles"
-              style={s(`flex:1;min-width:0;border:0;background:transparent;font:600 13.5px 'Nunito';color:${ink};outline:none`)}
-            />
-            {query && (
-              <button type="button" aria-label="Clear search" onClick={() => setQuery('')} style={s(`border:0;background:transparent;padding:0;display:flex;cursor:pointer;color:${muted}`)}>
-                <span className="mi" style={s("font-size:18px")}>close</span>
-              </button>
-            )}
-          </div>
-          <button
-            type="button"
-            aria-label={priceSort ? 'Sorted by price — tap to reset' : 'Sort by price'}
-            aria-pressed={priceSort}
-            onClick={() => setPriceSort((current) => !current)}
-            style={s(`width:44px;height:44px;border:1.5px solid ${priceSort ? brand : line};border-radius:12px;background:${priceSort ? brand : wash};display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s ease`)}
-          >
-            <span className="mi" style={s(`font-size:22px;color:${priceSort ? '#fff' : brand}`)}>{priceSort ? 'swap_vert' : 'tune'}</span>
-          </button>
-        </div>
-      </div>
 
-      {/* ── content ── */}
-      <div style={s("flex:1;padding:14px 14px 98px;display:flex;flex-direction:column;gap:15px")}>
-
-        {collection.length > 0 && (
-          <>
-            <div style={s("display:flex;align-items:baseline;justify-content:space-between")}>
-              <div style={s(`font:700 18px 'Fredoka';color:${ink}`)}>Fresh from the mail</div>
-              <div style={s(`font:700 13px 'Nunito';color:${brand}`)}>{collection.length} yoink&#8217;d</div>
-            </div>
-            <div style={s("display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px")}>
-              {visibleCollection.map((item) => (
-                <div key={item.id} style={s("background:#fff;border-radius:16px;padding:7px;border:1px solid #EDEAF6;box-shadow:0 2px 8px rgba(23,19,38,.05);animation:ypop .4s ease both")}>
-                  <div style={s(`position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;background:${item.imageStripe}`)}>
-                    {item.quantity > 1 && (
-                      <span style={s(`position:absolute;top:4px;right:4px;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:${brand};color:#fff;font:700 10px 'Fredoka';display:flex;align-items:center;justify-content:center`)}>
-                        x{item.quantity}
-                      </span>
-                    )}
-                    <div style={s(`position:absolute;bottom:4px;right:4px;width:17px;height:17px;border-radius:50%;background:${brand};display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.2)`)}>
-                      <span className="mi" style={s("font-size:12px;color:#fff;font-variation-settings:'FILL' 1")}>check</span>
-                    </div>
-                  </div>
-                  <div style={s(`font:700 10.5px/1.25 'Nunito';color:${ink};margin-top:6px;height:26px;overflow:hidden`)}>{item.title}</div>
-                </div>
-              ))}
-            </div>
-          </>
+        {collection === null ? (
+          <LoadingPocket />
+        ) : holoItems.length > 0 ? (
+          <PocketShelf
+            items={holoItems}
+            selectedIndex={Math.min(selectedIndex, holoItems.length - 1)}
+            onSelect={setSelectedIndex}
+            onOpen={setViewerItem}
+          />
+        ) : (
+          <EmptyPocket onOpenMarket={onOpenMarket} />
         )}
+      </main>
 
-        <div style={s("display:flex;align-items:baseline;justify-content:space-between")}>
-          <div style={s(`font:700 18px 'Fredoka';color:${ink}`)}>Your collections</div>
-          <button
-            type="button"
-            onClick={() => onToast('Both sets are here — finish one for the coin bonus!')}
-            style={s(`border:0;background:transparent;padding:0;font:700 13px 'Nunito';color:${brand};cursor:pointer`)}
-          >
-            See all
-          </button>
-        </div>
-
-        {/* collection sets */}
-        {sets.map((set) => (
-          <div key={set.id} style={s("background:#fff;border-radius:20px;padding:14px;border:1px solid #EDEAF6;box-shadow:0 2px 8px rgba(23,19,38,.05)")}>
-            <div style={s("display:flex;align-items:center;justify-content:space-between;margin-bottom:11px")}>
-              <div style={s(`font:700 15px 'Fredoka';color:${ink}`)}>{set.name}</div>
-              <div style={s(`font:700 12px 'Fredoka';color:${set.accent}`)}>{set.have}/{set.total}</div>
-            </div>
-            <div style={s("display:flex;gap:7px;margin-bottom:12px")}>
-              {set.thumbs.map((th, i) => (
-                <div key={i} style={s(`position:relative;flex:1;aspect-ratio:1/1;border-radius:11px;overflow:hidden;background:${th.stripe}`)}>
-                  {th.locked && (
-                    <div style={s("position:absolute;inset:0;background:rgba(245,243,255,.85);display:flex;align-items:center;justify-content:center")}><span className="mi" style={s(`font-size:17px;color:${muted}`)}>lock</span></div>
-                  )}
-                  {th.o && (
-                    <div style={s(`position:absolute;bottom:3px;right:3px;width:16px;height:16px;border-radius:50%;background:${brand};display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.2)`)}><span className="mi" style={s("font-size:11px;color:#fff;font-variation-settings:'FILL' 1")}>check</span></div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div style={s("display:flex;align-items:center;gap:10px")}>
-              <div style={s(`flex:1;height:8px;border-radius:99px;background:${line};overflow:hidden`)}><div style={s(`height:100%;width:${set.pct}%;background:linear-gradient(90deg,${brand},#8B78E6);border-radius:99px`)} /></div>
-              <div style={s(`display:flex;align-items:center;gap:4px;font:700 11px 'Nunito';color:${muted}`)}><span style={s(`background:${attentionBadgeBackground};color:${attentionBadgeText};padding:1px 6px;border-radius:5px`)}>+{set.reward}</span> at full set</div>
-            </div>
-          </div>
-        ))}
-
-        <div style={s(`font:700 18px 'Fredoka';color:${ink};margin-top:2px`)}>Add to your collection</div>
-        <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:13px")}>
-          {visibleShopItems.map((item) => {
-            const artKind = resolveArtKind(item);
-            return (
-            <div key={item.id} style={s("background:#fff;border-radius:22px;border:1px solid #EDEAF6;box-shadow:0 2px 8px rgba(23,19,38,.05);padding:10px")}>
-              <div style={s(`position:relative;aspect-ratio:1.1/1;border-radius:15px;overflow:hidden;background:${artKind ? artStageBackground(artStyle, artKind) : item.stripe};margin-bottom:9px;display:flex;align-items:center;justify-content:center`)}>
-                {artKind && <ItemArt kind={artKind} artStyle={artStyle} width={118} />}
-                <div style={s("position:absolute;bottom:6px;left:50%;transform:translateX(-50%);padding:2px 8px;border-radius:7px;background:rgba(255,255,255,.85);font:600 9.5px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>{item.img}</div>
-              </div>
-              <div style={s(`font:700 13px/1.25 'Nunito';height:33px;overflow:hidden;color:${ink};padding:0 2px`)}>{item.name}</div>
-              <div style={s("display:flex;align-items:center;justify-content:space-between;margin-top:7px")}>
-                <div style={s("display:flex;align-items:center;gap:4px")}>
-                  <span style={s(`width:17px;height:17px;border-radius:50%;background:${ink};display:inline-flex;align-items:center;justify-content:center;font:700 9px 'Fredoka';color:#fff;flex:none`)}>Y</span>
-                  <span style={s(`font:700 15px 'Fredoka';color:${ink}`)}>{item.price}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleAdd(item)}
-                  style={s(`display:flex;align-items:center;gap:2px;border:0;background:${justAdded === item.id ? '#584AAE' : brand};color:#fff;font:700 12px 'Fredoka';padding:7px 12px;border-radius:12px;box-shadow:0 4px 10px rgba(106,90,205,.34);cursor:pointer;${justAdded === item.id ? 'animation:ypop .35s ease both' : ''}`)}
-                >
-                  <span className="mi" style={s("font-size:15px")}>{justAdded === item.id ? 'check' : 'add'}</span>
-                  {justAdded === item.id ? 'In cart' : 'Add'}
-                </button>
-              </div>
-            </div>
-            );
-          })}
-        </div>
-
-        <div style={s("display:flex;justify-content:flex-start;margin-top:2px")}>
-          <Mochi color={brand} say="3 more to finish the Retro set!" size={54} />
-        </div>
-
-      </div>
+      <HoloTrophyViewer item={viewerItem} onClose={() => setViewerItem(null)} />
     </div>
   );
 }
