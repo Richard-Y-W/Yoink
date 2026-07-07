@@ -28,31 +28,32 @@ function UltraDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
   const artKind = resolveArtKind(item);
 
   return (
-    <div style={s('position:fixed;inset:0;z-index:970;background:rgba(23,19,38,.42);display:flex;align-items:center;justify-content:center;padding:18px;animation:ypop .22s ease both')}>
-      <div style={s("position:relative;width:100%;max-width:372px;overflow:hidden;border:2px solid #FF3D9A;border-radius:26px;background:#fff;padding:15px 14px 16px;box-shadow:0 18px 0 rgba(255,61,154,.20),0 24px 46px rgba(23,19,38,.34);text-align:center")}>
-        <div style={s('position:absolute;inset:-90px;background:radial-gradient(circle at 50% 22%,#FFF2C7 0 17%,transparent 18%),radial-gradient(circle at 17% 78%,#FFE4F1 0 12%,transparent 13%),radial-gradient(circle at 90% 78%,#C7F5EC 0 11%,transparent 12%),repeating-linear-gradient(90deg,transparent 0 18px,rgba(255,61,154,.08) 18px 22px);opacity:.98;pointer-events:none')} />
+    <div style={s('position:fixed;inset:0;z-index:970;background:rgba(23,19,38,.28);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:18px;animation:ypop .22s ease both')}>
+      <div style={s("position:relative;width:100%;max-width:372px;overflow:hidden;border:2px solid #FF3D9A;border-radius:24px;background:#fff;padding:12px;box-shadow:0 16px 0 rgba(255,61,154,.18),0 24px 42px rgba(23,19,38,.30);text-align:center;animation:ypop .24s ease both")}>
         <div style={s('position:relative;display:flex;flex-direction:column;align-items:center')}>
-          <div style={s("width:64px;height:64px;border-radius:22px;background:#FF3D9A;color:#fff;display:flex;align-items:center;justify-content:center;font:900 38px Fredoka;box-shadow:0 8px 0 #D11C77;animation:ypulse 1.35s infinite")}>!</div>
-          <div style={s(`margin-top:11px;font:900 25px/1 Fredoka;color:${ink}`)}>ULTRA RARE SIGNAL</div>
-          <div style={s(`font:900 11px Fredoka;color:${attentionBadgeText};background:${attentionBadgeBackground};border-radius:999px;padding:5px 10px;margin-top:7px`)}>only a tiny window is open</div>
-          <div style={s(`position:relative;width:100%;height:250px;border-radius:28px;background:${item.imageUrl ? item.stripe : artKind ? artStageBackground('vinyl', artKind) : item.stripe};border:1.5px solid #EEEAF8;margin:13px 0 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 12px 24px rgba(106,90,205,.18)`)}>
+          <div style={s('width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:10px')}>
+            <span style={s("display:inline-flex;align-items:center;gap:5px;background:#FF3D9A;color:#fff;border-radius:999px;padding:5px 10px;font:900 10px 'Fredoka';box-shadow:0 4px 0 #D11C77")}>
+              <span className="mi" style={s("font-size:13px;font-variation-settings:'FILL' 1")}>notifications_active</span>
+              ULTRA RARE SIGNAL
+            </span>
+          </div>
+          <div style={s(`position:relative;width:100%;height:250px;border-radius:25px;background:${item.imageUrl ? item.stripe : artKind ? artStageBackground('vinyl', artKind) : item.stripe};border:2px solid #FF3D9A;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 12px 24px rgba(23,19,38,.16)`)}>
             {item.imageUrl ? (
               <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
             ) : (
               artKind && <ItemArt kind={artKind} artStyle="vinyl" width={184} />
             )}
           </div>
-          <div style={s(`font:900 20px Fredoka;color:${ink}`)}>{item.name}</div>
-          <div style={s(`display:flex;align-items:center;gap:6px;margin-top:5px;font:900 13px 'Fredoka';color:${brand}`)}>
-            <span style={s(`width:18px;height:18px;border-radius:50%;background:${ink};color:#fff;display:inline-flex;align-items:center;justify-content:center;font:900 10px 'Fredoka'`)}>Y</span>
+          <div style={s(`margin-top:10px;font:900 22px/1 'Fredoka';color:${ink}`)}>{item.name}</div>
+          <div style={s(`display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;font:900 14px 'Fredoka';color:${brand}`)}>
+            <span style={s(`width:19px;height:19px;border-radius:50%;background:${ink};color:#fff;display:inline-flex;align-items:center;justify-content:center;font:900 10px 'Fredoka'`)}>Y</span>
             {item.price}
-            <span style={s(`color:${muted};font:800 11px 'Nunito'`)}>{item.stockLabel}</span>
           </div>
-          <div style={s('display:grid;grid-template-columns:1.2fr .9fr;gap:9px;width:100%;margin-top:16px')}>
-            <button type="button" onClick={onView} style={s(`height:50px;border:0;border-radius:15px;background:${brand};color:#fff;font:900 14px Fredoka;cursor:pointer;box-shadow:0 5px 0 #4B3BA6`)}>
+          <div style={s('display:grid;grid-template-columns:1.15fr .85fr;gap:9px;width:100%;margin-top:13px')}>
+            <button type="button" onClick={onView} style={s(`height:47px;border:0;border-radius:14px;background:${brand};color:#fff;font:900 13px Fredoka;cursor:pointer;box-shadow:0 5px 0 #4B3BA6`)}>
               Open signal
             </button>
-            <button type="button" onClick={onSkip} style={s(`height:50px;border:1.5px solid ${line};border-radius:15px;background:${wash};color:${ink};font:900 14px Fredoka;cursor:pointer`)}>
+            <button type="button" onClick={onSkip} style={s(`height:47px;border:1.5px solid ${line};border-radius:14px;background:${wash};color:${ink};font:900 13px Fredoka;cursor:pointer`)}>
               Keep scrolling
             </button>
           </div>

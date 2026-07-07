@@ -13,6 +13,7 @@ import {
 import IOSDevice from './components/IOSDevice.jsx';
 import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
+import UltraSignalPreview from './components/UltraSignalPreview.jsx';
 import YoinkNav from './components/YoinkNav.jsx';
 import { addListingToCart, decrementCartItem, getCartQuantity } from './cart.js';
 import { claimAllowance, fetchOrders, fetchWallet, placeOrder, spinWheel } from './api.js';
@@ -46,6 +47,14 @@ const TAB_ACCENTS = {
 function isExpoShell() {
   try {
     return new URLSearchParams(window.location.search).get('shell') === 'expo';
+  } catch {
+    return false;
+  }
+}
+
+function isUltraSignalPreview() {
+  try {
+    return new URLSearchParams(window.location.search).get('ultraSignalPreview') === '1';
   } catch {
     return false;
   }
@@ -128,6 +137,11 @@ function CoinRewardsSheet({
 }
 
 export default function App() {
+  if (isUltraSignalPreview()) return <UltraSignalPreview />;
+  return <YoinkApp />;
+}
+
+function YoinkApp() {
   const nativeShell = isExpoShell();
   const [flow, setFlow] = useState(() => ({
     screen: getInitialScreen(),

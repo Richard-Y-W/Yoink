@@ -62,9 +62,11 @@ test('market UI renders timed flash cards and ultra burst with haptic hooks', ()
   assert.match(marketSource, /UltraDropBurst/);
   assert.match(marketSource, /ULTRA RARE SIGNAL/);
   assert.match(marketSource, /position:fixed;inset:0;z-index:970/);
+  assert.match(marketSource, /backdrop-filter:blur\(2px\)/);
   assert.match(marketSource, /width:100%;height:250px/);
   assert.match(marketSource, /object-fit:cover/);
   assert.doesNotMatch(marketSource, /object-fit:contain/);
+  assert.doesNotMatch(marketSource, /item\.stockLabel/);
   assert.doesNotMatch(marketSource, /width:7px;height:7px;border-radius:50%/);
   assert.match(marketSource, /DROP_REVEAL_WINDOWS/);
   assert.match(marketSource, /makeTimedDrop/);
