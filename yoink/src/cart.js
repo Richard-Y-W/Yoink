@@ -37,6 +37,14 @@ export function addListingToCart(cartItems, listing, quantity = 1) {
   ));
 }
 
+export function decrementCartItem(cartItems, itemId) {
+  return cartItems.flatMap((cartItem) => {
+    if (cartItem.id !== itemId) return [cartItem];
+    if (cartItem.quantity <= 1) return [];
+    return [{ ...cartItem, quantity: cartItem.quantity - 1 }];
+  });
+}
+
 export function getCartQuantity(cartItems) {
   return cartItems.reduce((total, item) => total + item.quantity, 0);
 }

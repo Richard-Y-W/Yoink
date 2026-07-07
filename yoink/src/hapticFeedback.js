@@ -11,6 +11,8 @@ export const HAPTIC_EVENTS = Object.freeze({
   orders: 'orders',
   deliveryUpdate: 'delivery-update',
   reward: 'reward',
+  rareFlash: 'rare-flash',
+  ultraDrop: 'ultra-drop',
 });
 
 export function emitHaptic(name) {

@@ -69,9 +69,6 @@ export function makeStarRow(rating) {
 }
 
 export function makeProductDetail(listing = {}) {
-  const isAuction = listing.cta === 'Bid' || listing.isAuction;
-  const isOffer = listing.cta === 'Offer' || listing.isOffer;
-
   const seller = listing.seller ?? 'pixelpawn';
 
   return {
@@ -83,16 +80,16 @@ export function makeProductDetail(listing = {}) {
     price: listing.price ?? '640',
     seller,
     sellerFeedback: listing.fb ?? '100%',
-    primaryCta: isAuction ? 'Place bid' : isOffer ? 'Make offer' : 'Add to cart',
-    secondaryCta: isAuction ? 'Buy it now' : isOffer ? 'Add to cart' : 'Buy now',
+    primaryCta: 'Add to cart',
+    secondaryCta: 'Buy now',
     salePrice: listing.price ?? '640',
     originalPrice: '900',
     discount: '29% off',
     socialProof: listing.editionLabel ?? '500+ yoinked this month',
     eyeing: '18',
     coinBack: '+64 coins',
-    scarcity: isAuction ? `${listing.bids ?? '23'} bids` : listing.stockLabel ?? 'Only 8 left',
-    dealEnds: listing.timeLeft ? `Deal ends ${listing.timeLeft}` : 'Deal ends 12:08',
+    scarcity: listing.stockLabel ?? 'Only 8 left',
+    dealEnds: listing.flashTier === 'ultra' ? 'Ultra drop is live now' : 'Fresh listing is live',
     rating: '4.5',
     ratingCount: '290',
     quantityAvailable: listing.stockLeft ?? 8,

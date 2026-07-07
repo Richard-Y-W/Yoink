@@ -19,8 +19,54 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
+function RareDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
+  if (!item) return null;
+
+  return (
+    <div style={s('position:absolute;inset:0;z-index:970;background:rgba(23,19,38,.36);display:flex;align-items:center;justify-content:center;padding:20px;animation:ypop .22s ease both')}>
+      <div style={s("position:relative;width:100%;max-width:360px;overflow:hidden;border:2px solid #FFB84D;border-radius:24px;background:#fff;padding:22px 18px 18px;box-shadow:0 16px 0 rgba(255,184,77,.24),0 18px 40px rgba(23,19,38,.30);text-align:center")}>
+        <div style={s('position:absolute;inset:-80px;background:radial-gradient(circle at 50% 30%,#FFF2C7 0 16%,transparent 17%),radial-gradient(circle at 18% 72%,#FFE4F1 0 10%,transparent 11%),radial-gradient(circle at 86% 78%,#B8F5D0 0 10%,transparent 11%);opacity:.9;pointer-events:none')} />
+        <div style={s('position:relative;display:flex;flex-direction:column;align-items:center')}>
+          <div style={s("width:58px;height:58px;border-radius:20px;background:#FF3D9A;color:#fff;display:flex;align-items:center;justify-content:center;font:900 36px 'Fredoka';box-shadow:0 7px 0 #D11C77")}>!</div>
+          <div style={s(`margin-top:10px;font:900 25px 'Fredoka';color:${ink}`)}>ULTRA RARE DROP</div>
+          <div style={s(`font:800 12px 'Nunito';color:${muted};margin-top:3px`)}>A one-off style listing just surfaced.</div>
+          <div style={s(`position:relative;width:156px;height:134px;border-radius:32px;background:${item.imageUrl ? '#fff' : item.stripe};border:1.5px solid #EEEAF8;margin:16px 0 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 18px rgba(106,90,205,.16)`)}>
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:contain;display:block;padding:10px;box-sizing:border-box')} />
+            ) : (
+              <ItemArt kind={resolveArtKind(item)} artStyle="vinyl" width={116} />
+            )}
+          </div>
+          <div style={s(`font:900 18px 'Fredoka';color:${ink}`)}>{item.name}</div>
+          <div style={s(`display:flex;align-items:center;gap:6px;margin-top:5px;font:900 13px 'Fredoka';color:${brand}`)}>
+            <span style={s(`width:18px;height:18px;border-radius:50%;background:${ink};color:#fff;display:inline-flex;align-items:center;justify-content:center;font:900 10px 'Fredoka'`)}>Y</span>
+            {item.price}
+            <span style={s(`color:${muted};font:800 11px 'Nunito'`)}>{item.stockLabel}</span>
+          </div>
+          <div style={s('display:grid;grid-template-columns:1.2fr .9fr;gap:9px;width:100%;margin-top:16px')}>
+            <button type="button" onClick={onView} style={s(`height:48px;border:0;border-radius:15px;background:${brand};color:#fff;font:900 14px 'Fredoka';cursor:pointer;box-shadow:0 5px 0 #4B3BA6`)}>
+              View listing
+            </button>
+            <button type="button" onClick={onSkip} style={s(`height:48px;border:1.5px solid ${line};border-radius:15px;background:${wash};color:${ink};font:900 14px 'Fredoka';cursor:pointer`)}>
+              Keep scrolling
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl' }) {
   const artKind = resolveArtKind(item);
+  const rare = item.flashTier === 'rare';
+  const ultra = item.flashTier === 'ultra';
+  const flashBorder = ultra ? '#FF3D9A' : rare ? '#FFB84D' : '#EDEAF6';
+  const flashShadow = ultra
+    ? '0 9px 0 rgba(255,61,154,.12),0 4px 14px rgba(23,19,38,.08)'
+    : rare
+      ? '0 9px 0 rgba(255,184,77,.16),0 4px 14px rgba(23,19,38,.08)'
+      : '0 2px 8px rgba(23,19,38,.05)';
   return (
     <div
       role="button"
@@ -32,15 +78,18 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
           onOpenProduct(item, 'listing');
         }
       }}
-      style={s("position:relative;display:flex;gap:11px;background:#fff;border:1px solid #EDEAF6;border-radius:14px;padding:10px;box-shadow:0 2px 8px rgba(23,19,38,.05);cursor:pointer")}
+      style={s(`position:relative;display:flex;gap:11px;background:#fff;border:${rare || ultra ? '2px' : '1px'} solid ${flashBorder};border-radius:14px;padding:10px;box-shadow:${flashShadow};cursor:pointer;${rare || ultra ? 'animation:ypop .36s ease both' : ''}`)}
     >
+      {rare && (
+        <div style={s("position:absolute;top:-12px;left:14px;z-index:2;display:flex;align-items:center;gap:5px;background:#FF3D9A;color:#fff;border-radius:999px;padding:4px 9px;font:900 10px 'Fredoka';box-shadow:0 4px 0 rgba(209,28,119,.35)")}>
+          <span style={s("width:16px;height:16px;border-radius:7px;background:#fff;color:#FF3D9A;display:flex;align-items:center;justify-content:center;font:900 13px 'Fredoka'")}>!</span>
+          RARE FLASH
+        </div>
+      )}
       <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${item.imageUrl ? '#fff' : artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center`)}>
         {item.imageUrl ? (
           <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
         ) : artKind && <ItemArt kind={artKind} artStyle={artStyle} width={86} />}
-        <div style={s("position:absolute;bottom:4px;left:4px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.85);font:600 8px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>
-          {item.img}
-        </div>
       </div>
       <div style={s("flex:1;min-width:0;display:flex;flex-direction:column")}>
         <div style={s(`font:700 13px/1.28 'Nunito';color:${ink};max-height:34px;overflow:hidden;padding-right:22px`)}>
@@ -57,15 +106,9 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
             </span>
           )}
           {item.isBin && <span style={s("font:700 10.5px 'Nunito';color:#7A7686")}>Buy It Now</span>}
-          {item.isOffer && <span style={s("font:700 10.5px 'Nunito';color:#7A7686")}>or Best Offer</span>}
-          {item.calm && (
+          {ultra && (
             <span style={s(`font:700 10.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:1px 6px;border-radius:5px`)}>
-              {item.bids} Bids &middot; {item.timeLeft} left
-            </span>
-          )}
-          {item.urgent && (
-            <span style={s(`font:700 10.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:1px 6px;border-radius:5px`)}>
-              {item.bids} Bids &middot; ends {item.timeLeft}
+              Ultra Rare Drop
             </span>
           )}
         </div>
@@ -132,6 +175,8 @@ export default function MonoMarket({
   searchMode = false,
   onSearchSubmit = () => {},
   onPageLoad = () => {},
+  onRareFlash = () => {},
+  onUltraRareFlash = () => {},
   bell = null,
   onBellTap = () => {},
 }) {
@@ -141,6 +186,7 @@ export default function MonoMarket({
   const [mode, setMode] = useState('All');
   const [sortIndex, setSortIndex] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [ultraBurstItem, setUltraBurstItem] = useState(null);
 
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
   const cycleSort = () => setSortIndex((current) => (current + 1) % MARKET_SORTS.length);
@@ -148,6 +194,7 @@ export default function MonoMarket({
   const searchInputRef = useRef(null);
   const lastLoadRef = useRef(0);
   const loadingMoreRef = useRef(false);
+  const announcedFlashIdsRef = useRef(new Set());
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
@@ -164,6 +211,21 @@ export default function MonoMarket({
     if (!searchMode) return;
     searchInputRef.current?.focus?.();
   }, [searchMode]);
+
+  useEffect(() => {
+    const newFlashItems = feed.filter((item) => (
+      item.flashTier && !announcedFlashIdsRef.current.has(item.id)
+    ));
+    if (newFlashItems.length === 0) return;
+    newFlashItems.forEach((item) => announcedFlashIdsRef.current.add(item.id));
+    const ultra = newFlashItems.find((item) => item.flashTier === 'ultra');
+    if (ultra) {
+      onUltraRareFlash(ultra);
+      setUltraBurstItem(ultra);
+      return;
+    }
+    onRareFlash(newFlashItems[0]);
+  }, [feed, onRareFlash, onUltraRareFlash]);
 
   // Next pages come from the backend; the local generator (same logic the
   // server uses) stays as an offline fallback so scrolling never dead-ends.
@@ -248,6 +310,15 @@ export default function MonoMarket({
 
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
+      <RareDropBurst
+        item={ultraBurstItem}
+        onView={() => {
+          const item = ultraBurstItem;
+          setUltraBurstItem(null);
+          if (item) onOpenProduct(item, 'ultra-drop');
+        }}
+        onSkip={() => setUltraBurstItem(null)}
+      />
       <div style={s("position:sticky;top:0;z-index:30;background:#FFFFFF;padding:18px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
         <div style={s("display:flex;align-items:center;justify-content:space-between;margin-bottom:10px")}>
           <div style={s("display:flex;align-items:center;gap:8px")}>

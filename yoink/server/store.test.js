@@ -119,7 +119,8 @@ test('feed pages come from the shared generator and clamp to the max', () => {
   const store = createStore();
   const page = store.getFeed(8, 8);
   assert.equal(page.items.length, 8);
-  assert.equal(page.items[0].id, 'drop-desk-pets-mochi-blob');
+  assert.equal(page.items[0].id, 'drop-desk-pets-sleepy-star-charm');
+  assert.equal(page.items.some((item) => item.flashTier === 'ultra'), true);
   assert.equal(store.getFeed(page.total, 8).items.length, 0);
 });
 

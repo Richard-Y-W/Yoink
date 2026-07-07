@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { formatMoney, getCartQuantity, getCheckoutTotals, getPromoRate } from '../cart.js';
 import { marketTheme } from '../marketTheme.js';
 import { s } from '../style.js';
@@ -144,8 +144,8 @@ function CartSummary({ cartItems, itemLabel }) {
   const firstItem = cartItems[0];
   const extraCount = cartItems.length - 1;
   const itemDescription = extraCount > 0
-    ? `${itemLabel} - ${firstItem.imageLabel} + ${extraCount} more`
-    : `${itemLabel} - ${firstItem.imageLabel}`;
+    ? `${itemLabel} - ${firstItem.title} + ${extraCount} more`
+    : `${itemLabel} - ${firstItem.title}`;
 
   return (
     <div style={s("display:flex;align-items:center;gap:13px")}>
@@ -169,7 +169,7 @@ function CartSummary({ cartItems, itemLabel }) {
   );
 }
 
-function CartItemRow({ item }) {
+function CartItemRow({ item, onDecreaseItem = () => {} }) {
   return (
     <div style={s("display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1.5px solid #EFECF6")}>
       <div style={s(`position:relative;width:54px;height:54px;border-radius:15px;background:${item.imageStripe};border:1.5px solid #EEEAF8;overflow:hidden;flex:none`)}>
@@ -183,15 +183,23 @@ function CartItemRow({ item }) {
           {item.title}
         </strong>
         <span style={s(`display:block;margin-top:2px;font:700 11.5px/1.25 'Nunito';color:${muted};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>
-          {item.imageLabel} - {item.seller} {item.feedback}
+          {item.seller} {item.feedback}
         </span>
       </div>
+      <button
+        type="button"
+        aria-label="Subtract item from cart"
+        onClick={() => onDecreaseItem(item.id)}
+        style={s(`width:32px;height:32px;border:1.5px solid ${line};border-radius:11px;background:${wash};display:flex;align-items:center;justify-content:center;cursor:pointer;color:${ink};flex:none`)}
+      >
+        <span className="mi" style={s('font-size:19px')}>remove</span>
+      </button>
       <div style={s(`font:900 13px 'Fredoka';color:${ink}`)}>{formatMoney(item.unitPrice * item.quantity)}</div>
     </div>
   );
 }
 
-export default function Checkout({ cartItems = [], balance = 0, onBack = () => {}, onPlaceOrder = null, onToast = () => {} }) {
+export default function Checkout({ cartItems = [], balance = 0, onBack = () => {}, onPlaceOrder = null, onDecreaseItem = () => {}, onToast = () => {} }) {
   const [expandedRow, setExpandedRow] = useState({
     address: false,
     shipping: false,
@@ -208,6 +216,7 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
   const [promoInput, setPromoInput] = useState('');
   const [promoCode, setPromoCode] = useState(null);
   const [promoError, setPromoError] = useState(false);
+  const placingRef = useRef(false);
 
   const applyPromo = () => {
     if (getPromoRate(promoInput) > 0) {
@@ -231,7 +240,8 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
   };
 
   const handleYoinkNow = async () => {
-    if (!onPlaceOrder || cartItems.length === 0 || placing) return;
+    if (!onPlaceOrder || cartItems.length === 0 || placing || placingRef.current) return;
+    placingRef.current = true;
     setPlacing(true);
     setOrderError(null);
     try {
@@ -246,7 +256,10 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
     } catch {
       setOrderError({ error: 'Something snagged — try again' });
     } finally {
-      setPlacing(false);
+      window.setTimeout(() => {
+        placingRef.current = false;
+        setPlacing(false);
+      }, 900);
     }
   };
 
@@ -371,7 +384,7 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
         </div>
 
         <div style={s("margin-top:12px")}>
-          {cartItems.map((item) => <CartItemRow key={item.id} item={item} />)}
+          {cartItems.map((item) => <CartItemRow key={item.id} item={item} onDecreaseItem={onDecreaseItem} />)}
         </div>
 
         <div style={s("margin-top:16px;display:flex;flex-direction:column;gap:8px")}>

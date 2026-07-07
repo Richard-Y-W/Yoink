@@ -116,9 +116,7 @@ export default function ProductDetail({
     onOpenCart();
   };
   const bidOrOffer = () => {
-    onToast(detail.primaryCta === 'Place bid'
-      ? 'Bidding wars open soon — Buy it now works today!'
-      : 'Haggling opens soon — Add to cart works today!');
+    onToast('This listing is direct-buy only right now.');
   };
   const handlePrimary = primaryAddsToCart ? playCartMotion : bidOrOffer;
   const handleSecondary = secondaryAddsToCart ? playCartMotion : buyNow;
@@ -169,9 +167,6 @@ export default function ProductDetail({
         <div style={s(`position:absolute;top:54px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:5px 12px 5px 9px;border-radius:999px;background:${attentionBadgeBackground};font:700 11px 'Fredoka';color:${attentionBadgeText};box-shadow:0 3px 10px rgba(23,19,38,.14)`)}>
           <span className="mi" style={s("font-size:14px;font-variation-settings:'FILL' 1")}>bolt</span>
           RARE FIND
-        </div>
-        <div style={s("position:absolute;bottom:14px;left:14px;padding:3px 9px;border-radius:8px;background:rgba(255,255,255,.82);font:600 9.5px ui-monospace,Menlo,monospace;color:#6E6A7A")}>
-          {detail.imageLabel}
         </div>
         <div style={s("position:absolute;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:6px")}>
           {detail.dots.map((dot, index) => (

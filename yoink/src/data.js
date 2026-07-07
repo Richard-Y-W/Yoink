@@ -298,25 +298,47 @@ const YOINK_DROP_CATALOG = [
   },
 ];
 
-export const MARKET_MAX_ITEMS = YOINK_DROP_CATALOG.length;
+const MARKET_FEED_ORDER = [
+  'drop-pocket-tech-pocket-pixel-mp3',
+  'drop-pocket-tech-jelly-flip-phone',
+  'drop-desk-pets-mochi-blob',
+  'drop-desk-pets-button-eye-sprout',
+  'drop-snack-relics-capsule-ghost-toy',
+  'drop-holo-finds-lucky-pog-stack',
+  'drop-pocket-tech-bubble-crt',
+  'drop-snack-relics-cereal-prize-rocket',
+  'drop-desk-pets-sleepy-star-charm',
+  'drop-holo-finds-frog-foil-card',
+  'drop-pocket-tech-flashpop-toy-camera',
+  'drop-holo-finds-cosmic-sticker-slab',
+  'drop-desk-pets-tiny-desk-dino',
+  'drop-snack-relics-vending-ring-pop-relic',
+  'drop-holo-finds-glimmer-ticket-relic',
+  'drop-snack-relics-crinkle-pack-mascot',
+];
+
+const MARKET_FEED_CATALOG = MARKET_FEED_ORDER
+  .map((id) => YOINK_DROP_CATALOG.find((item) => item.id === id))
+  .filter(Boolean);
+
+export const MARKET_MAX_ITEMS = MARKET_FEED_CATALOG.length;
+
+const flashTierFor = (rarity) => {
+  if (rarity === 'Rare') return 'rare';
+  if (rarity === 'Ultra Rare' || rarity === 'One-Off') return 'ultra';
+  return null;
+};
 
 function decorateDropListing(item, index) {
-  const isAuction = item.mode === 'auction';
-  const isOffer = item.mode === 'offer';
-  const isBin = item.mode === 'bin';
-  const urgent = isAuction && item.stockLeft <= 5;
+  const flashTier = flashTierFor(item.rarity);
 
   return {
     ...item,
     cond: `${item.rarity} Drop`,
-    cta: isAuction ? 'Bid' : isOffer ? 'Offer' : 'Buy',
-    isAuction,
-    isOffer,
-    isBin,
-    urgent,
-    calm: isAuction && !urgent,
-    bids: String(5 + index * 3),
-    timeLeft: urgent ? `${12 + index}m` : `${1 + (index % 4)}d ${6 + index}h`,
+    cta: 'Buy',
+    isAuction: false,
+    isOffer: false,
+    isBin: true,
     price: item.price.toLocaleString(),
     shipFree: item.rarity !== 'One-Off',
     paidShip: item.rarity === 'One-Off',
@@ -326,13 +348,16 @@ function decorateDropListing(item, index) {
     stripe: stripe(TINT[item.hue][0], TINT[item.hue][1]),
     editionLabel: `Edition of ${item.editionSize}`,
     stockLabel: `${item.stockLeft}/${item.editionSize} left`,
+    flashTier,
+    flashLabel: flashTier === 'rare' ? 'Rare Flash' : flashTier === 'ultra' ? 'Ultra Rare Drop' : null,
+    feedIndex: index,
   };
 }
 
 export function makeMarketFeed(start, count) {
   const safeStart = Math.max(0, Math.min(Number(start) || 0, MARKET_MAX_ITEMS));
   const safeCount = Math.max(0, Math.min(Number(count) || 0, MARKET_MAX_ITEMS - safeStart));
-  return YOINK_DROP_CATALOG
+  return MARKET_FEED_CATALOG
     .slice(safeStart, safeStart + safeCount)
     .map((item, index) => decorateDropListing(item, safeStart + index));
 }
@@ -344,12 +369,10 @@ export function appendMarketFeed(current, pageSize = MARKET_PAGE_SIZE, maxItems 
 }
 
 // Listing-mode filter behind the search bar's "All" chip.
-export const MARKET_MODES = ['All', 'Auctions', 'Buy now', 'Offers'];
+export const MARKET_MODES = ['All', 'Buy now'];
 
 const MODE_MATCHERS = {
-  Auctions: (item) => item.isAuction,
   'Buy now': (item) => item.isBin,
-  Offers: (item) => item.isOffer,
 };
 
 // Category chips map onto the generated catalog by keyword/condition.
@@ -386,17 +409,24 @@ export const MARKET_SORTS = [
   { id: 'best', label: 'Best match' },
   { id: 'price-low', label: 'Price: low first' },
   { id: 'price-high', label: 'Price: high first' },
-  { id: 'bids', label: 'Most bids' },
+  { id: 'rarity', label: 'Rare first' },
 ];
 
 const priceOf = (item) => Number(String(item.price).replace(/,/g, '')) || 0;
+const rarityRank = (item) => ({
+  'One-Off': 5,
+  'Ultra Rare': 4,
+  Rare: 3,
+  Uncommon: 2,
+  Common: 1,
+}[item.rarity] ?? 0);
 
 export function sortMarketFeed(items, sortId = 'best') {
   if (sortId === 'best') return items;
   const sorted = [...items];
   if (sortId === 'price-low') sorted.sort((a, b) => priceOf(a) - priceOf(b));
   if (sortId === 'price-high') sorted.sort((a, b) => priceOf(b) - priceOf(a));
-  if (sortId === 'bids') sorted.sort((a, b) => Number(b.bids) - Number(a.bids));
+  if (sortId === 'rarity') sorted.sort((a, b) => rarityRank(b) - rarityRank(a) || priceOf(b) - priceOf(a));
   return sorted;
 }
 

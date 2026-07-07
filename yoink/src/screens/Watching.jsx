@@ -35,9 +35,6 @@ function WatchedCard({ item, onOpenProduct, onToggleWatchedListing, artStyle = '
         >
           <span className="mi" style={s("font-size:18px;color:#FF3D9A;font-variation-settings:'FILL' 1")}>favorite</span>
         </button>
-        <div style={s("position:absolute;bottom:8px;left:8px;padding:2px 7px;border-radius:7px;background:rgba(255,255,255,.86);font:700 8px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>
-          {item.img}
-        </div>
       </div>
       <div style={s("padding:10px 11px 12px")}>
         <div style={s(`font:800 13px/1.25 'Nunito';color:${ink};height:33px;overflow:hidden`)}>
@@ -53,11 +50,6 @@ function WatchedCard({ item, onOpenProduct, onToggleWatchedListing, artStyle = '
           <span style={s(`font:800 9.5px 'Nunito';color:${ink};background:${wash};padding:3px 7px;border-radius:7px`)}>
             {item.cond}
           </span>
-          {item.urgent && (
-            <span style={s(`font:800 9.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:3px 7px;border-radius:7px`)}>
-              ends {item.timeLeft}
-            </span>
-          )}
         </div>
       </div>
     </div>

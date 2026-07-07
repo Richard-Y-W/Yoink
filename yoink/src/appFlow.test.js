@@ -17,14 +17,14 @@ test('app flow starts on mono market and opens 11a product detail from every lis
   const listing = { id: 'f12', cta: 'Buy', name: 'Cassette Walkman + 12 tapes' };
 
   assert.equal(getInitialScreen(), APP_SCREENS.home);
-  assert.deepEqual(getProductOpenTriggers(), ['listing', 'Buy', 'Bid', 'Offer']);
+  assert.deepEqual(getProductOpenTriggers(), ['listing', 'Buy', 'ultra-drop']);
 
-  const detailState = openProductDetail(listing, 'Offer');
+  const detailState = openProductDetail(listing, 'ultra-drop');
 
   assert.equal(detailState.screen, APP_SCREENS.productDetail);
   assert.equal(detailState.productDetailVariant, '11a');
   assert.equal(detailState.selectedListing, listing);
-  assert.equal(detailState.trigger, 'Offer');
+  assert.equal(detailState.trigger, 'ultra-drop');
   assert.deepEqual(returnToMarket(), { screen: APP_SCREENS.home, selectedListing: null });
 });
 

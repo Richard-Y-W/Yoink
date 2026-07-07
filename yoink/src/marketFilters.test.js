@@ -18,15 +18,13 @@ test('category chips narrow the feed to matching listings', () => {
 });
 
 test('the All chip cycles through real listing modes', () => {
-  assert.deepEqual(MARKET_MODES, ['All', 'Auctions', 'Buy now', 'Offers']);
-  assert.ok(filterMarketFeed(feed, { mode: 'Auctions' }).every((item) => item.isAuction));
+  assert.deepEqual(MARKET_MODES, ['All', 'Buy now']);
   assert.ok(filterMarketFeed(feed, { mode: 'Buy now' }).every((item) => item.isBin));
-  assert.ok(filterMarketFeed(feed, { mode: 'Offers' }).every((item) => item.isOffer));
 });
 
 test('filters compose: category + mode + query', () => {
-  const filtered = filterMarketFeed(feed, { category: 'Pocket Tech', mode: 'Buy now', query: 'crt' });
-  assert.deepEqual(filtered.map((item) => item.name), ['Bubble CRT']);
+  const filtered = filterMarketFeed(feed, { category: 'Pocket Tech', mode: 'Buy now', query: 'pixel' });
+  assert.deepEqual(filtered.map((item) => item.name), ['Pocket Pixel MP3']);
 });
 
 test('sort options reorder without mutating the input', () => {
@@ -39,6 +37,6 @@ test('sort options reorder without mutating the input', () => {
   for (let i = 1; i < low.length; i += 1) assert.ok(price(low[i - 1]) <= price(low[i]));
   assert.ok(price(high[0]) >= price(high[high.length - 1]));
 
-  const bids = sortMarketFeed(feed, 'bids');
-  for (let i = 1; i < bids.length; i += 1) assert.ok(Number(bids[i - 1].bids) >= Number(bids[i].bids));
+  const rare = sortMarketFeed(feed, 'rarity');
+  assert.ok(['One-Off', 'Ultra Rare'].includes(rare[0].rarity));
 });

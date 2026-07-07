@@ -27,7 +27,7 @@ export function openOrders(celebrateOrderId = null) {
   return { screen: APP_SCREENS.orders, selectedListing: null, celebrateOrderId };
 }
 
-const PRODUCT_OPEN_TRIGGERS = ['listing', 'Buy', 'Bid', 'Offer'];
+const PRODUCT_OPEN_TRIGGERS = ['listing', 'Buy', 'ultra-drop'];
 
 export function getInitialScreen() {
   return APP_SCREENS.home;

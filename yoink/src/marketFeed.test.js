@@ -9,16 +9,16 @@ test('market feed generates the Yoink drop catalog listing shape', () => {
   assert.equal(feed.length, 8);
   assert.equal(MARKET_MAX_ITEMS, 16);
   assert.deepEqual(marketCats, ['Pocket Tech', 'Holo Finds', 'Desk Pets', 'Snack Relics', 'Rare Drops']);
-  assert.equal(feed[0].id, 'drop-pocket-tech-bubble-crt');
-  assert.equal(feed[0].name, 'Bubble CRT');
+  assert.equal(feed[0].id, 'drop-pocket-tech-pocket-pixel-mp3');
+  assert.equal(feed[0].name, 'Pocket Pixel MP3');
   assert.equal(feed[0].family, 'Pocket Tech');
-  assert.equal(feed[0].rarity, 'Rare');
+  assert.equal(feed[0].rarity, 'Common');
   assert.equal(feed[0].cta, 'Buy');
   assert.equal(feed[1].cta, 'Buy');
   assert.equal(feed[2].cta, 'Buy');
-  assert.equal(feed[4].family, 'Holo Finds');
-  assert.equal(feed[0].topRated, true);
-  assert.match(feed[0].imageUrl, /^\/yoink-items\/pocket-tech-bubble-crt\.png$/);
+  assert.equal(feed[4].family, 'Snack Relics');
+  assert.equal(feed[0].topRated, false);
+  assert.match(feed[0].imageUrl, /^\/yoink-items\/pocket-tech-pocket-pixel-mp3\.png$/);
   assert.match(feed[0].stripe, /^repeating-linear-gradient/);
 });
 
@@ -27,7 +27,7 @@ test('market feed continues deterministically from an offset', () => {
   const next = makeMarketFeed(2, 2);
 
   assert.equal(first[1].id, 'drop-pocket-tech-jelly-flip-phone');
-  assert.equal(next[0].id, 'drop-pocket-tech-pocket-pixel-mp3');
+  assert.equal(next[0].id, 'drop-desk-pets-mochi-blob');
   assert.notEqual(first[0].name, next[0].name);
 });
 
@@ -36,7 +36,7 @@ test('market feed appends in pages and caps at the design limit', () => {
   const next = appendMarketFeed(current);
 
   assert.equal(next.length, 16);
-  assert.equal(next[14].id, 'drop-snack-relics-vending-ring-pop-relic');
+  assert.equal(next[14].id, 'drop-holo-finds-glimmer-ticket-relic');
   assert.equal(next[15].id, 'drop-snack-relics-crinkle-pack-mascot');
   assert.equal(appendMarketFeed(next), next);
 });

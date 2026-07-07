@@ -14,7 +14,7 @@ import IOSDevice from './components/IOSDevice.jsx';
 import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
 import YoinkNav from './components/YoinkNav.jsx';
-import { addListingToCart, getCartQuantity } from './cart.js';
+import { addListingToCart, decrementCartItem, getCartQuantity } from './cart.js';
 import { claimAllowance, fetchOrders, fetchWallet, placeOrder, spinWheel } from './api.js';
 import Account from './screens/Account.jsx';
 import Checkout from './screens/Checkout.jsx';
@@ -149,6 +149,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const screenRootRef = useRef(null);
+  const placingOrderRef = useRef(false);
   const [artStyle, setArtStyle] = useState(() => {
     try {
       const fromUrl = new URLSearchParams(window.location.search).get('art');
@@ -215,6 +216,10 @@ export default function App() {
     emitHaptic(HAPTIC_EVENTS.success);
     setCartItems((current) => addListingToCart(current, listing, quantity));
   };
+  const handleDecreaseCartItem = useCallback((itemId) => {
+    emitHaptic(HAPTIC_EVENTS.tap);
+    setCartItems((current) => decrementCartItem(current, itemId));
+  }, []);
   const watchedIds = useMemo(() => watchedListingIds(watchedListings), [watchedListings]);
   const handleOpenCart = () => {
     emitHaptic(HAPTIC_EVENTS.cart);
@@ -239,6 +244,16 @@ export default function App() {
   const handleMarketPageLoad = useCallback(() => {
     emitHaptic(HAPTIC_EVENTS.loaderPageLoad);
   }, []);
+  const handleRareFlash = useCallback(() => {
+    emitHaptic(HAPTIC_EVENTS.rareFlash);
+  }, []);
+  const handleUltraRareFlash = useCallback((item) => {
+    emitHaptic(HAPTIC_EVENTS.ultraDrop);
+    emitNativeNotification({
+      title: 'Ultra rare drop!',
+      body: `${item?.name ?? 'A rare item'} just surfaced in Yoink.`,
+    });
+  }, []);
   const handleDeliveryUpdate = useCallback(() => {
     emitHaptic(HAPTIC_EVENTS.deliveryUpdate);
     emitNativeNotification({
@@ -254,12 +269,22 @@ export default function App() {
   }, [watchedIds]);
 
   const handlePlaceOrder = async (options) => {
-    const result = await placeOrder({ items: cartItems, ...options });
-    if (result.ok) {
-      if (result.wallet) setWallet(result.wallet);
-      setYoinkedOrder(result.order);
+    if (placingOrderRef.current) {
+      return { ok: false, error: 'Already yoinking this order' };
     }
-    return result;
+    placingOrderRef.current = true;
+    try {
+      const result = await placeOrder({ items: cartItems, ...options });
+      if (result.ok) {
+        if (result.wallet) setWallet(result.wallet);
+        setYoinkedOrder(result.order);
+      }
+      return result;
+    } finally {
+      window.setTimeout(() => {
+        placingOrderRef.current = false;
+      }, 900);
+    }
   };
 
   const handleClaimDaily = useCallback(async () => {
@@ -340,6 +365,7 @@ export default function App() {
             balance={wallet.balance}
             onBack={handleCloseCheckout}
             onPlaceOrder={handlePlaceOrder}
+            onDecreaseItem={handleDecreaseCartItem}
             onToast={showToast}
           />
         ) : isProductDetail ? (
@@ -395,10 +421,12 @@ export default function App() {
             searchMode={flow.screen === APP_SCREENS.search}
             onSearchSubmit={handleSearchSubmit}
             onPageLoad={handleMarketPageLoad}
+            onRareFlash={handleRareFlash}
+            onUltraRareFlash={handleUltraRareFlash}
           />
         )}
         {toast && (
-          <div style={s("position:absolute;left:50%;bottom:112px;transform:translateX(-50%);z-index:940;display:flex;align-items:center;gap:9px;max-width:86%;background:#171326;color:#fff;padding:10px 16px;border-radius:999px;box-shadow:0 10px 24px rgba(23,19,38,.35);font:700 12.5px 'Fredoka';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:ypop .35s ease both")}>
+          <div style={s("position:absolute;left:16px;right:16px;bottom:112px;z-index:940;display:flex;align-items:center;justify-content:center;gap:9px;width:calc(100% - 32px);max-width:360px;margin:0 auto;background:#171326;color:#fff;padding:10px 16px;border-radius:18px;box-shadow:0 10px 24px rgba(23,19,38,.35);font:700 12.5px/1.25 'Fredoka';white-space:normal;overflow-wrap:anywhere;box-sizing:border-box;animation:ypop .35s ease both")}>
             <span className="mi" style={s("font-size:17px;color:#FFB84D;font-variation-settings:'FILL' 1;flex:none")}>auto_awesome</span>
             {toast}
           </div>
