@@ -132,7 +132,7 @@ export default function Account({
           <div style={s("position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px")}>
             {[
               { label: 'Streak', value: `${streak}d` },
-              { label: 'Watching', value: watchedCount },
+              { label: 'Pocket', value: watchedCount },
               { label: 'Orders', value: ordersInFlight },
             ].map((stat) => (
               <div key={stat.label} style={s(`background:${wash};border:1.5px solid ${line};border-radius:8px;padding:9px 6px;text-align:center`)}>

@@ -25,6 +25,7 @@ test('account screen is a shopping-app dashboard with cartoon market actions', (
   assert.match(accountSource, /onToast = \(\) => \{\}/);
   assert.match(accountSource, /onOpenPocket = \(\) => \{\}/);
   assert.doesNotMatch(accountSource, /onOpenWatching/);
+  assert.doesNotMatch(accountSource, /Watching/);
   assert.match(accountSource, /onOpenOrders = \(\) => \{\}/);
   assert.match(accountSource, /action\.onPress/);
   assert.match(accountSource, /stageMarkers/);
