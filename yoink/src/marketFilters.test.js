@@ -7,7 +7,7 @@ const price = (item) => Number(String(item.price).replace(/,/g, ''));
 
 test('category chips narrow the feed to matching listings', () => {
   const pocketTech = filterMarketFeed(feed, { category: 'Pocket Tech' });
-  assert.equal(pocketTech.length, 4);
+  assert.equal(pocketTech.length, 14);
   assert.ok(pocketTech.every((item) => item.family === 'Pocket Tech'));
 
   const rareDrops = filterMarketFeed(feed, { category: 'Rare Drops' });
@@ -24,7 +24,7 @@ test('the All chip cycles through real listing modes', () => {
 
 test('filters compose: category + mode + query', () => {
   const filtered = filterMarketFeed(feed, { category: 'Pocket Tech', mode: 'Buy now', query: 'pixel' });
-  assert.deepEqual(filtered.map((item) => item.name), ['Pocket Pixel MP3']);
+  assert.deepEqual(filtered.map((item) => item.name), ['Pocket Pixel MP3', 'Sky Pocket Pixel MP3', 'Grape Pocket Pixel MP3']);
 });
 
 test('sort options reorder without mutating the input', () => {

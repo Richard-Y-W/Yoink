@@ -13,7 +13,7 @@ test('rare and ultra rare items surface as direct marketplace flash purchases', 
   const firstPage = makeMarketFeed(0, 8);
   const secondPage = makeMarketFeed(8, 8);
 
-  assert.equal(MARKET_MAX_ITEMS, 16);
+  assert.equal(MARKET_MAX_ITEMS, 50);
   assert.ok(firstPage.some((item) => item.flashTier === 'rare'), 'rare flash should appear in the first loaded feed');
   assert.ok(firstPage.every((item) => item.flashTier !== 'ultra'), 'ultra drops should require more scrolling');
   assert.ok(secondPage.some((item) => item.flashTier === 'ultra'), 'ultra drops should surface later');
