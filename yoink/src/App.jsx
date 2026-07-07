@@ -18,6 +18,7 @@ import { fetchOrders, fetchWallet, placeOrder } from './api.js';
 import Account from './screens/Account.jsx';
 import Checkout from './screens/Checkout.jsx';
 import MonoMarket from './screens/MonoMarket.jsx';
+import Orders from './screens/Orders.jsx';
 import ProductDetail from './screens/ProductDetail.jsx';
 import Watching from './screens/Watching.jsx';
 import { ART_STYLES } from './itemArt.js';
@@ -36,6 +37,7 @@ import {
 const TAB_ACCENTS = {
   [APP_SCREENS.home]: '#6A5ACD',
   [APP_SCREENS.search]: '#6A5ACD',
+  [APP_SCREENS.orders]: '#6A5ACD',
   [APP_SCREENS.watching]: '#6A5ACD',
   [APP_SCREENS.account]: '#6A5ACD',
 };
@@ -141,9 +143,23 @@ export default function App() {
   };
   const handleCloseCheckout = () => setFlow((current) => returnFromCheckout(current));
   const handleSelectTab = (tab) => {
-    emitHaptic(HAPTIC_EVENTS.tab);
+    if (tab === APP_SCREENS.orders) {
+      emitHaptic(HAPTIC_EVENTS.orders);
+    } else {
+      emitHaptic(HAPTIC_EVENTS.tab);
+    }
     setFlow((current) => openTab(current, tab));
   };
+  const handleSearchSubmit = useCallback(() => {
+    emitHaptic(HAPTIC_EVENTS.searchSubmit);
+  }, []);
+  const handleMarketPageLoad = useCallback(() => {
+    emitHaptic(HAPTIC_EVENTS.loaderPageLoad);
+  }, []);
+  const handleDeliveryUpdate = useCallback(() => {
+    emitHaptic(HAPTIC_EVENTS.deliveryUpdate);
+    refreshOrdersBadge();
+  }, [refreshOrdersBadge]);
   const handleToggleWatchedListing = useCallback((listing) => {
     const alreadyWatched = watchedIds.includes(listing?.id);
     emitHaptic(alreadyWatched ? HAPTIC_EVENTS.unwatch : HAPTIC_EVENTS.watch);
@@ -211,6 +227,12 @@ export default function App() {
             onToggleWatchedListing={handleToggleWatchedListing}
             artStyle={artStyle}
           />
+        ) : flow.screen === APP_SCREENS.orders ? (
+          <Orders
+            balance={wallet.balance}
+            celebrateOrderId={flow.celebrateOrderId}
+            onDeliveryUpdate={handleDeliveryUpdate}
+          />
         ) : flow.screen === APP_SCREENS.account ? (
           <Account
             balance={wallet.balance}
@@ -232,6 +254,9 @@ export default function App() {
             onCycleArtStyle={cycleArtStyle}
             watchedIds={watchedIds}
             onToggleWatchedListing={handleToggleWatchedListing}
+            searchMode={flow.screen === APP_SCREENS.search}
+            onSearchSubmit={handleSearchSubmit}
+            onPageLoad={handleMarketPageLoad}
           />
         )}
         {toast && (

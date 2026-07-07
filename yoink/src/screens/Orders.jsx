@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { s } from '../style.js';
 import { fetchOrders } from '../api.js';
 import { formatMoney } from '../cart.js';
@@ -87,13 +87,28 @@ function OrderCard({ order, celebrate }) {
   );
 }
 
-export default function Orders({ balance = 0, celebrateOrderId = null }) {
+export default function Orders({ balance = 0, celebrateOrderId = null, onDeliveryUpdate = () => {} }) {
   const [orders, setOrders] = useState(null);
+  const stageIndexByOrderRef = useRef(new Map());
 
   useEffect(() => {
     let alive = true;
     const load = () => fetchOrders().then((data) => {
-      if (alive && data.orders) setOrders(data.orders);
+      if (!alive || !data.orders) return;
+      const nextStages = new Map();
+      let advanced = false;
+
+      for (const order of data.orders) {
+        const previousStageIndex = stageIndexByOrderRef.current.get(order.id);
+        if (typeof previousStageIndex === 'number' && order.stageIndex > previousStageIndex) {
+          advanced = true;
+        }
+        nextStages.set(order.id, order.stageIndex);
+      }
+
+      stageIndexByOrderRef.current = nextStages;
+      setOrders(data.orders);
+      if (advanced) onDeliveryUpdate();
     }).catch(() => {});
     load();
     const timer = window.setInterval(load, 3000);
@@ -101,7 +116,7 @@ export default function Orders({ balance = 0, celebrateOrderId = null }) {
       alive = false;
       window.clearInterval(timer);
     };
-  }, []);
+  }, [onDeliveryUpdate]);
 
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>

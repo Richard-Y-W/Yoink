@@ -1,6 +1,7 @@
 export const APP_SCREENS = {
   home: 'home',
   search: 'search',
+  orders: 'orders',
   watching: 'watching',
   account: 'account',
   productDetail: 'product-detail',
@@ -12,6 +13,7 @@ export const APP_SCREENS = {
 export const TAB_SCREENS = [
   APP_SCREENS.home,
   APP_SCREENS.search,
+  APP_SCREENS.orders,
   APP_SCREENS.watching,
   APP_SCREENS.account,
 ];
@@ -22,7 +24,7 @@ export function openTab(currentFlow, tab) {
 }
 
 export function openOrders(celebrateOrderId = null) {
-  return { screen: APP_SCREENS.account, selectedListing: null, celebrateOrderId };
+  return { screen: APP_SCREENS.orders, selectedListing: null, celebrateOrderId };
 }
 
 const PRODUCT_OPEN_TRIGGERS = ['listing', 'Buy', 'Bid', 'Offer'];

@@ -12,6 +12,7 @@ test('app emits haptics for high-value shopping interactions', () => {
   assert.match(appSource, /emitHaptic\(HAPTIC_EVENTS\.success\);/);
   assert.match(appSource, /emitHaptic\(HAPTIC_EVENTS\.cart\);/);
   assert.match(appSource, /emitHaptic\(HAPTIC_EVENTS\.tab\);/);
+  assert.match(appSource, /emitHaptic\(HAPTIC_EVENTS\.orders\);/);
   assert.match(appSource, /HAPTIC_EVENTS\.watch/);
   assert.match(appSource, /HAPTIC_EVENTS\.unwatch/);
 });

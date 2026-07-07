@@ -126,6 +126,9 @@ export default function MonoMarket({
   onCycleArtStyle = () => {},
   watchedIds = [],
   onToggleWatchedListing = () => {},
+  searchMode = false,
+  onSearchSubmit = () => {},
+  onPageLoad = () => {},
   bell = null,
   onBellTap = () => {},
 }) {
@@ -138,17 +141,29 @@ export default function MonoMarket({
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
   const cycleSort = () => setSortIndex((current) => (current + 1) % MARKET_SORTS.length);
   const feedEndRef = useRef(null);
+  const searchInputRef = useRef(null);
   const lastLoadRef = useRef(0);
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
+  const notifiedFeedLengthRef = useRef(MARKET_PAGE_SIZE);
   useEffect(() => {
     feedLengthRef.current = feed.length;
-  }, [feed]);
+    if (feed.length > notifiedFeedLengthRef.current) {
+      notifiedFeedLengthRef.current = feed.length;
+      onPageLoad();
+    }
+  }, [feed.length, onPageLoad]);
+
+  useEffect(() => {
+    if (!searchMode) return;
+    searchInputRef.current?.focus?.();
+  }, [searchMode]);
 
   // Next pages come from the backend; the local generator (same logic the
   // server uses) stays as an offline fallback so scrolling never dead-ends.
   const loadMore = useCallback(() => {
+    if (feedLengthRef.current >= MARKET_MAX_ITEMS) return;
     const now = Date.now();
     if (now - lastLoadRef.current < 200) return;
     lastLoadRef.current = now;
@@ -175,50 +190,45 @@ export default function MonoMarket({
   }, [filtersActive, hasMore, visibleFeed.length, loadMore, feed.length]);
 
   useEffect(() => {
-    let tries = 0;
-    let scrollContainer;
-    let timer;
+    const target = feedEndRef.current;
+    if (!target) return undefined;
 
-    const arm = () => {
-      let node = feedEndRef.current?.parentElement ?? null;
-      while (node) {
-        const overflowY = getComputedStyle(node).overflowY;
-        if (overflowY === 'auto' || overflowY === 'scroll') break;
-        node = node.parentElement;
-      }
+    if (typeof IntersectionObserver === 'function') {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) loadMore();
+      }, { root: null, rootMargin: '380px 0px 520px', threshold: 0.01 });
+      observer.observe(target);
+      return () => observer.disconnect();
+    }
 
-      if (!node) {
-        if (tries < 60) {
-          tries += 1;
-          timer = window.setTimeout(arm, 100);
-        }
-        return;
-      }
-
-      scrollContainer = node;
-      const onScroll = () => {
-        if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 380) {
-          loadMore();
-        }
-      };
-
-      scrollContainer.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      timer = () => scrollContainer.removeEventListener('scroll', onScroll);
+    const onScroll = () => {
+      const viewportBottom = window.scrollY + window.innerHeight;
+      const pageBottom = Math.max(
+        document.documentElement?.scrollHeight ?? 0,
+        document.body?.scrollHeight ?? 0,
+      );
+      if (viewportBottom >= pageBottom - 420) loadMore();
     };
 
-    arm();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
 
     return () => {
-      if (typeof timer === 'number') window.clearTimeout(timer);
-      if (typeof timer === 'function') timer();
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, [loadMore]);
 
+  const submitSearch = () => {
+    if (!query.trim() && !searchMode) return;
+    searchInputRef.current?.blur?.();
+    onSearchSubmit();
+  };
+
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
-      <div style={s("position:sticky;top:0;z-index:30;background:#FFFFFF;padding:47px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
+      <div style={s("position:sticky;top:0;z-index:30;background:#FFFFFF;padding:18px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
         <div style={s("display:flex;align-items:center;justify-content:space-between;margin-bottom:10px")}>
           <div style={s("display:flex;align-items:center;gap:8px")}>
             <div style={s(`font:700 23px 'Fredoka';color:${brand};letter-spacing:.2px`)}>Yoink!</div>
@@ -270,10 +280,15 @@ export default function MonoMarket({
             <span className="mi" style={s(`font-size:16px;color:${muted}`)}>expand_more</span>
           </button>
           <input
+            ref={searchInputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') submitSearch();
+            }}
             placeholder="Search 2M listings..."
             aria-label="Search listings"
+            autoFocus={searchMode}
             style={s(`flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 11px;font:600 13px 'Nunito';color:${ink};outline:none`)}
           />
           {query && (
@@ -286,9 +301,14 @@ export default function MonoMarket({
               <span className="mi" style={s("font-size:19px")}>close</span>
             </button>
           )}
-          <div style={s(`width:48px;height:100%;background:${ink};display:flex;align-items:center;justify-content:center`)}>
+          <button
+            type="button"
+            aria-label="Search market"
+            onClick={submitSearch}
+            style={s(`width:48px;height:100%;border:0;background:${ink};display:flex;align-items:center;justify-content:center;cursor:pointer`)}
+          >
             <span className="mi" style={s("font-size:22px;color:#fff")}>search</span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -314,7 +334,7 @@ export default function MonoMarket({
         </div>
 
         <div style={s("display:flex;align-items:center;justify-content:space-between;padding:13px 13px 8px")}>
-          <div style={s(`font:700 16px 'Fredoka';color:${ink}`)}>{searchTerm ? `Finds for "${query.trim()}"` : 'Fresh listings'}</div>
+          <div style={s(`font:700 16px 'Fredoka';color:${ink}`)}>{searchTerm ? `Finds for "${query.trim()}"` : searchMode ? 'Search the market' : 'Fresh listings'}</div>
           <div style={s("display:flex;align-items:center;gap:12px")}>
             <button
               type="button"

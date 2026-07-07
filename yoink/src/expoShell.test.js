@@ -63,6 +63,10 @@ test('expo shell maps Yoink haptic messages to native iPhone feedback', () => {
   assert.match(expoAppSource, /ImpactFeedbackStyle\.Light/);
   assert.match(expoAppSource, /NotificationFeedbackType\.Success/);
   assert.match(expoAppSource, /selectionAsync/);
+  assert.match(expoAppSource, /'search-submit'/);
+  assert.match(expoAppSource, /'loader-page-load'/);
+  assert.match(expoAppSource, /orders:/);
+  assert.match(expoAppSource, /'delivery-update'/);
 });
 
 test('expo package and readme document Expo Go iPhone setup', () => {

@@ -17,6 +17,10 @@ const HAPTIC_HANDLERS = {
   unwatch: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft),
   success: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
   error: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error),
+  'search-submit': () => Haptics.selectionAsync(),
+  'loader-page-load': () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+  orders: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
+  'delivery-update': () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
 };
 
 function parseYoinkMessage(value) {

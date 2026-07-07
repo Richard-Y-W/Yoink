@@ -36,3 +36,12 @@ test('emitHaptic safely no-ops outside Expo Go', async () => {
 
   delete global.window;
 });
+
+test('haptic event map includes market search, loading, orders, and delivery cues', async () => {
+  const { HAPTIC_EVENTS } = await loadHapticModule();
+
+  assert.equal(HAPTIC_EVENTS.searchSubmit, 'search-submit');
+  assert.equal(HAPTIC_EVENTS.loaderPageLoad, 'loader-page-load');
+  assert.equal(HAPTIC_EVENTS.orders, 'orders');
+  assert.equal(HAPTIC_EVENTS.deliveryUpdate, 'delivery-update');
+});
