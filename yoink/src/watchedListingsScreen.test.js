@@ -8,13 +8,12 @@ const marketSource = readFileSync(new URL('./screens/MonoMarket.jsx', import.met
 const watchingSource = readFileSync(new URL('./screens/Watching.jsx', import.meta.url), 'utf8');
 const productDetailSource = readFileSync(new URL('./screens/ProductDetail.jsx', import.meta.url), 'utf8');
 
-test('app owns watched listings and wires them into market and watching screens', () => {
+test('app owns watched listings and wires them into market and product detail screens', () => {
   assert.match(appSource, /toggleWatchedListing/);
   assert.match(appSource, /const \[watchedListings, setWatchedListings\]/);
   assert.match(watchedSource, /WATCHED_LISTINGS_STORAGE_KEY = 'yoink-watched-listings'/);
   assert.match(appSource, /localStorage\.getItem\(WATCHED_LISTINGS_STORAGE_KEY\)/);
   assert.match(appSource, /localStorage\.setItem\(WATCHED_LISTINGS_STORAGE_KEY/);
-  assert.match(appSource, /watchedListings=\{watchedListings\}/);
   assert.match(appSource, /onToggleWatchedListing=\{handleToggleWatchedListing\}/);
   assert.match(appSource, /isWatched=\{watchedIds\.includes\(flow\.selectedListing\?\.id\)\}/);
 });

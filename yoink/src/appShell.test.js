@@ -22,6 +22,13 @@ test('market copy app shell resets the phone scroll position on screen changes',
 test('market copy app shell routes active collection surface to Pocket', () => {
   assert.match(appSource, /screens\/Pocket/);
   assert.match(appSource, /flow\.screen === APP_SCREENS\.pocket/);
+  const pocketRouteMatch = appSource.match(/flow\.screen === APP_SCREENS\.pocket \? \([\s\S]*?\) : flow\.screen === APP_SCREENS\.orders/);
+  assert.ok(pocketRouteMatch);
+  const pocketRouteSource = pocketRouteMatch[0];
+
+  assert.match(pocketRouteSource, /<Pocket[\s\S]*balance=\{wallet\.balance\}[\s\S]*streak=\{wallet\.streak\}[\s\S]*cartCount=\{cartCount\}[\s\S]*onAddToCart=\{addToCart\}[\s\S]*onOpenCart=\{handleOpenCart\}[\s\S]*onToast=\{showToast\}/);
+  assert.doesNotMatch(pocketRouteSource, /watchedListings=\{watchedListings\}/);
+  assert.doesNotMatch(pocketRouteSource, /onToggleWatchedListing=\{handleToggleWatchedListing\}/);
   assert.doesNotMatch(appSource, /screens\/Watching/);
   assert.doesNotMatch(appSource, /APP_SCREENS\.watching/);
 });

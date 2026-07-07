@@ -397,12 +397,12 @@ function YoinkApp() {
         ) : flow.screen === APP_SCREENS.pocket ? (
           <Pocket
             balance={wallet.balance}
+            streak={wallet.streak}
             cartCount={cartCount}
+            onAddToCart={addToCart}
             onOpenCart={handleOpenCart}
             onOpenMarket={() => handleSelectTab(APP_SCREENS.home)}
             onToast={showToast}
-            watchedListings={watchedListings}
-            onToggleWatchedListing={handleToggleWatchedListing}
           />
         ) : flow.screen === APP_SCREENS.orders ? (
           <Orders
