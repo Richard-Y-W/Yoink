@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Desk Pets item render
+Primary request: Button-Eye Sprout, a tiny sprout mascot collectible.
+Subject: small rounded sprout character with button eyes, leaf hat, stitched vinyl base, mint body, coral cheeks, small charm badge with abstract mark.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, soft plush-vinyl lighting.
+Scene/backdrop: clean pastel mint background with soft ambient shadow.
+Constraints: no readable text, no real logos, no watermark, no extra objects.
+

@@ -1,0 +1,217 @@
+{
+  "pack": "yoink-drop-art",
+  "version": "0.1.0",
+  "style": {
+    "name": "Yoink cartoon collectible shop object",
+    "keywords": [
+      "chunky rounded shapes",
+      "thick dark outlines",
+      "soft vinyl lighting",
+      "pastel body colors",
+      "bold accent color",
+      "sticker-like details",
+      "small personality marks"
+    ],
+    "rarityRules": {
+      "Common": "clean matte toy finish",
+      "Uncommon": "small sticker badge or charm",
+      "Rare": "foil edge, shiny accent",
+      "Ultra Rare": "subtle glow or shimmer layer",
+      "One-Off": "signed stamp shape, odd colorway, tiny serial mark"
+    }
+  },
+  "items": [
+    {
+      "id": "pocket-tech-bubble-crt",
+      "name": "Bubble CRT",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "hero",
+      "price": 420,
+      "traits": ["rounded CRT shell", "grape screen glow", "sticker antenna", "soft vinyl feet"],
+      "renderFile": "renders/pocket-tech-bubble-crt.png",
+      "promptFile": "prompts/pocket-tech-bubble-crt.txt"
+    },
+    {
+      "id": "pocket-tech-jelly-flip-phone",
+      "name": "Jelly Flip Phone",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 90,
+      "dropRole": "support",
+      "price": 260,
+      "traits": ["translucent jelly shell", "tiny charm loop", "bubble keypad", "smiling mini screen"],
+      "renderFile": "renders/pocket-tech-jelly-flip-phone.png",
+      "promptFile": "prompts/pocket-tech-jelly-flip-phone.txt"
+    },
+    {
+      "id": "pocket-tech-pocket-pixel-mp3",
+      "name": "Pocket Pixel MP3",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 160,
+      "dropRole": "entry",
+      "price": 140,
+      "traits": ["rounded music player", "tiny pixel face", "candy buttons", "lanyard nub"],
+      "renderFile": "renders/pocket-tech-pocket-pixel-mp3.png",
+      "promptFile": "prompts/pocket-tech-pocket-pixel-mp3.txt"
+    },
+    {
+      "id": "pocket-tech-flashpop-toy-camera",
+      "name": "Flashpop Toy Camera",
+      "family": "Pocket Tech",
+      "rarity": "Ultra Rare",
+      "editionSize": 18,
+      "dropRole": "chase",
+      "price": 760,
+      "traits": ["toy camera body", "giant bubble lens", "star flash", "hologlow strap"],
+      "renderFile": "renders/pocket-tech-flashpop-toy-camera.png",
+      "promptFile": "prompts/pocket-tech-flashpop-toy-camera.txt"
+    },
+    {
+      "id": "holo-finds-frog-foil-card",
+      "name": "Frog Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Rare",
+      "editionSize": 55,
+      "dropRole": "hero",
+      "price": 390,
+      "traits": ["generic frog icon", "foil card frame", "rounded slab corner", "sparkle flecks"],
+      "renderFile": "renders/holo-finds-frog-foil-card.png",
+      "promptFile": "prompts/holo-finds-frog-foil-card.txt"
+    },
+    {
+      "id": "holo-finds-cosmic-sticker-slab",
+      "name": "Cosmic Sticker Slab",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 22,
+      "dropRole": "chase",
+      "price": 820,
+      "traits": ["clear display slab", "floating star sticker", "iridescent rim", "rounded label block"],
+      "renderFile": "renders/holo-finds-cosmic-sticker-slab.png",
+      "promptFile": "prompts/holo-finds-cosmic-sticker-slab.txt"
+    },
+    {
+      "id": "holo-finds-lucky-pog-stack",
+      "name": "Lucky Pog Stack",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "support",
+      "price": 210,
+      "traits": ["stacked round tokens", "foil top cap", "tiny lucky marks", "rubbery edges"],
+      "renderFile": "renders/holo-finds-lucky-pog-stack.png",
+      "promptFile": "prompts/holo-finds-lucky-pog-stack.txt"
+    },
+    {
+      "id": "holo-finds-glimmer-ticket-relic",
+      "name": "Glimmer Ticket Relic",
+      "family": "Holo Finds",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "one-off",
+      "price": 1800,
+      "traits": ["oversized ticket shape", "foil tear edge", "serial stamp shape", "warm shimmer"],
+      "renderFile": "renders/holo-finds-glimmer-ticket-relic.png",
+      "promptFile": "prompts/holo-finds-glimmer-ticket-relic.txt"
+    },
+    {
+      "id": "desk-pets-mochi-blob",
+      "name": "Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 200,
+      "dropRole": "entry",
+      "price": 120,
+      "traits": ["squishy blob body", "tiny dot eyes", "stubby feet", "soft blush"],
+      "renderFile": "renders/desk-pets-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-mochi-blob.txt"
+    },
+    {
+      "id": "desk-pets-sleepy-star-charm",
+      "name": "Sleepy Star Charm",
+      "family": "Desk Pets",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "hero",
+      "price": 360,
+      "traits": ["puffy star body", "sleepy face", "tiny keychain loop", "foil cheek patch"],
+      "renderFile": "renders/desk-pets-sleepy-star-charm.png",
+      "promptFile": "prompts/desk-pets-sleepy-star-charm.txt"
+    },
+    {
+      "id": "desk-pets-button-eye-sprout",
+      "name": "Button-Eye Sprout",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 88,
+      "dropRole": "support",
+      "price": 240,
+      "traits": ["tiny sprout mascot", "button eyes", "leaf hat", "stitched vinyl base"],
+      "renderFile": "renders/desk-pets-button-eye-sprout.png",
+      "promptFile": "prompts/desk-pets-button-eye-sprout.txt"
+    },
+    {
+      "id": "desk-pets-tiny-desk-dino",
+      "name": "Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Ultra Rare",
+      "editionSize": 16,
+      "dropRole": "chase",
+      "price": 900,
+      "traits": ["compact dinosaur toy", "tiny keyboard cap saddle", "glow belly", "serial tag"],
+      "renderFile": "renders/desk-pets-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-tiny-desk-dino.txt"
+    },
+    {
+      "id": "snack-relics-cereal-prize-rocket",
+      "name": "Cereal Prize Rocket",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 50,
+      "dropRole": "hero",
+      "price": 350,
+      "traits": ["tiny prize rocket", "rounded fins", "sticker window", "foil exhaust puff"],
+      "renderFile": "renders/snack-relics-cereal-prize-rocket.png",
+      "promptFile": "prompts/snack-relics-cereal-prize-rocket.txt"
+    },
+    {
+      "id": "snack-relics-capsule-ghost-toy",
+      "name": "Capsule Ghost Toy",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 110,
+      "dropRole": "support",
+      "price": 190,
+      "traits": ["transparent capsule shell", "soft ghost toy inside", "pastel latch", "tiny prize dots"],
+      "renderFile": "renders/snack-relics-capsule-ghost-toy.png",
+      "promptFile": "prompts/snack-relics-capsule-ghost-toy.txt"
+    },
+    {
+      "id": "snack-relics-vending-ring-pop-relic",
+      "name": "Vending Ring Pop Relic",
+      "family": "Snack Relics",
+      "rarity": "Ultra Rare",
+      "editionSize": 20,
+      "dropRole": "chase",
+      "price": 700,
+      "traits": ["toy ring shape", "oversized candy gem", "not edible", "shimmer base"],
+      "renderFile": "renders/snack-relics-vending-ring-pop-relic.png",
+      "promptFile": "prompts/snack-relics-vending-ring-pop-relic.txt"
+    },
+    {
+      "id": "snack-relics-crinkle-pack-mascot",
+      "name": "Crinkle Pack Mascot",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "one-off",
+      "price": 1600,
+      "traits": ["sealed crinkle pack body", "mascot face", "odd colorway", "signed stamp shape"],
+      "renderFile": "renders/snack-relics-crinkle-pack-mascot.png",
+      "promptFile": "prompts/snack-relics-crinkle-pack-mascot.txt"
+    }
+  ]
+}

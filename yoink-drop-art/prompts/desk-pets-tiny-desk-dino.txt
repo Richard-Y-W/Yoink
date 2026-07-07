@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Desk Pets item render
+Primary request: Tiny Desk Dino, an ultra-rare compact desk pet collectible.
+Subject: tiny rounded dinosaur toy, teal body, little keyboard-key saddle, soft glow belly, tiny serial tag shape, purple spine bumps, friendly face.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, soft vinyl lighting, chunky rounded form, subtle shimmer.
+Scene/backdrop: clean pastel blue background with soft ambient shadow.
+Constraints: original toy design only, no existing character references, no readable text, no watermark.
+

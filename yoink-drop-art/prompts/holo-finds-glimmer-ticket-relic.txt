@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Holo Finds item render
+Primary request: Glimmer Ticket Relic, a one-off oversized foil ticket collectible.
+Subject: chunky oversized ticket shape with rounded tear edges, warm gold-pink shimmer, abstract serial stamp shape, tiny star punches, odd teal edge colorway.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, glossy foil material, collectible relic feel.
+Scene/backdrop: clean pastel cream background with soft ambient shadow and very subtle glow.
+Constraints: no readable text, no real logos, no watermark, no casino or lottery cues.
+

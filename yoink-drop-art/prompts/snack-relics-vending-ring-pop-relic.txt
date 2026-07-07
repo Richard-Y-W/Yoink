@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Snack Relics item render
+Primary request: Vending Ring Pop Relic, an ultra-rare toy ring collectible inspired by vending-machine prizes.
+Subject: toy ring shape with oversized faceted candy-like gem, clearly not edible, chunky purple base, teal shimmer highlights, tiny prize tag shape with abstract mark.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, glossy plastic and subtle shimmer.
+Scene/backdrop: clean pastel aqua background with soft ambient shadow.
+Constraints: no real candy brands, no readable text, no watermark, no human hand.
+

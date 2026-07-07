@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Snack Relics item render
+Primary request: Cereal Prize Rocket, a tiny prize rocket collectible.
+Subject: rounded toy rocket with chunky fins, creamy body, red-orange nose, tiny sticker window, foil exhaust puff shape, playful cereal-box-prize feel.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, soft vinyl/plastic lighting.
+Scene/backdrop: clean pastel cream background with soft ambient shadow.
+Constraints: no readable text, no real cereal brands, no watermark, no extra objects.
+

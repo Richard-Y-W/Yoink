@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Pocket Tech item render
+Primary request: Jelly Flip Phone, a translucent flip phone collectible made like a gummy vinyl toy.
+Subject: open flip phone with rounded translucent aqua shell, bubble keypad, tiny smiling mini screen, peach hinge, small charm loop, sticker-like star mark with no readable text.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, soft clay/vinyl lighting, chunky rounded shapes.
+Scene/backdrop: clean pastel mint background with soft ambient shadow.
+Constraints: no real brand logos, no readable text, no watermark, no extra objects.
+

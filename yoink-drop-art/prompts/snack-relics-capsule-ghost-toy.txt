@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Snack Relics item render
+Primary request: Capsule Ghost Toy, a vending capsule collectible.
+Subject: transparent rounded capsule shell with pastel latch, soft tiny ghost toy inside, friendly face, prize dots, gummy plastic material, uncommon charm feel.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, glossy capsule plastic and soft vinyl toy.
+Scene/backdrop: clean pastel lavender background with soft ambient shadow.
+Constraints: cute and playful only, no horror, no readable text, no real logos, no watermark.
+

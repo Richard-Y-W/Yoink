@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Holo Finds item render
+Primary request: Lucky Pog Stack, a stack of round collectible tokens.
+Subject: three chunky round pog-style tokens stacked slightly offset, rubbery pastel edges, foil top cap with abstract lucky marks, tiny sparkle chips, orange accent rim.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, soft vinyl and foil lighting.
+Scene/backdrop: clean pastel peach background with soft ambient shadow.
+Constraints: no readable text, no real logos, no watermark, no extra objects.
+

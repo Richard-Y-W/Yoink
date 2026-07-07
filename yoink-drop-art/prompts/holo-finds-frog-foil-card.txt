@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: Yoink Holo Finds item render
+Primary request: Frog Foil Card, a generic shiny collectible card in a rounded protective slab.
+Subject: thick rounded card slab with a cute original frog icon in the center, rainbow foil card frame, sparkle flecks, chunky plastic case corners, no readable card text.
+Composition/framing: single centered object, front three-quarter view, square image.
+Style/medium: high-polish cartoon 3D toy render, thick dark outline, soft vinyl/plastic lighting, shiny foil material.
+Scene/backdrop: clean pastel pink background with soft ambient shadow.
+Constraints: no Pokemon, no real card brands, no readable text, no watermark.
+
