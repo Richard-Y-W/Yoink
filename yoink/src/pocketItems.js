@@ -11,6 +11,11 @@ function acquiredAtOf(item) {
   return Number.isFinite(value) ? value : 0;
 }
 
+function priceNumberOf(value) {
+  const normalized = typeof value === 'string' ? value.replaceAll(',', '') : value;
+  return Number(normalized) || 0;
+}
+
 export function isPocketHoloItem(item) {
   const id = String(item?.id ?? '');
   const title = String(item?.title ?? item?.name ?? '').toLowerCase();
@@ -41,7 +46,7 @@ export function makePocketHoloItems(collection = []) {
       rarity: catalog?.rarity ?? 'Rare',
       seller: item.seller ?? catalog?.seller ?? 'foil_friends',
       price: catalog?.price ?? item.unitPrice ?? 0,
-      unitPrice: Number(item.unitPrice ?? catalog?.price ?? 0) || 0,
+      unitPrice: priceNumberOf(item.unitPrice ?? catalog?.price ?? 0),
       imageUrl: item.imageUrl || catalog?.imageUrl || '',
       imageStripe: item.imageStripe || catalog?.stripe || FALLBACK_STRIPE,
       stripe: catalog?.stripe || item.imageStripe || FALLBACK_STRIPE,

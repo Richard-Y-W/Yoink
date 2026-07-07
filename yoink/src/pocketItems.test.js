@@ -49,3 +49,26 @@ test('Pocket resolver groups duplicate Holo entries by id', () => {
   assert.equal(owned[0].ownedLabel, 'owned 3');
   assert.equal(owned[0].acquiredAt, 2000);
 });
+
+test('Pocket resolver falls back to numeric unit price from catalog metadata', () => {
+  const owned = makePocketHoloItems([
+    { id: 'drop-holo-finds-prism-star-foil-card', title: 'Prism Star Foil Card', quantity: 1 },
+  ]);
+
+  assert.equal(owned.length, 1);
+  assert.equal(owned[0].unitPrice, 1400);
+});
+
+test('Pocket resolver parses comma-formatted collection unit prices', () => {
+  const owned = makePocketHoloItems([
+    {
+      id: 'drop-holo-finds-prism-star-foil-card',
+      title: 'Prism Star Foil Card',
+      unitPrice: '1,400',
+      quantity: 1,
+    },
+  ]);
+
+  assert.equal(owned.length, 1);
+  assert.equal(owned[0].unitPrice, 1400);
+});
