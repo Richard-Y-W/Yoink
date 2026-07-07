@@ -23,17 +23,17 @@ const checkoutOptions = {
   shipping: [
     {
       id: 'standard',
-      title: 'Yoink Standard - $3.00',
+      title: 'Yoink Standard - Y 3',
       subtitle: 'Arrives Sun, Jul 5',
       price: 3,
-      optionLabel: 'Yoink Standard - $3.00',
+      optionLabel: 'Yoink Standard - Y 3',
     },
     {
       id: 'rush',
-      title: 'Yoink Rush - $6.50',
+      title: 'Yoink Rush - Y 7',
       subtitle: 'Arrives Fri, Jul 3',
-      price: 6.5,
-      optionLabel: 'Yoink Rush - $6.50',
+      price: 7,
+      optionLabel: 'Yoink Rush - Y 7',
     },
   ],
   plan: [

@@ -5,7 +5,8 @@ function parsePrice(price) {
 }
 
 export function formatMoney(value) {
-  return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const coins = Math.round(Number(value) || 0);
+  return `Y ${coins.toLocaleString('en-US')}`;
 }
 
 export function makeCartItem(listing, quantity = 1) {
@@ -65,8 +66,8 @@ export function getPromoRate(code) {
 
 export function getCheckoutTotals(cartItems, { shippingPrice, promoCode } = {}) {
   const subtotal = getCartSubtotal(cartItems);
-  const shipping = cartItems.length > 0 ? Number(shippingPrice ?? getCartShipping(cartItems)) : 0;
-  const discount = Math.round(subtotal * getPromoRate(promoCode) * 100) / 100;
+  const shipping = cartItems.length > 0 ? Math.round(Number(shippingPrice ?? getCartShipping(cartItems)) || 0) : 0;
+  const discount = Math.round(subtotal * getPromoRate(promoCode));
 
   return {
     subtotal,

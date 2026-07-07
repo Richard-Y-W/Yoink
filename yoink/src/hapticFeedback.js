@@ -10,6 +10,7 @@ export const HAPTIC_EVENTS = Object.freeze({
   loaderPageLoad: 'loader-page-load',
   orders: 'orders',
   deliveryUpdate: 'delivery-update',
+  reward: 'reward',
 });
 
 export function emitHaptic(name) {

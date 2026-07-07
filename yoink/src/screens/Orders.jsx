@@ -113,7 +113,7 @@ export default function Orders({ balance = 0, celebrateOrderId = null, onDeliver
       if (advanced) onDeliveryUpdate();
     }).catch(() => {});
     load();
-    const timer = window.setInterval(load, 3000);
+    const timer = window.setInterval(load, 1000);
     return () => {
       alive = false;
       window.clearInterval(timer);

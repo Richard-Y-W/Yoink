@@ -122,6 +122,7 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
 export default function MonoMarket({
   onOpenProduct = () => {},
   onOpenCart = () => {},
+  onOpenWallet = () => {},
   cartCount = 0,
   balance = 0,
   artStyle = 'vinyl',
@@ -139,12 +140,14 @@ export default function MonoMarket({
   const [query, setQuery] = useState('');
   const [mode, setMode] = useState('All');
   const [sortIndex, setSortIndex] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
   const cycleSort = () => setSortIndex((current) => (current + 1) % MARKET_SORTS.length);
   const feedEndRef = useRef(null);
   const searchInputRef = useRef(null);
   const lastLoadRef = useRef(0);
+  const loadingMoreRef = useRef(false);
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
@@ -166,15 +169,21 @@ export default function MonoMarket({
   // server uses) stays as an offline fallback so scrolling never dead-ends.
   const loadMore = useCallback(() => {
     if (feedLengthRef.current >= MARKET_MAX_ITEMS) return;
+    if (loadingMoreRef.current) return;
     const now = Date.now();
     if (now - lastLoadRef.current < 200) return;
     lastLoadRef.current = now;
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
     const start = feedLengthRef.current;
     fetchFeed(start, MARKET_PAGE_SIZE).then((page) => {
       if (!Array.isArray(page.items) || page.items.length === 0) return;
       setFeed((existing) => (existing.length === start ? existing.concat(page.items) : existing));
     }).catch(() => {
       setFeed((existing) => (existing.length === start ? appendMarketFeed(existing) : existing));
+    }).finally(() => {
+      loadingMoreRef.current = false;
+      setLoadingMore(false);
     });
   }, []);
 
@@ -227,6 +236,15 @@ export default function MonoMarket({
     searchInputRef.current?.blur?.();
     onSearchSubmit();
   };
+  const searchStatusText = (() => {
+    if (filtersActive && visibleFeed.length > 0) {
+      return `${visibleFeed.length} find${visibleFeed.length === 1 ? '' : 's'} matched`;
+    }
+    if (filtersActive) return hasMore ? 'Searching the market...' : 'No more matching finds';
+    if (loadingMore) return 'Finding more finds...';
+    return hasMore ? 'Scroll for more finds' : 'All finds loaded';
+  })();
+  const showSearchSpinner = loadingMore && (!filtersActive || visibleFeed.length === 0);
 
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
@@ -247,10 +265,15 @@ export default function MonoMarket({
             )}
           </div>
           <div style={s("display:flex;align-items:center;gap:7px")}>
-            <div style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px`)}>
+            <button
+              type="button"
+              aria-label="Open Yoink rewards"
+              onClick={onOpenWallet}
+              style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px;cursor:pointer`)}
+            >
               <span style={s(`width:16px;height:16px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;font:700 9px 'Fredoka';color:${currencyButtonBackground};flex:none`)}>Y</span>
               <span style={s("font:700 12px 'Fredoka';color:#fff")}>{balance.toLocaleString()}</span>
-            </div>
+            </button>
             <div
               role="button"
               tabIndex={0}
@@ -291,7 +314,7 @@ export default function MonoMarket({
             placeholder="Search 2M listings..."
             aria-label="Search listings"
             autoFocus={searchMode}
-            style={s(`flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 11px;font:600 13px 'Nunito';color:${ink};outline:none`)}
+            style={s(`flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 11px;font:600 16px 'Nunito';color:${ink};outline:none`)}
           />
           {query && (
             <button
@@ -376,9 +399,9 @@ export default function MonoMarket({
             </div>
           )}
           <div ref={feedEndRef} style={s("display:flex;flex-direction:column;align-items:center;gap:9px;padding:20px 0 6px")}>
-            {hasMore && <div style={s(`width:28px;height:28px;border-radius:50%;border:3px solid ${line};border-top-color:${ink};animation:yspin .8s linear infinite`)} />}
+            {showSearchSpinner && <div style={s(`width:28px;height:28px;border-radius:50%;border:3px solid ${line};border-top-color:${ink};animation:yspin .8s linear infinite`)} />}
             <span style={s(`font:700 11px 'Nunito';color:${muted}`)}>
-              {hasMore ? (filtersActive ? 'Searching the market...' : 'Finding more finds...') : 'All finds loaded'}
+              {searchStatusText}
             </span>
           </div>
         </div>

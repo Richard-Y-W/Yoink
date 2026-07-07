@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
+import * as Notifications from 'expo-notifications';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -21,21 +22,71 @@ const HAPTIC_HANDLERS = {
   'loader-page-load': () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
   orders: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
   'delivery-update': () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+  reward: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
 };
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 function parseYoinkMessage(value) {
   try {
-    const { source, type, name } = JSON.parse(value);
-    if (source === 'yoink' && type === 'haptic') return name;
+    const message = JSON.parse(value);
+    if (message.source === 'yoink' && message.type === 'haptic') {
+      return { type: 'haptic', name: message.name };
+    }
+    if (message.source === 'yoink' && message.type === 'notification') {
+      return {
+        type: 'notification',
+        title: message.title,
+        body: message.body,
+        seconds: message.seconds,
+      };
+    }
   } catch {}
   return null;
 }
 
+async function ensureNotificationPermission() {
+  const current = await Notifications.getPermissionsAsync();
+  if (current.granted) return true;
+  const next = await Notifications.requestPermissionsAsync();
+  return next.granted;
+}
+
+async function scheduleYoinkNotification({ title, body, seconds }) {
+  const allowed = await ensureNotificationPermission();
+  if (!allowed) return;
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: title || 'Yoink update',
+      body: body || 'Something moved in your market.',
+      sound: true,
+    },
+    trigger: {
+      seconds: Math.max(1, Number(seconds) || 1),
+    },
+  });
+}
+
 export default function App() {
   const onMessage = (event) => {
-    const name = parseYoinkMessage(event.nativeEvent.data);
-    const trigger = HAPTIC_HANDLERS[name];
-    if (trigger) trigger().catch(() => {});
+    const message = parseYoinkMessage(event.nativeEvent.data);
+    if (!message) return;
+
+    if (message.type === 'haptic') {
+      const trigger = HAPTIC_HANDLERS[message.name];
+      if (trigger) trigger().catch(() => {});
+    }
+
+    if (message.type === 'notification') {
+      scheduleYoinkNotification(message).catch(() => {});
+    }
   };
 
   return (

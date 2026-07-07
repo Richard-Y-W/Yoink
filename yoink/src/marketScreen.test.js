@@ -17,8 +17,23 @@ test('search tab opens a focused search market and emits submit haptics', () => 
   assert.match(marketSource, /searchInputRef/);
   assert.match(marketSource, /autoFocus=\{searchMode\}/);
   assert.match(marketSource, /onSearchSubmit\(\)/);
+  assert.match(marketSource, /font:600 16px 'Nunito'/);
   assert.match(appSource, /searchMode=\{flow\.screen === APP_SCREENS\.search\}/);
   assert.match(appSource, /emitHaptic\(HAPTIC_EVENTS\.searchSubmit\);/);
+});
+
+test('filtered search results stop showing the active search loader once finds are visible', () => {
+  assert.match(marketSource, /loadingMore/);
+  assert.match(marketSource, /searchStatusText/);
+  assert.match(marketSource, /visibleFeed\.length > 0/);
+  assert.match(marketSource, /Searching the market/);
+  assert.doesNotMatch(marketSource, /\{hasMore \? \(filtersActive \? 'Searching the market\.\.\.'/);
+});
+
+test('market currency chip opens rewards instead of being static display text', () => {
+  assert.match(marketSource, /onOpenWallet = \(\) => \{\}/);
+  assert.match(marketSource, /aria-label="Open Yoink rewards"/);
+  assert.match(appSource, /onOpenWallet=\{handleOpenWallet\}/);
 });
 
 test('market header uses the native safe area without duplicate top padding', () => {

@@ -65,12 +65,12 @@ test('placing an order deducts coins and rejects overspending with shortBy', () 
   assert.equal(broke.ok, false);
   assert.equal(broke.shortBy, 103);
 
-  const order = store.placeOrder({ items: makeItems(120, 2), shippingPrice: 6.5 }, now);
+  const order = store.placeOrder({ items: makeItems(120, 2), shippingPrice: 7 }, now);
   assert.equal(order.ok, true);
-  assert.equal(order.order.total, 246.5);
+  assert.equal(order.order.total, 247);
   assert.match(order.order.id, /^YK-\d+$/);
   assert.equal(order.order.stage, 'processing');
-  assert.equal(store.getWallet(now).balance, balance - 246.5);
+  assert.equal(store.getWallet(now).balance, balance - 247);
 
   assert.equal(store.placeOrder({ items: [] }, now).ok, false, 'empty cart rejected');
 });

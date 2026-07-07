@@ -39,8 +39,14 @@ export default function Account({
   watchedCount = 0,
   onOpenCart = () => {},
   onOpenWatching = () => {},
+  onOpenOrders = () => {},
   onToast = () => {},
 }) {
+  const stageMarkers = [
+    { label: 'Packing', icon: 'inventory_2' },
+    { label: 'Rolling', icon: 'local_shipping' },
+    { label: 'Delivered', icon: 'celebration' },
+  ];
   const actionItems = [
     {
       label: 'Orders',
@@ -49,7 +55,7 @@ export default function Account({
       bg: '#F0ECFF',
       tint: brand,
       shadow: 'rgba(106,90,205,.18)',
-      onPress: () => onToast(ordersInFlight ? `${ordersInFlight} order pulse${ordersInFlight === 1 ? '' : 's'} moving.` : 'No active orders right now.'),
+      onPress: onOpenOrders,
     },
     {
       label: 'Watching',
@@ -148,10 +154,30 @@ export default function Account({
               {ordersInFlight}
             </span>
           </div>
-          <div style={s("height:10px;border-radius:99px;background:#F0ECFF;overflow:hidden")}>
-            <div style={s(`height:100%;width:${orderMeter}%;background:${brand};border-radius:99px;box-shadow:8px 0 0 #FFB84D`)} />
+          <div style={s("display:grid;gap:8px")}>
+            <div style={s("height:10px;border-radius:99px;background:#F0ECFF;overflow:hidden")}>
+              <div style={s(`height:100%;width:${orderMeter}%;background:${brand};border-radius:99px;box-shadow:8px 0 0 #FFB84D;transition:width .28s ease`)} />
+            </div>
+            <div style={s("display:grid;grid-template-columns:repeat(3,1fr);gap:7px")}>
+              {stageMarkers.map((stage, index) => {
+                const active = ordersInFlight > 0 && orderMeter >= 18 + index * 28;
+                return (
+                  <div key={stage.label} style={s(`display:flex;align-items:center;justify-content:center;gap:4px;border:1.5px solid ${active ? '#DCD5EF' : line};border-radius:8px;background:${active ? '#F7F3FF' : wash};padding:7px 4px`)}>
+                    <span className="mi" style={s(`font-size:14px;color:${active ? brand : muted};font-variation-settings:'FILL' 1`)}>{stage.icon}</span>
+                    <span style={s(`font:900 9.5px 'Fredoka';color:${active ? brand : muted};white-space:nowrap`)}>{stage.label}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:9px")}>
+            <button type="button" onClick={onOpenOrders} style={s(`border:1.5px solid ${line};background:${wash};border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer`)}>
+              <span>
+                <span style={s(`display:block;font:900 12.5px 'Fredoka';color:${ink}`)}>Open Orders</span>
+                <span style={s(`display:block;font:800 10.5px 'Nunito';color:${brand}`)}>{ordersInFlight ? `${ordersInFlight} tracking` : 'Track pickups'}</span>
+              </span>
+              <span className="mi" style={s(`font-size:20px;color:${brand};font-variation-settings:'FILL' 1`)}>local_shipping</span>
+            </button>
             <button type="button" onClick={() => onToast(`Wallet snap: Y ${balance.toLocaleString()} ready.`)} style={s(`border:1.5px solid ${line};background:${wash};border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer`)}>
               <span>
                 <span style={s(`display:block;font:900 12.5px 'Fredoka';color:${ink}`)}>Wallet snap</span>
@@ -159,6 +185,8 @@ export default function Account({
               </span>
               <span className="mi" style={s(`font-size:20px;color:${currencyButtonBackground};font-variation-settings:'FILL' 1`)}>paid</span>
             </button>
+          </div>
+          <div style={s("display:grid;grid-template-columns:1fr;gap:9px")}>
             <button type="button" onClick={onOpenCart} style={s(`border:1.5px solid ${line};background:${wash};border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer`)}>
               <span>
                 <span style={s(`display:block;font:900 12.5px 'Fredoka';color:${ink}`)}>Cart ready</span>

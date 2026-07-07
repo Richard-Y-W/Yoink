@@ -50,7 +50,7 @@ test('cart items preserve generated render image URLs', async () => {
   assert.equal(item.imageUrl, '/yoink-items/pocket-tech-bubble-crt.png');
 });
 
-test('cart helpers compute subtotal, shipping, total, and display labels', async () => {
+test('cart helpers compute subtotal, shipping, total, and Yoink coin display labels', async () => {
   assert.equal(existsSync(cartUrl), true, 'missing cart helpers');
   const { addListingToCart, formatMoney, getCartShipping, getCartSubtotal, getCartTotal } = await import(cartUrl);
 
@@ -59,7 +59,7 @@ test('cart helpers compute subtotal, shipping, total, and display labels', async
   assert.equal(getCartSubtotal(cart), 18655);
   assert.equal(getCartShipping(cart), 3);
   assert.equal(getCartTotal(cart), 18658);
-  assert.equal(formatMoney(getCartTotal(cart)), '$18,658.00');
+  assert.equal(formatMoney(getCartTotal(cart)), 'Y 18,658');
 });
 
 test('checkout totals can use the selected shipping option from checkout', async () => {
@@ -68,7 +68,7 @@ test('checkout totals can use the selected shipping option from checkout', async
 
   const cart = addListingToCart([], polaroid);
   const standardTotals = getCheckoutTotals(cart, { shippingPrice: 3 });
-  const rushTotals = getCheckoutTotals(cart, { shippingPrice: 6.5 });
+  const rushTotals = getCheckoutTotals(cart, { shippingPrice: 7 });
 
   assert.deepEqual(standardTotals, {
     subtotal: 120,
@@ -78,9 +78,9 @@ test('checkout totals can use the selected shipping option from checkout', async
   });
   assert.deepEqual(rushTotals, {
     subtotal: 120,
-    shipping: 6.5,
+    shipping: 7,
     discount: 0,
-    total: 126.5,
+    total: 127,
   });
 });
 
