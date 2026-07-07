@@ -49,9 +49,14 @@ test('market removes bidding filters and bid sorting while keeping direct buy mo
 
 test('market UI renders timed flash cards and ultra burst with haptic hooks', () => {
   assert.match(marketSource, /RARE FLASH/);
+  assert.match(marketSource, /findRareDropInsertIndex/);
+  assert.match(marketSource, /listingNodesRef/);
+  assert.match(marketSource, /getBoundingClientRect/);
+  assert.match(marketSource, /setRareFlashInsertIndex\(getRareFlashInsertIndex\(\)\)/);
   assert.match(marketSource, /const visibleFeedWithDrops =/);
   assert.match(marketSource, /visibleFeedWithDrops\.map/);
   assert.match(marketSource, /key=\{item\.flashTier \? `flash-\$\{item\.id\}` : item\.id\}/);
+  assert.doesNotMatch(marketSource, /const insertAt = Math\.min\(3, visibleFeed\.length\)/);
   assert.doesNotMatch(marketSource, /function RareFlashCard/);
   assert.doesNotMatch(marketSource, /\{rareFlashItem && \(/);
   assert.match(marketSource, /UltraDropBurst/);

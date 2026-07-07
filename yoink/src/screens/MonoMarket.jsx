@@ -5,6 +5,7 @@ import { fetchFeed } from '../api.js';
 import { marketTheme } from '../marketTheme.js';
 import ItemArt from '../components/ItemArt.jsx';
 import { artStageBackground, resolveArtKind } from '../itemArt.js';
+import { findRareDropInsertIndex } from '../marketDropPlacement.js';
 
 const {
   ink,
@@ -18,6 +19,9 @@ const {
   attentionBadgeBackground,
   attentionBadgeText,
 } = marketTheme;
+
+const RARE_DROP_TOP_GUARD = 96;
+const RARE_DROP_FALLBACK_INDEX = 3;
 
 function UltraDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
   if (!item) return null;
@@ -58,7 +62,7 @@ function UltraDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
   );
 }
 
-function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl' }) {
+function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl', cardRef = null }) {
   const artKind = resolveArtKind(item);
   const rare = item.flashTier === 'rare';
   const ultra = item.flashTier === 'ultra';
@@ -70,6 +74,7 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
       : '0 2px 8px rgba(23,19,38,.05)';
   return (
     <div
+      ref={cardRef}
       role="button"
       tabIndex={0}
       onClick={() => onOpenProduct(item, 'listing')}
@@ -187,6 +192,7 @@ export default function MonoMarket({
   const [sortIndex, setSortIndex] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [rareFlashItem, setRareFlashItem] = useState(null);
+  const [rareFlashInsertIndex, setRareFlashInsertIndex] = useState(null);
   const [ultraBurstItem, setUltraBurstItem] = useState(null);
 
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
@@ -198,6 +204,8 @@ export default function MonoMarket({
   const dropTimersRef = useRef([]);
   const dropClockStartedRef = useRef(false);
   const revealedDropTiersRef = useRef(new Set());
+  const visibleFeedRef = useRef([]);
+  const listingNodesRef = useRef(new Map());
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
@@ -215,6 +223,24 @@ export default function MonoMarket({
     searchInputRef.current?.focus?.();
   }, [searchMode]);
 
+  const setListingNode = useCallback((itemId, node) => {
+    if (node) {
+      listingNodesRef.current.set(itemId, node);
+      return;
+    }
+    listingNodesRef.current.delete(itemId);
+  }, []);
+
+  const getRareFlashInsertIndex = useCallback(() => findRareDropInsertIndex(
+    visibleFeedRef.current,
+    (listing) => listingNodesRef.current.get(listing.id)?.getBoundingClientRect?.(),
+    {
+      viewportHeight: typeof window !== 'undefined' ? window.innerHeight : 0,
+      topGuard: RARE_DROP_TOP_GUARD,
+      fallbackIndex: RARE_DROP_FALLBACK_INDEX,
+    },
+  ), []);
+
   const revealTimedDrop = useCallback((tier) => {
     if (revealedDropTiersRef.current.has(tier)) return;
     const item = makeTimedDrop(tier);
@@ -228,8 +254,9 @@ export default function MonoMarket({
     }
 
     onRareFlash(item);
+    setRareFlashInsertIndex(getRareFlashInsertIndex());
     setRareFlashItem(item);
-  }, [onRareFlash, onUltraRareFlash]);
+  }, [getRareFlashInsertIndex, onRareFlash, onUltraRareFlash]);
 
   const startDropClock = useCallback(() => {
     if (dropClockStartedRef.current) return;
@@ -274,16 +301,20 @@ export default function MonoMarket({
     filterMarketFeed(feed, { category: selectedCategory, mode, query }),
     MARKET_SORTS[sortIndex].id,
   );
+  useEffect(() => {
+    visibleFeedRef.current = visibleFeed;
+  }, [visibleFeed]);
+
   const visibleFeedWithDrops = useMemo(() => {
     if (!rareFlashItem) return visibleFeed;
     if (visibleFeed.some((item) => item.id === rareFlashItem.id)) return visibleFeed;
-    const insertAt = Math.min(3, visibleFeed.length);
+    const insertAt = Math.min(rareFlashInsertIndex ?? RARE_DROP_FALLBACK_INDEX, visibleFeed.length);
     return [
       ...visibleFeed.slice(0, insertAt),
       rareFlashItem,
       ...visibleFeed.slice(insertAt),
     ];
-  }, [rareFlashItem, visibleFeed]);
+  }, [rareFlashInsertIndex, rareFlashItem, visibleFeed]);
 
   // While filtering, keep paging the backend until enough matches surface.
   useEffect(() => {
@@ -485,6 +516,7 @@ export default function MonoMarket({
               saved={watchedIds.includes(item.id)}
               onToggleSave={() => onToggleWatchedListing(item)}
               artStyle={artStyle}
+              cardRef={item.flashTier ? null : (node) => setListingNode(item.id, node)}
             />
           ))}
           {filtersActive && visibleFeed.length === 0 && !hasMore && (
