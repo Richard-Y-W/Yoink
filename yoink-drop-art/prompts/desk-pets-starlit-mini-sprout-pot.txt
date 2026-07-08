@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: Yoink marketplace collectible item render
+Primary request: Create "Starlit Mini Sprout Pot" as a Yoink Desk Pets collectible.
+Subject: small mascot desk objects with simple faces and soft toy forms; specific object traits: starlit body, glow accent, toy seam detail, blush cheeks.
+Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl or clay lighting, rounded chunky forms, pastel body colors, one bold accent color, and sticker-like details.
+Scene/backdrop: clean pastel digital studio background with generous padding and a soft contact shadow.
+Composition/framing: centered front three-quarter view, square 1024px source framing, item readable at 96px thumbnail size.
+Rarity treatment: Uncommon; small sticker badge, charm loop, or extra material contrast.
+Constraints: no real logos, no readable text, no watermark, no exact protected characters, no casino or loot-box language.
+Avoid: dark moody lighting, realistic grime, horror styling, busy backgrounds, cropped object edges, flat icon style.

@@ -1,9 +1,10 @@
 Use case: stylized-concept
-Asset type: Yoink Snack Relics item render
-Primary request: Crinkle Pack Mascot, a one-off sealed crinkle-pack mascot collectible.
-Subject: tiny sealed crinkle pack body with rounded corners, mascot face printed as simple eyes and mouth, odd blackcurrant and lime colorway, signed stamp shape, shiny folded edges.
-Composition/framing: single centered object, front three-quarter view, square image.
-Style/medium: high-polish cartoon 3D toy render, thick dark outline, glossy crinkled plastic, playful collectible package.
-Scene/backdrop: clean pastel lime background with soft ambient shadow.
-Constraints: no readable text, no real snack brands, no watermark, no extra objects.
-
+Asset type: Yoink marketplace collectible item render
+Primary request: Create "Crinkle Pack Mascot" as a Yoink Snack Relics collectible.
+Subject: capsule-machine treasures, cereal prizes, and tiny vending relics; specific object traits: sealed crinkle pack body, mascot face, odd colorway, signed stamp shape.
+Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl or clay lighting, rounded chunky forms, pastel body colors, one bold accent color, and sticker-like details.
+Scene/backdrop: clean pastel digital studio background with generous padding and a soft contact shadow.
+Composition/framing: centered front three-quarter view, square 1024px source framing, item readable at 96px thumbnail size.
+Rarity treatment: One-Off; odd colorway with a tiny serial-stamp shape and one unmistakable special trait.
+Constraints: no real logos, no readable text, no watermark, no exact protected characters, no casino or loot-box language.
+Avoid: dark moody lighting, realistic grime, horror styling, busy backgrounds, cropped object edges, flat icon style.

@@ -870,6 +870,5956 @@
       ],
       "renderFile": "renders/snack-relics-bubble-gum-token.png",
       "promptFile": "prompts/snack-relics-bubble-gum-token.txt"
+    },
+    {
+      "id": "pocket-tech-mint-game-brick",
+      "name": "Mint Game Brick",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "mint body",
+        "star accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-mint-game-brick.png",
+      "promptFile": "prompts/pocket-tech-mint-game-brick.txt"
+    },
+    {
+      "id": "holo-finds-mint-foil-card",
+      "name": "Mint Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "mint body",
+        "heart accent",
+        "foil edge detail",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-mint-foil-card.png",
+      "promptFile": "prompts/holo-finds-mint-foil-card.txt"
+    },
+    {
+      "id": "desk-pets-mint-mochi-blob",
+      "name": "Mint Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "mint body",
+        "moon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-mint-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-mint-mochi-blob.txt"
+    },
+    {
+      "id": "snack-relics-mint-rocket-prize",
+      "name": "Mint Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "mint body",
+        "button accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-mint-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-mint-rocket-prize.txt"
+    },
+    {
+      "id": "pocket-tech-berry-pixel-pet-cam",
+      "name": "Berry Pixel Pet Cam",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "berry body",
+        "bubble accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-berry-pixel-pet-cam.png",
+      "promptFile": "prompts/pocket-tech-berry-pixel-pet-cam.txt"
+    },
+    {
+      "id": "holo-finds-berry-sticker-slab",
+      "name": "Berry Sticker Slab",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "berry body",
+        "ribbon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-berry-sticker-slab.png",
+      "promptFile": "prompts/holo-finds-berry-sticker-slab.txt"
+    },
+    {
+      "id": "desk-pets-berry-sleepy-star",
+      "name": "Berry Sleepy Star",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "berry body",
+        "foil accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-berry-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-berry-sleepy-star.txt"
+    },
+    {
+      "id": "snack-relics-berry-capsule-ghost",
+      "name": "Berry Capsule Ghost",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "berry body",
+        "pixel accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-berry-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-berry-capsule-ghost.txt"
+    },
+    {
+      "id": "pocket-tech-lemon-mini-console",
+      "name": "Lemon Mini Console",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "lemon body",
+        "glow accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-lemon-mini-console.png",
+      "promptFile": "prompts/pocket-tech-lemon-mini-console.txt"
+    },
+    {
+      "id": "holo-finds-lemon-ticket-relic",
+      "name": "Lemon Ticket Relic",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 14,
+      "dropRole": "codex-chase",
+      "price": 1290,
+      "traits": [
+        "lemon body",
+        "star accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-lemon-ticket-relic.png",
+      "promptFile": "prompts/holo-finds-lemon-ticket-relic.txt"
+    },
+    {
+      "id": "desk-pets-lemon-button-sprout",
+      "name": "Lemon Button Sprout",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "lemon body",
+        "heart accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-lemon-button-sprout.png",
+      "promptFile": "prompts/desk-pets-lemon-button-sprout.txt"
+    },
+    {
+      "id": "snack-relics-lemon-vending-ring",
+      "name": "Lemon Vending Ring",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "lemon body",
+        "moon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-lemon-vending-ring.png",
+      "promptFile": "prompts/snack-relics-lemon-vending-ring.txt"
+    },
+    {
+      "id": "pocket-tech-coral-mouse-ball",
+      "name": "Coral Mouse Ball",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "coral body",
+        "button accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-coral-mouse-ball.png",
+      "promptFile": "prompts/pocket-tech-coral-mouse-ball.txt"
+    },
+    {
+      "id": "holo-finds-coral-pog-stack",
+      "name": "Coral Pog Stack",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "coral body",
+        "bubble accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-coral-pog-stack.png",
+      "promptFile": "prompts/holo-finds-coral-pog-stack.txt"
+    },
+    {
+      "id": "desk-pets-coral-tiny-desk-dino",
+      "name": "Coral Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "coral body",
+        "ribbon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-coral-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-coral-tiny-desk-dino.txt"
+    },
+    {
+      "id": "snack-relics-coral-crinkle-pack",
+      "name": "Coral Crinkle Pack",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2220,
+      "traits": [
+        "coral body",
+        "foil accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-coral-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-coral-crinkle-pack.txt"
+    },
+    {
+      "id": "pocket-tech-sky-tape-deck",
+      "name": "Sky Tape Deck",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "sky body",
+        "pixel accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-sky-tape-deck.png",
+      "promptFile": "prompts/pocket-tech-sky-tape-deck.txt"
+    },
+    {
+      "id": "holo-finds-sky-prism-token",
+      "name": "Sky Prism Token",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "sky body",
+        "glow accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-sky-prism-token.png",
+      "promptFile": "prompts/holo-finds-sky-prism-token.txt"
+    },
+    {
+      "id": "desk-pets-sky-pillow-pal",
+      "name": "Sky Pillow Pal",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "sky body",
+        "star accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-sky-pillow-pal.png",
+      "promptFile": "prompts/desk-pets-sky-pillow-pal.txt"
+    },
+    {
+      "id": "snack-relics-sky-soda-tab",
+      "name": "Sky Soda Tab",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "sky body",
+        "heart accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-sky-soda-tab.png",
+      "promptFile": "prompts/snack-relics-sky-soda-tab.txt"
+    },
+    {
+      "id": "pocket-tech-grape-pager-pal",
+      "name": "Grape Pager Pal",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "grape body",
+        "moon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-grape-pager-pal.png",
+      "promptFile": "prompts/pocket-tech-grape-pager-pal.txt"
+    },
+    {
+      "id": "holo-finds-grape-moon-badge",
+      "name": "Grape Moon Badge",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "grape body",
+        "button accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-grape-moon-badge.png",
+      "promptFile": "prompts/holo-finds-grape-moon-badge.txt"
+    },
+    {
+      "id": "desk-pets-grape-button-charm",
+      "name": "Grape Button Charm",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "grape body",
+        "bubble accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-grape-button-charm.png",
+      "promptFile": "prompts/desk-pets-grape-button-charm.txt"
+    },
+    {
+      "id": "snack-relics-grape-gum-token",
+      "name": "Grape Gum Token",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "grape body",
+        "ribbon accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-grape-gum-token.png",
+      "promptFile": "prompts/snack-relics-grape-gum-token.txt"
+    },
+    {
+      "id": "pocket-tech-melon-robo-walkie",
+      "name": "Melon Robo Walkie",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "melon body",
+        "foil accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-melon-robo-walkie.png",
+      "promptFile": "prompts/pocket-tech-melon-robo-walkie.txt"
+    },
+    {
+      "id": "holo-finds-melon-star-stamp",
+      "name": "Melon Star Stamp",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 7,
+      "dropRole": "codex-chase",
+      "price": 1330,
+      "traits": [
+        "melon body",
+        "pixel accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-melon-star-stamp.png",
+      "promptFile": "prompts/holo-finds-melon-star-stamp.txt"
+    },
+    {
+      "id": "desk-pets-melon-cloud-cubby",
+      "name": "Melon Cloud Cubby",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "melon body",
+        "glow accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-melon-cloud-cubby.png",
+      "promptFile": "prompts/desk-pets-melon-cloud-cubby.txt"
+    },
+    {
+      "id": "snack-relics-melon-mini-spoon",
+      "name": "Melon Mini Spoon",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "melon body",
+        "star accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-melon-mini-spoon.png",
+      "promptFile": "prompts/snack-relics-melon-mini-spoon.txt"
+    },
+    {
+      "id": "pocket-tech-peach-jelly-joystick",
+      "name": "Peach Jelly Joystick",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "peach body",
+        "heart accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-peach-jelly-joystick.png",
+      "promptFile": "prompts/pocket-tech-peach-jelly-joystick.txt"
+    },
+    {
+      "id": "holo-finds-peach-chrome-charm",
+      "name": "Peach Chrome Charm",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "peach body",
+        "moon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-peach-chrome-charm.png",
+      "promptFile": "prompts/holo-finds-peach-chrome-charm.txt"
+    },
+    {
+      "id": "desk-pets-peach-bean-buddy",
+      "name": "Peach Bean Buddy",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "peach body",
+        "button accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-peach-bean-buddy.png",
+      "promptFile": "prompts/desk-pets-peach-bean-buddy.txt"
+    },
+    {
+      "id": "snack-relics-peach-wrapper-charm",
+      "name": "Peach Wrapper Charm",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2260,
+      "traits": [
+        "peach body",
+        "bubble accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-peach-wrapper-charm.png",
+      "promptFile": "prompts/snack-relics-peach-wrapper-charm.txt"
+    },
+    {
+      "id": "pocket-tech-teal-boombox",
+      "name": "Teal Boombox",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "teal body",
+        "ribbon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-teal-boombox.png",
+      "promptFile": "prompts/pocket-tech-teal-boombox.txt"
+    },
+    {
+      "id": "holo-finds-teal-glimmer-pass",
+      "name": "Teal Glimmer Pass",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "teal body",
+        "foil accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-teal-glimmer-pass.png",
+      "promptFile": "prompts/holo-finds-teal-glimmer-pass.txt"
+    },
+    {
+      "id": "desk-pets-teal-pebble-stack",
+      "name": "Teal Pebble Stack",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "teal body",
+        "pixel accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-teal-pebble-stack.png",
+      "promptFile": "prompts/desk-pets-teal-pebble-stack.txt"
+    },
+    {
+      "id": "snack-relics-teal-prize-whistle",
+      "name": "Teal Prize Whistle",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "teal body",
+        "glow accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-teal-prize-whistle.png",
+      "promptFile": "prompts/snack-relics-teal-prize-whistle.txt"
+    },
+    {
+      "id": "pocket-tech-lilac-keyboard",
+      "name": "Lilac Keyboard",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "lilac body",
+        "star accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-lilac-keyboard.png",
+      "promptFile": "prompts/pocket-tech-lilac-keyboard.txt"
+    },
+    {
+      "id": "holo-finds-lilac-holo-puck",
+      "name": "Lilac Holo Puck",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "lilac body",
+        "heart accent",
+        "foil edge detail",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-lilac-holo-puck.png",
+      "promptFile": "prompts/holo-finds-lilac-holo-puck.txt"
+    },
+    {
+      "id": "desk-pets-lilac-mini-sprout-pot",
+      "name": "Lilac Mini Sprout Pot",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "lilac body",
+        "moon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-lilac-mini-sprout-pot.png",
+      "promptFile": "prompts/desk-pets-lilac-mini-sprout-pot.txt"
+    },
+    {
+      "id": "snack-relics-lilac-jelly-coin",
+      "name": "Lilac Jelly Coin",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "lilac body",
+        "button accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-lilac-jelly-coin.png",
+      "promptFile": "prompts/snack-relics-lilac-jelly-coin.txt"
+    },
+    {
+      "id": "pocket-tech-bubblegum-dial-rotary",
+      "name": "Bubblegum Dial Rotary",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "bubblegum body",
+        "bubble accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-bubblegum-dial-rotary.png",
+      "promptFile": "prompts/pocket-tech-bubblegum-dial-rotary.txt"
+    },
+    {
+      "id": "holo-finds-bubblegum-foil-frame",
+      "name": "Bubblegum Foil Frame",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 9,
+      "dropRole": "codex-chase",
+      "price": 1370,
+      "traits": [
+        "bubblegum body",
+        "ribbon accent",
+        "foil edge detail",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-bubblegum-foil-frame.png",
+      "promptFile": "prompts/holo-finds-bubblegum-foil-frame.txt"
+    },
+    {
+      "id": "desk-pets-bubblegum-puffy-comet",
+      "name": "Bubblegum Puffy Comet",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "bubblegum body",
+        "foil accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-bubblegum-puffy-comet.png",
+      "promptFile": "prompts/desk-pets-bubblegum-puffy-comet.txt"
+    },
+    {
+      "id": "snack-relics-bubblegum-toy-straw",
+      "name": "Bubblegum Toy Straw",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "bubblegum body",
+        "pixel accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-bubblegum-toy-straw.png",
+      "promptFile": "prompts/snack-relics-bubblegum-toy-straw.txt"
+    },
+    {
+      "id": "pocket-tech-blueberry-disc-player",
+      "name": "Blueberry Disc Player",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "blueberry body",
+        "glow accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-blueberry-disc-player.png",
+      "promptFile": "prompts/pocket-tech-blueberry-disc-player.txt"
+    },
+    {
+      "id": "holo-finds-blueberry-sparkle-tab",
+      "name": "Blueberry Sparkle Tab",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "blueberry body",
+        "star accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-blueberry-sparkle-tab.png",
+      "promptFile": "prompts/holo-finds-blueberry-sparkle-tab.txt"
+    },
+    {
+      "id": "desk-pets-blueberry-bubble-beetle",
+      "name": "Blueberry Bubble Beetle",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "blueberry body",
+        "heart accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-blueberry-bubble-beetle.png",
+      "promptFile": "prompts/desk-pets-blueberry-bubble-beetle.txt"
+    },
+    {
+      "id": "snack-relics-blueberry-cereal-badge",
+      "name": "Blueberry Cereal Badge",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2300,
+      "traits": [
+        "blueberry body",
+        "moon accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-blueberry-cereal-badge.png",
+      "promptFile": "prompts/snack-relics-blueberry-cereal-badge.txt"
+    },
+    {
+      "id": "pocket-tech-citrus-antenna-tv",
+      "name": "Citrus Antenna Tv",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "citrus body",
+        "button accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-citrus-antenna-tv.png",
+      "promptFile": "prompts/pocket-tech-citrus-antenna-tv.txt"
+    },
+    {
+      "id": "holo-finds-citrus-lucky-seal",
+      "name": "Citrus Lucky Seal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "citrus body",
+        "bubble accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-citrus-lucky-seal.png",
+      "promptFile": "prompts/holo-finds-citrus-lucky-seal.txt"
+    },
+    {
+      "id": "desk-pets-citrus-soft-cube",
+      "name": "Citrus Soft Cube",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "citrus body",
+        "ribbon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-citrus-soft-cube.png",
+      "promptFile": "prompts/desk-pets-citrus-soft-cube.txt"
+    },
+    {
+      "id": "snack-relics-citrus-capsule-crown",
+      "name": "Citrus Capsule Crown",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "citrus body",
+        "foil accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-citrus-capsule-crown.png",
+      "promptFile": "prompts/snack-relics-citrus-capsule-crown.txt"
+    },
+    {
+      "id": "pocket-tech-sunrise-synth-keys",
+      "name": "Sunrise Synth Keys",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "sunrise body",
+        "pixel accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-sunrise-synth-keys.png",
+      "promptFile": "prompts/pocket-tech-sunrise-synth-keys.txt"
+    },
+    {
+      "id": "holo-finds-sunrise-rainbow-chip",
+      "name": "Sunrise Rainbow Chip",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "sunrise body",
+        "glow accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-sunrise-rainbow-chip.png",
+      "promptFile": "prompts/holo-finds-sunrise-rainbow-chip.txt"
+    },
+    {
+      "id": "desk-pets-sunrise-wobble-wink",
+      "name": "Sunrise Wobble Wink",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "sunrise body",
+        "star accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-sunrise-wobble-wink.png",
+      "promptFile": "prompts/desk-pets-sunrise-wobble-wink.txt"
+    },
+    {
+      "id": "snack-relics-sunrise-tiny-launcher",
+      "name": "Sunrise Tiny Launcher",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "sunrise body",
+        "heart accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-sunrise-tiny-launcher.png",
+      "promptFile": "prompts/snack-relics-sunrise-tiny-launcher.txt"
+    },
+    {
+      "id": "pocket-tech-cloud-projector-pod",
+      "name": "Cloud Projector Pod",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "cloud body",
+        "moon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-cloud-projector-pod.png",
+      "promptFile": "prompts/pocket-tech-cloud-projector-pod.txt"
+    },
+    {
+      "id": "holo-finds-cloud-display-slab",
+      "name": "Cloud Display Slab",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 11,
+      "dropRole": "codex-chase",
+      "price": 1270,
+      "traits": [
+        "cloud body",
+        "button accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-cloud-display-slab.png",
+      "promptFile": "prompts/holo-finds-cloud-display-slab.txt"
+    },
+    {
+      "id": "desk-pets-cloud-tiny-moon",
+      "name": "Cloud Tiny Moon",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "cloud body",
+        "bubble accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-cloud-tiny-moon.png",
+      "promptFile": "prompts/desk-pets-cloud-tiny-moon.txt"
+    },
+    {
+      "id": "snack-relics-cloud-bubble-token",
+      "name": "Cloud Bubble Token",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "cloud body",
+        "ribbon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-cloud-bubble-token.png",
+      "promptFile": "prompts/snack-relics-cloud-bubble-token.txt"
+    },
+    {
+      "id": "pocket-tech-pebble-bubble-modem",
+      "name": "Pebble Bubble Modem",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "pebble body",
+        "foil accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-pebble-bubble-modem.png",
+      "promptFile": "prompts/pocket-tech-pebble-bubble-modem.txt"
+    },
+    {
+      "id": "holo-finds-pebble-shimmer-tag",
+      "name": "Pebble Shimmer Tag",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "pebble body",
+        "pixel accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-pebble-shimmer-tag.png",
+      "promptFile": "prompts/holo-finds-pebble-shimmer-tag.txt"
+    },
+    {
+      "id": "desk-pets-pebble-desk-dumpling",
+      "name": "Pebble Desk Dumpling",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "pebble body",
+        "glow accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-pebble-desk-dumpling.png",
+      "promptFile": "prompts/desk-pets-pebble-desk-dumpling.txt"
+    },
+    {
+      "id": "snack-relics-pebble-lucky-scoop",
+      "name": "Pebble Lucky Scoop",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2200,
+      "traits": [
+        "pebble body",
+        "star accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-pebble-lucky-scoop.png",
+      "promptFile": "prompts/snack-relics-pebble-lucky-scoop.txt"
+    },
+    {
+      "id": "pocket-tech-sherbet-tiny-tablet",
+      "name": "Sherbet Tiny Tablet",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "sherbet body",
+        "heart accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-sherbet-tiny-tablet.png",
+      "promptFile": "prompts/pocket-tech-sherbet-tiny-tablet.txt"
+    },
+    {
+      "id": "holo-finds-sherbet-arcade-sticker",
+      "name": "Sherbet Arcade Sticker",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "sherbet body",
+        "moon accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-sherbet-arcade-sticker.png",
+      "promptFile": "prompts/holo-finds-sherbet-arcade-sticker.txt"
+    },
+    {
+      "id": "desk-pets-sherbet-star-seed",
+      "name": "Sherbet Star Seed",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "sherbet body",
+        "button accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-sherbet-star-seed.png",
+      "promptFile": "prompts/desk-pets-sherbet-star-seed.txt"
+    },
+    {
+      "id": "snack-relics-sherbet-snack-stamp",
+      "name": "Sherbet Snack Stamp",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "sherbet body",
+        "bubble accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-sherbet-snack-stamp.png",
+      "promptFile": "prompts/snack-relics-sherbet-snack-stamp.txt"
+    },
+    {
+      "id": "pocket-tech-marshmallow-capsule-scanner",
+      "name": "Marshmallow Capsule Scanner",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "marshmallow body",
+        "ribbon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-marshmallow-capsule-scanner.png",
+      "promptFile": "prompts/pocket-tech-marshmallow-capsule-scanner.txt"
+    },
+    {
+      "id": "holo-finds-marshmallow-bubble-crest",
+      "name": "Marshmallow Bubble Crest",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "marshmallow body",
+        "foil accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-marshmallow-bubble-crest.png",
+      "promptFile": "prompts/holo-finds-marshmallow-bubble-crest.txt"
+    },
+    {
+      "id": "desk-pets-marshmallow-jelly-leaf",
+      "name": "Marshmallow Jelly Leaf",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "marshmallow body",
+        "pixel accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-marshmallow-jelly-leaf.png",
+      "promptFile": "prompts/desk-pets-marshmallow-jelly-leaf.txt"
+    },
+    {
+      "id": "snack-relics-marshmallow-foil-wrapper",
+      "name": "Marshmallow Foil Wrapper",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "marshmallow body",
+        "glow accent",
+        "foil edge detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-marshmallow-foil-wrapper.png",
+      "promptFile": "prompts/snack-relics-marshmallow-foil-wrapper.txt"
+    },
+    {
+      "id": "pocket-tech-opal-pocket-speaker",
+      "name": "Opal Pocket Speaker",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "opal body",
+        "star accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-opal-pocket-speaker.png",
+      "promptFile": "prompts/pocket-tech-opal-pocket-speaker.txt"
+    },
+    {
+      "id": "holo-finds-opal-plush-badge",
+      "name": "Opal Plush Badge",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 13,
+      "dropRole": "codex-chase",
+      "price": 1310,
+      "traits": [
+        "opal body",
+        "heart accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-opal-plush-badge.png",
+      "promptFile": "prompts/holo-finds-opal-plush-badge.txt"
+    },
+    {
+      "id": "desk-pets-opal-pocket-pebble",
+      "name": "Opal Pocket Pebble",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "opal body",
+        "moon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-opal-pocket-pebble.png",
+      "promptFile": "prompts/desk-pets-opal-pocket-pebble.txt"
+    },
+    {
+      "id": "snack-relics-opal-vending-gem",
+      "name": "Opal Vending Gem",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "opal body",
+        "button accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-opal-vending-gem.png",
+      "promptFile": "prompts/snack-relics-opal-vending-gem.txt"
+    },
+    {
+      "id": "pocket-tech-starlit-candy-earbuds",
+      "name": "Starlit Candy Earbuds",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "starlit body",
+        "bubble accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-starlit-candy-earbuds.png",
+      "promptFile": "prompts/pocket-tech-starlit-candy-earbuds.txt"
+    },
+    {
+      "id": "holo-finds-starlit-orbit-decal",
+      "name": "Starlit Orbit Decal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "starlit body",
+        "ribbon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-starlit-orbit-decal.png",
+      "promptFile": "prompts/holo-finds-starlit-orbit-decal.txt"
+    },
+    {
+      "id": "desk-pets-starlit-snug-capsule",
+      "name": "Starlit Snug Capsule",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "starlit body",
+        "foil accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-starlit-snug-capsule.png",
+      "promptFile": "prompts/desk-pets-starlit-snug-capsule.txt"
+    },
+    {
+      "id": "snack-relics-starlit-packet-mascot",
+      "name": "Starlit Packet Mascot",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2240,
+      "traits": [
+        "starlit body",
+        "pixel accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-starlit-packet-mascot.png",
+      "promptFile": "prompts/snack-relics-starlit-packet-mascot.txt"
+    },
+    {
+      "id": "pocket-tech-prism-game-brick",
+      "name": "Prism Game Brick",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "prism body",
+        "glow accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-prism-game-brick.png",
+      "promptFile": "prompts/pocket-tech-prism-game-brick.txt"
+    },
+    {
+      "id": "holo-finds-prism-foil-card",
+      "name": "Prism Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "prism body",
+        "star accent",
+        "foil edge detail",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-prism-foil-card.png",
+      "promptFile": "prompts/holo-finds-prism-foil-card.txt"
+    },
+    {
+      "id": "desk-pets-prism-mochi-blob",
+      "name": "Prism Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "prism body",
+        "heart accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-prism-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-prism-mochi-blob.txt"
+    },
+    {
+      "id": "snack-relics-prism-rocket-prize",
+      "name": "Prism Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "prism body",
+        "moon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-prism-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-prism-rocket-prize.txt"
+    },
+    {
+      "id": "pocket-tech-taffy-pixel-pet-cam",
+      "name": "Taffy Pixel Pet Cam",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "taffy body",
+        "button accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-taffy-pixel-pet-cam.png",
+      "promptFile": "prompts/pocket-tech-taffy-pixel-pet-cam.txt"
+    },
+    {
+      "id": "holo-finds-taffy-sticker-slab",
+      "name": "Taffy Sticker Slab",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "taffy body",
+        "bubble accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-taffy-sticker-slab.png",
+      "promptFile": "prompts/holo-finds-taffy-sticker-slab.txt"
+    },
+    {
+      "id": "desk-pets-taffy-sleepy-star",
+      "name": "Taffy Sleepy Star",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "taffy body",
+        "ribbon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-taffy-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-taffy-sleepy-star.txt"
+    },
+    {
+      "id": "snack-relics-taffy-capsule-ghost",
+      "name": "Taffy Capsule Ghost",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "taffy body",
+        "foil accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-taffy-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-taffy-capsule-ghost.txt"
+    },
+    {
+      "id": "pocket-tech-gummy-mini-console",
+      "name": "Gummy Mini Console",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "gummy body",
+        "pixel accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-gummy-mini-console.png",
+      "promptFile": "prompts/pocket-tech-gummy-mini-console.txt"
+    },
+    {
+      "id": "holo-finds-gummy-ticket-relic",
+      "name": "Gummy Ticket Relic",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 6,
+      "dropRole": "codex-chase",
+      "price": 1350,
+      "traits": [
+        "gummy body",
+        "glow accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-gummy-ticket-relic.png",
+      "promptFile": "prompts/holo-finds-gummy-ticket-relic.txt"
+    },
+    {
+      "id": "desk-pets-gummy-button-sprout",
+      "name": "Gummy Button Sprout",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "gummy body",
+        "star accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-gummy-button-sprout.png",
+      "promptFile": "prompts/desk-pets-gummy-button-sprout.txt"
+    },
+    {
+      "id": "snack-relics-gummy-vending-ring",
+      "name": "Gummy Vending Ring",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "gummy body",
+        "heart accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-gummy-vending-ring.png",
+      "promptFile": "prompts/snack-relics-gummy-vending-ring.txt"
+    },
+    {
+      "id": "pocket-tech-chrome-mouse-ball",
+      "name": "Chrome Mouse Ball",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "chrome body",
+        "moon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-chrome-mouse-ball.png",
+      "promptFile": "prompts/pocket-tech-chrome-mouse-ball.txt"
+    },
+    {
+      "id": "holo-finds-chrome-pog-stack",
+      "name": "Chrome Pog Stack",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "chrome body",
+        "button accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-chrome-pog-stack.png",
+      "promptFile": "prompts/holo-finds-chrome-pog-stack.txt"
+    },
+    {
+      "id": "desk-pets-chrome-tiny-desk-dino",
+      "name": "Chrome Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "chrome body",
+        "bubble accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-chrome-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-chrome-tiny-desk-dino.txt"
+    },
+    {
+      "id": "snack-relics-chrome-crinkle-pack",
+      "name": "Chrome Crinkle Pack",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2280,
+      "traits": [
+        "chrome body",
+        "ribbon accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-chrome-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-chrome-crinkle-pack.txt"
+    },
+    {
+      "id": "pocket-tech-dreamy-tape-deck",
+      "name": "Dreamy Tape Deck",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "dreamy body",
+        "foil accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-dreamy-tape-deck.png",
+      "promptFile": "prompts/pocket-tech-dreamy-tape-deck.txt"
+    },
+    {
+      "id": "holo-finds-dreamy-prism-token",
+      "name": "Dreamy Prism Token",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "dreamy body",
+        "pixel accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-dreamy-prism-token.png",
+      "promptFile": "prompts/holo-finds-dreamy-prism-token.txt"
+    },
+    {
+      "id": "desk-pets-dreamy-pillow-pal",
+      "name": "Dreamy Pillow Pal",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "dreamy body",
+        "glow accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-dreamy-pillow-pal.png",
+      "promptFile": "prompts/desk-pets-dreamy-pillow-pal.txt"
+    },
+    {
+      "id": "snack-relics-dreamy-soda-tab",
+      "name": "Dreamy Soda Tab",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "dreamy body",
+        "star accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-dreamy-soda-tab.png",
+      "promptFile": "prompts/snack-relics-dreamy-soda-tab.txt"
+    },
+    {
+      "id": "pocket-tech-mint-pager-pal",
+      "name": "Mint Pager Pal",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "mint body",
+        "heart accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-mint-pager-pal.png",
+      "promptFile": "prompts/pocket-tech-mint-pager-pal.txt"
+    },
+    {
+      "id": "holo-finds-mint-moon-badge",
+      "name": "Mint Moon Badge",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "mint body",
+        "moon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-mint-moon-badge.png",
+      "promptFile": "prompts/holo-finds-mint-moon-badge.txt"
+    },
+    {
+      "id": "desk-pets-mint-button-charm",
+      "name": "Mint Button Charm",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "mint body",
+        "button accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-mint-button-charm.png",
+      "promptFile": "prompts/desk-pets-mint-button-charm.txt"
+    },
+    {
+      "id": "snack-relics-mint-gum-token",
+      "name": "Mint Gum Token",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "mint body",
+        "bubble accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-mint-gum-token.png",
+      "promptFile": "prompts/snack-relics-mint-gum-token.txt"
+    },
+    {
+      "id": "pocket-tech-berry-robo-walkie",
+      "name": "Berry Robo Walkie",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "berry body",
+        "ribbon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-berry-robo-walkie.png",
+      "promptFile": "prompts/pocket-tech-berry-robo-walkie.txt"
+    },
+    {
+      "id": "holo-finds-berry-star-stamp",
+      "name": "Berry Star Stamp",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 8,
+      "dropRole": "codex-chase",
+      "price": 1250,
+      "traits": [
+        "berry body",
+        "foil accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-berry-star-stamp.png",
+      "promptFile": "prompts/holo-finds-berry-star-stamp.txt"
+    },
+    {
+      "id": "desk-pets-berry-cloud-cubby",
+      "name": "Berry Cloud Cubby",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "berry body",
+        "pixel accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-berry-cloud-cubby.png",
+      "promptFile": "prompts/desk-pets-berry-cloud-cubby.txt"
+    },
+    {
+      "id": "snack-relics-berry-mini-spoon",
+      "name": "Berry Mini Spoon",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "berry body",
+        "glow accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-berry-mini-spoon.png",
+      "promptFile": "prompts/snack-relics-berry-mini-spoon.txt"
+    },
+    {
+      "id": "pocket-tech-lemon-jelly-joystick",
+      "name": "Lemon Jelly Joystick",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "lemon body",
+        "star accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-lemon-jelly-joystick.png",
+      "promptFile": "prompts/pocket-tech-lemon-jelly-joystick.txt"
+    },
+    {
+      "id": "holo-finds-lemon-chrome-charm",
+      "name": "Lemon Chrome Charm",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "lemon body",
+        "heart accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-lemon-chrome-charm.png",
+      "promptFile": "prompts/holo-finds-lemon-chrome-charm.txt"
+    },
+    {
+      "id": "desk-pets-lemon-bean-buddy",
+      "name": "Lemon Bean Buddy",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "lemon body",
+        "moon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-lemon-bean-buddy.png",
+      "promptFile": "prompts/desk-pets-lemon-bean-buddy.txt"
+    },
+    {
+      "id": "snack-relics-lemon-wrapper-charm",
+      "name": "Lemon Wrapper Charm",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2320,
+      "traits": [
+        "lemon body",
+        "button accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-lemon-wrapper-charm.png",
+      "promptFile": "prompts/snack-relics-lemon-wrapper-charm.txt"
+    },
+    {
+      "id": "pocket-tech-coral-boombox",
+      "name": "Coral Boombox",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "coral body",
+        "bubble accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-coral-boombox.png",
+      "promptFile": "prompts/pocket-tech-coral-boombox.txt"
+    },
+    {
+      "id": "holo-finds-coral-glimmer-pass",
+      "name": "Coral Glimmer Pass",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "coral body",
+        "ribbon accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-coral-glimmer-pass.png",
+      "promptFile": "prompts/holo-finds-coral-glimmer-pass.txt"
+    },
+    {
+      "id": "desk-pets-coral-pebble-stack",
+      "name": "Coral Pebble Stack",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "coral body",
+        "foil accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-coral-pebble-stack.png",
+      "promptFile": "prompts/desk-pets-coral-pebble-stack.txt"
+    },
+    {
+      "id": "snack-relics-coral-prize-whistle",
+      "name": "Coral Prize Whistle",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "coral body",
+        "pixel accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-coral-prize-whistle.png",
+      "promptFile": "prompts/snack-relics-coral-prize-whistle.txt"
+    },
+    {
+      "id": "pocket-tech-sky-keyboard",
+      "name": "Sky Keyboard",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "sky body",
+        "glow accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-sky-keyboard.png",
+      "promptFile": "prompts/pocket-tech-sky-keyboard.txt"
+    },
+    {
+      "id": "holo-finds-sky-holo-puck",
+      "name": "Sky Holo Puck",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "sky body",
+        "star accent",
+        "foil edge detail",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-sky-holo-puck.png",
+      "promptFile": "prompts/holo-finds-sky-holo-puck.txt"
+    },
+    {
+      "id": "desk-pets-sky-mini-sprout-pot",
+      "name": "Sky Mini Sprout Pot",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "sky body",
+        "heart accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-sky-mini-sprout-pot.png",
+      "promptFile": "prompts/desk-pets-sky-mini-sprout-pot.txt"
+    },
+    {
+      "id": "snack-relics-sky-jelly-coin",
+      "name": "Sky Jelly Coin",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "sky body",
+        "moon accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-sky-jelly-coin.png",
+      "promptFile": "prompts/snack-relics-sky-jelly-coin.txt"
+    },
+    {
+      "id": "pocket-tech-grape-dial-rotary",
+      "name": "Grape Dial Rotary",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "grape body",
+        "button accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-grape-dial-rotary.png",
+      "promptFile": "prompts/pocket-tech-grape-dial-rotary.txt"
+    },
+    {
+      "id": "holo-finds-grape-foil-frame",
+      "name": "Grape Foil Frame",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 10,
+      "dropRole": "codex-chase",
+      "price": 1290,
+      "traits": [
+        "grape body",
+        "bubble accent",
+        "foil edge detail",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-grape-foil-frame.png",
+      "promptFile": "prompts/holo-finds-grape-foil-frame.txt"
+    },
+    {
+      "id": "desk-pets-grape-puffy-comet",
+      "name": "Grape Puffy Comet",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "grape body",
+        "ribbon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-grape-puffy-comet.png",
+      "promptFile": "prompts/desk-pets-grape-puffy-comet.txt"
+    },
+    {
+      "id": "snack-relics-grape-toy-straw",
+      "name": "Grape Toy Straw",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "grape body",
+        "foil accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-grape-toy-straw.png",
+      "promptFile": "prompts/snack-relics-grape-toy-straw.txt"
+    },
+    {
+      "id": "pocket-tech-melon-disc-player",
+      "name": "Melon Disc Player",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "melon body",
+        "pixel accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-melon-disc-player.png",
+      "promptFile": "prompts/pocket-tech-melon-disc-player.txt"
+    },
+    {
+      "id": "holo-finds-melon-sparkle-tab",
+      "name": "Melon Sparkle Tab",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "melon body",
+        "glow accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-melon-sparkle-tab.png",
+      "promptFile": "prompts/holo-finds-melon-sparkle-tab.txt"
+    },
+    {
+      "id": "desk-pets-melon-bubble-beetle",
+      "name": "Melon Bubble Beetle",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "melon body",
+        "star accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-melon-bubble-beetle.png",
+      "promptFile": "prompts/desk-pets-melon-bubble-beetle.txt"
+    },
+    {
+      "id": "snack-relics-melon-cereal-badge",
+      "name": "Melon Cereal Badge",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2220,
+      "traits": [
+        "melon body",
+        "heart accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-melon-cereal-badge.png",
+      "promptFile": "prompts/snack-relics-melon-cereal-badge.txt"
+    },
+    {
+      "id": "pocket-tech-peach-antenna-tv",
+      "name": "Peach Antenna Tv",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "peach body",
+        "moon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-peach-antenna-tv.png",
+      "promptFile": "prompts/pocket-tech-peach-antenna-tv.txt"
+    },
+    {
+      "id": "holo-finds-peach-lucky-seal",
+      "name": "Peach Lucky Seal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "peach body",
+        "button accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-peach-lucky-seal.png",
+      "promptFile": "prompts/holo-finds-peach-lucky-seal.txt"
+    },
+    {
+      "id": "desk-pets-peach-soft-cube",
+      "name": "Peach Soft Cube",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "peach body",
+        "bubble accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-peach-soft-cube.png",
+      "promptFile": "prompts/desk-pets-peach-soft-cube.txt"
+    },
+    {
+      "id": "snack-relics-peach-capsule-crown",
+      "name": "Peach Capsule Crown",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "peach body",
+        "ribbon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-peach-capsule-crown.png",
+      "promptFile": "prompts/snack-relics-peach-capsule-crown.txt"
+    },
+    {
+      "id": "pocket-tech-teal-synth-keys",
+      "name": "Teal Synth Keys",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "teal body",
+        "foil accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-teal-synth-keys.png",
+      "promptFile": "prompts/pocket-tech-teal-synth-keys.txt"
+    },
+    {
+      "id": "holo-finds-teal-rainbow-chip",
+      "name": "Teal Rainbow Chip",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "teal body",
+        "pixel accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-teal-rainbow-chip.png",
+      "promptFile": "prompts/holo-finds-teal-rainbow-chip.txt"
+    },
+    {
+      "id": "desk-pets-teal-wobble-wink",
+      "name": "Teal Wobble Wink",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "teal body",
+        "glow accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-teal-wobble-wink.png",
+      "promptFile": "prompts/desk-pets-teal-wobble-wink.txt"
+    },
+    {
+      "id": "snack-relics-teal-tiny-launcher",
+      "name": "Teal Tiny Launcher",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "teal body",
+        "star accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-teal-tiny-launcher.png",
+      "promptFile": "prompts/snack-relics-teal-tiny-launcher.txt"
+    },
+    {
+      "id": "pocket-tech-lilac-projector-pod",
+      "name": "Lilac Projector Pod",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "lilac body",
+        "heart accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-lilac-projector-pod.png",
+      "promptFile": "prompts/pocket-tech-lilac-projector-pod.txt"
+    },
+    {
+      "id": "holo-finds-lilac-display-slab",
+      "name": "Lilac Display Slab",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 12,
+      "dropRole": "codex-chase",
+      "price": 1330,
+      "traits": [
+        "lilac body",
+        "moon accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-lilac-display-slab.png",
+      "promptFile": "prompts/holo-finds-lilac-display-slab.txt"
+    },
+    {
+      "id": "desk-pets-lilac-tiny-moon",
+      "name": "Lilac Tiny Moon",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "lilac body",
+        "button accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-lilac-tiny-moon.png",
+      "promptFile": "prompts/desk-pets-lilac-tiny-moon.txt"
+    },
+    {
+      "id": "snack-relics-lilac-bubble-token",
+      "name": "Lilac Bubble Token",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "lilac body",
+        "bubble accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-lilac-bubble-token.png",
+      "promptFile": "prompts/snack-relics-lilac-bubble-token.txt"
+    },
+    {
+      "id": "pocket-tech-bubblegum-bubble-modem",
+      "name": "Bubblegum Bubble Modem",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "bubblegum body",
+        "ribbon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-bubblegum-bubble-modem.png",
+      "promptFile": "prompts/pocket-tech-bubblegum-bubble-modem.txt"
+    },
+    {
+      "id": "holo-finds-bubblegum-shimmer-tag",
+      "name": "Bubblegum Shimmer Tag",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "bubblegum body",
+        "foil accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-bubblegum-shimmer-tag.png",
+      "promptFile": "prompts/holo-finds-bubblegum-shimmer-tag.txt"
+    },
+    {
+      "id": "desk-pets-bubblegum-desk-dumpling",
+      "name": "Bubblegum Desk Dumpling",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "bubblegum body",
+        "pixel accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-bubblegum-desk-dumpling.png",
+      "promptFile": "prompts/desk-pets-bubblegum-desk-dumpling.txt"
+    },
+    {
+      "id": "snack-relics-bubblegum-lucky-scoop",
+      "name": "Bubblegum Lucky Scoop",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2260,
+      "traits": [
+        "bubblegum body",
+        "glow accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-bubblegum-lucky-scoop.png",
+      "promptFile": "prompts/snack-relics-bubblegum-lucky-scoop.txt"
+    },
+    {
+      "id": "pocket-tech-blueberry-tiny-tablet",
+      "name": "Blueberry Tiny Tablet",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "blueberry body",
+        "star accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-blueberry-tiny-tablet.png",
+      "promptFile": "prompts/pocket-tech-blueberry-tiny-tablet.txt"
+    },
+    {
+      "id": "holo-finds-blueberry-arcade-sticker",
+      "name": "Blueberry Arcade Sticker",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "blueberry body",
+        "heart accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-blueberry-arcade-sticker.png",
+      "promptFile": "prompts/holo-finds-blueberry-arcade-sticker.txt"
+    },
+    {
+      "id": "desk-pets-blueberry-star-seed",
+      "name": "Blueberry Star Seed",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "blueberry body",
+        "moon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-blueberry-star-seed.png",
+      "promptFile": "prompts/desk-pets-blueberry-star-seed.txt"
+    },
+    {
+      "id": "snack-relics-blueberry-snack-stamp",
+      "name": "Blueberry Snack Stamp",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "blueberry body",
+        "button accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-blueberry-snack-stamp.png",
+      "promptFile": "prompts/snack-relics-blueberry-snack-stamp.txt"
+    },
+    {
+      "id": "pocket-tech-citrus-capsule-scanner",
+      "name": "Citrus Capsule Scanner",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "citrus body",
+        "bubble accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-citrus-capsule-scanner.png",
+      "promptFile": "prompts/pocket-tech-citrus-capsule-scanner.txt"
+    },
+    {
+      "id": "holo-finds-citrus-bubble-crest",
+      "name": "Citrus Bubble Crest",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "citrus body",
+        "ribbon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-citrus-bubble-crest.png",
+      "promptFile": "prompts/holo-finds-citrus-bubble-crest.txt"
+    },
+    {
+      "id": "desk-pets-citrus-jelly-leaf",
+      "name": "Citrus Jelly Leaf",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "citrus body",
+        "foil accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-citrus-jelly-leaf.png",
+      "promptFile": "prompts/desk-pets-citrus-jelly-leaf.txt"
+    },
+    {
+      "id": "snack-relics-citrus-foil-wrapper",
+      "name": "Citrus Foil Wrapper",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "citrus body",
+        "pixel accent",
+        "foil edge detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-citrus-foil-wrapper.png",
+      "promptFile": "prompts/snack-relics-citrus-foil-wrapper.txt"
+    },
+    {
+      "id": "pocket-tech-sunrise-pocket-speaker",
+      "name": "Sunrise Pocket Speaker",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "sunrise body",
+        "glow accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-sunrise-pocket-speaker.png",
+      "promptFile": "prompts/pocket-tech-sunrise-pocket-speaker.txt"
+    },
+    {
+      "id": "holo-finds-sunrise-plush-badge",
+      "name": "Sunrise Plush Badge",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 14,
+      "dropRole": "codex-chase",
+      "price": 1370,
+      "traits": [
+        "sunrise body",
+        "star accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-sunrise-plush-badge.png",
+      "promptFile": "prompts/holo-finds-sunrise-plush-badge.txt"
+    },
+    {
+      "id": "desk-pets-sunrise-pocket-pebble",
+      "name": "Sunrise Pocket Pebble",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "sunrise body",
+        "heart accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-sunrise-pocket-pebble.png",
+      "promptFile": "prompts/desk-pets-sunrise-pocket-pebble.txt"
+    },
+    {
+      "id": "snack-relics-sunrise-vending-gem",
+      "name": "Sunrise Vending Gem",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "sunrise body",
+        "moon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-sunrise-vending-gem.png",
+      "promptFile": "prompts/snack-relics-sunrise-vending-gem.txt"
+    },
+    {
+      "id": "pocket-tech-cloud-candy-earbuds",
+      "name": "Cloud Candy Earbuds",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "cloud body",
+        "button accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-cloud-candy-earbuds.png",
+      "promptFile": "prompts/pocket-tech-cloud-candy-earbuds.txt"
+    },
+    {
+      "id": "holo-finds-cloud-orbit-decal",
+      "name": "Cloud Orbit Decal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "cloud body",
+        "bubble accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-cloud-orbit-decal.png",
+      "promptFile": "prompts/holo-finds-cloud-orbit-decal.txt"
+    },
+    {
+      "id": "desk-pets-cloud-snug-capsule",
+      "name": "Cloud Snug Capsule",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "cloud body",
+        "ribbon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-cloud-snug-capsule.png",
+      "promptFile": "prompts/desk-pets-cloud-snug-capsule.txt"
+    },
+    {
+      "id": "snack-relics-cloud-packet-mascot",
+      "name": "Cloud Packet Mascot",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2300,
+      "traits": [
+        "cloud body",
+        "foil accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-cloud-packet-mascot.png",
+      "promptFile": "prompts/snack-relics-cloud-packet-mascot.txt"
+    },
+    {
+      "id": "pocket-tech-pebble-game-brick",
+      "name": "Pebble Game Brick",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "pebble body",
+        "pixel accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-pebble-game-brick.png",
+      "promptFile": "prompts/pocket-tech-pebble-game-brick.txt"
+    },
+    {
+      "id": "holo-finds-pebble-foil-card",
+      "name": "Pebble Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "pebble body",
+        "glow accent",
+        "foil edge detail",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-pebble-foil-card.png",
+      "promptFile": "prompts/holo-finds-pebble-foil-card.txt"
+    },
+    {
+      "id": "desk-pets-pebble-mochi-blob",
+      "name": "Pebble Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "pebble body",
+        "star accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-pebble-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-pebble-mochi-blob.txt"
+    },
+    {
+      "id": "snack-relics-pebble-rocket-prize",
+      "name": "Pebble Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "pebble body",
+        "heart accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-pebble-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-pebble-rocket-prize.txt"
+    },
+    {
+      "id": "pocket-tech-sherbet-pixel-pet-cam",
+      "name": "Sherbet Pixel Pet Cam",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "sherbet body",
+        "moon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-sherbet-pixel-pet-cam.png",
+      "promptFile": "prompts/pocket-tech-sherbet-pixel-pet-cam.txt"
+    },
+    {
+      "id": "holo-finds-sherbet-sticker-slab",
+      "name": "Sherbet Sticker Slab",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "sherbet body",
+        "button accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-sherbet-sticker-slab.png",
+      "promptFile": "prompts/holo-finds-sherbet-sticker-slab.txt"
+    },
+    {
+      "id": "desk-pets-sherbet-sleepy-star",
+      "name": "Sherbet Sleepy Star",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "sherbet body",
+        "bubble accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-sherbet-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-sherbet-sleepy-star.txt"
+    },
+    {
+      "id": "snack-relics-sherbet-capsule-ghost",
+      "name": "Sherbet Capsule Ghost",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "sherbet body",
+        "ribbon accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-sherbet-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-sherbet-capsule-ghost.txt"
+    },
+    {
+      "id": "pocket-tech-marshmallow-mini-console",
+      "name": "Marshmallow Mini Console",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "marshmallow body",
+        "foil accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-marshmallow-mini-console.png",
+      "promptFile": "prompts/pocket-tech-marshmallow-mini-console.txt"
+    },
+    {
+      "id": "holo-finds-marshmallow-ticket-relic",
+      "name": "Marshmallow Ticket Relic",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 7,
+      "dropRole": "codex-chase",
+      "price": 1270,
+      "traits": [
+        "marshmallow body",
+        "pixel accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-marshmallow-ticket-relic.png",
+      "promptFile": "prompts/holo-finds-marshmallow-ticket-relic.txt"
+    },
+    {
+      "id": "desk-pets-marshmallow-button-sprout",
+      "name": "Marshmallow Button Sprout",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "marshmallow body",
+        "glow accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-marshmallow-button-sprout.png",
+      "promptFile": "prompts/desk-pets-marshmallow-button-sprout.txt"
+    },
+    {
+      "id": "snack-relics-marshmallow-vending-ring",
+      "name": "Marshmallow Vending Ring",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "marshmallow body",
+        "star accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-marshmallow-vending-ring.png",
+      "promptFile": "prompts/snack-relics-marshmallow-vending-ring.txt"
+    },
+    {
+      "id": "pocket-tech-opal-mouse-ball",
+      "name": "Opal Mouse Ball",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "opal body",
+        "heart accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-opal-mouse-ball.png",
+      "promptFile": "prompts/pocket-tech-opal-mouse-ball.txt"
+    },
+    {
+      "id": "holo-finds-opal-pog-stack",
+      "name": "Opal Pog Stack",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "opal body",
+        "moon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-opal-pog-stack.png",
+      "promptFile": "prompts/holo-finds-opal-pog-stack.txt"
+    },
+    {
+      "id": "desk-pets-opal-tiny-desk-dino",
+      "name": "Opal Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "opal body",
+        "button accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-opal-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-opal-tiny-desk-dino.txt"
+    },
+    {
+      "id": "snack-relics-opal-crinkle-pack",
+      "name": "Opal Crinkle Pack",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2200,
+      "traits": [
+        "opal body",
+        "bubble accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-opal-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-opal-crinkle-pack.txt"
+    },
+    {
+      "id": "pocket-tech-starlit-tape-deck",
+      "name": "Starlit Tape Deck",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "starlit body",
+        "ribbon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-starlit-tape-deck.png",
+      "promptFile": "prompts/pocket-tech-starlit-tape-deck.txt"
+    },
+    {
+      "id": "holo-finds-starlit-prism-token",
+      "name": "Starlit Prism Token",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "starlit body",
+        "foil accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-starlit-prism-token.png",
+      "promptFile": "prompts/holo-finds-starlit-prism-token.txt"
+    },
+    {
+      "id": "desk-pets-starlit-pillow-pal",
+      "name": "Starlit Pillow Pal",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "starlit body",
+        "pixel accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-starlit-pillow-pal.png",
+      "promptFile": "prompts/desk-pets-starlit-pillow-pal.txt"
+    },
+    {
+      "id": "snack-relics-starlit-soda-tab",
+      "name": "Starlit Soda Tab",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "starlit body",
+        "glow accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-starlit-soda-tab.png",
+      "promptFile": "prompts/snack-relics-starlit-soda-tab.txt"
+    },
+    {
+      "id": "pocket-tech-prism-pager-pal",
+      "name": "Prism Pager Pal",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "prism body",
+        "star accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-prism-pager-pal.png",
+      "promptFile": "prompts/pocket-tech-prism-pager-pal.txt"
+    },
+    {
+      "id": "holo-finds-prism-moon-badge",
+      "name": "Prism Moon Badge",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "prism body",
+        "heart accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-prism-moon-badge.png",
+      "promptFile": "prompts/holo-finds-prism-moon-badge.txt"
+    },
+    {
+      "id": "desk-pets-prism-button-charm",
+      "name": "Prism Button Charm",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "prism body",
+        "moon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-prism-button-charm.png",
+      "promptFile": "prompts/desk-pets-prism-button-charm.txt"
+    },
+    {
+      "id": "snack-relics-prism-gum-token",
+      "name": "Prism Gum Token",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "prism body",
+        "button accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-prism-gum-token.png",
+      "promptFile": "prompts/snack-relics-prism-gum-token.txt"
+    },
+    {
+      "id": "pocket-tech-taffy-robo-walkie",
+      "name": "Taffy Robo Walkie",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "taffy body",
+        "bubble accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-taffy-robo-walkie.png",
+      "promptFile": "prompts/pocket-tech-taffy-robo-walkie.txt"
+    },
+    {
+      "id": "holo-finds-taffy-star-stamp",
+      "name": "Taffy Star Stamp",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 9,
+      "dropRole": "codex-chase",
+      "price": 1310,
+      "traits": [
+        "taffy body",
+        "ribbon accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-taffy-star-stamp.png",
+      "promptFile": "prompts/holo-finds-taffy-star-stamp.txt"
+    },
+    {
+      "id": "desk-pets-taffy-cloud-cubby",
+      "name": "Taffy Cloud Cubby",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "taffy body",
+        "foil accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-taffy-cloud-cubby.png",
+      "promptFile": "prompts/desk-pets-taffy-cloud-cubby.txt"
+    },
+    {
+      "id": "snack-relics-taffy-mini-spoon",
+      "name": "Taffy Mini Spoon",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "taffy body",
+        "pixel accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-taffy-mini-spoon.png",
+      "promptFile": "prompts/snack-relics-taffy-mini-spoon.txt"
+    },
+    {
+      "id": "pocket-tech-gummy-jelly-joystick",
+      "name": "Gummy Jelly Joystick",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "gummy body",
+        "glow accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-gummy-jelly-joystick.png",
+      "promptFile": "prompts/pocket-tech-gummy-jelly-joystick.txt"
+    },
+    {
+      "id": "holo-finds-gummy-chrome-charm",
+      "name": "Gummy Chrome Charm",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "gummy body",
+        "star accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-gummy-chrome-charm.png",
+      "promptFile": "prompts/holo-finds-gummy-chrome-charm.txt"
+    },
+    {
+      "id": "desk-pets-gummy-bean-buddy",
+      "name": "Gummy Bean Buddy",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "gummy body",
+        "heart accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-gummy-bean-buddy.png",
+      "promptFile": "prompts/desk-pets-gummy-bean-buddy.txt"
+    },
+    {
+      "id": "snack-relics-gummy-wrapper-charm",
+      "name": "Gummy Wrapper Charm",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2240,
+      "traits": [
+        "gummy body",
+        "moon accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-gummy-wrapper-charm.png",
+      "promptFile": "prompts/snack-relics-gummy-wrapper-charm.txt"
+    },
+    {
+      "id": "pocket-tech-chrome-boombox",
+      "name": "Chrome Boombox",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "chrome body",
+        "button accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-chrome-boombox.png",
+      "promptFile": "prompts/pocket-tech-chrome-boombox.txt"
+    },
+    {
+      "id": "holo-finds-chrome-glimmer-pass",
+      "name": "Chrome Glimmer Pass",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "chrome body",
+        "bubble accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-chrome-glimmer-pass.png",
+      "promptFile": "prompts/holo-finds-chrome-glimmer-pass.txt"
+    },
+    {
+      "id": "desk-pets-chrome-pebble-stack",
+      "name": "Chrome Pebble Stack",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "chrome body",
+        "ribbon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-chrome-pebble-stack.png",
+      "promptFile": "prompts/desk-pets-chrome-pebble-stack.txt"
+    },
+    {
+      "id": "snack-relics-chrome-prize-whistle",
+      "name": "Chrome Prize Whistle",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "chrome body",
+        "foil accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-chrome-prize-whistle.png",
+      "promptFile": "prompts/snack-relics-chrome-prize-whistle.txt"
+    },
+    {
+      "id": "pocket-tech-dreamy-keyboard",
+      "name": "Dreamy Keyboard",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "dreamy body",
+        "pixel accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-dreamy-keyboard.png",
+      "promptFile": "prompts/pocket-tech-dreamy-keyboard.txt"
+    },
+    {
+      "id": "holo-finds-dreamy-holo-puck",
+      "name": "Dreamy Holo Puck",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "dreamy body",
+        "glow accent",
+        "foil edge detail",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-dreamy-holo-puck.png",
+      "promptFile": "prompts/holo-finds-dreamy-holo-puck.txt"
+    },
+    {
+      "id": "desk-pets-dreamy-mini-sprout-pot",
+      "name": "Dreamy Mini Sprout Pot",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "dreamy body",
+        "star accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-dreamy-mini-sprout-pot.png",
+      "promptFile": "prompts/desk-pets-dreamy-mini-sprout-pot.txt"
+    },
+    {
+      "id": "snack-relics-dreamy-jelly-coin",
+      "name": "Dreamy Jelly Coin",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "dreamy body",
+        "heart accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-dreamy-jelly-coin.png",
+      "promptFile": "prompts/snack-relics-dreamy-jelly-coin.txt"
+    },
+    {
+      "id": "pocket-tech-mint-dial-rotary",
+      "name": "Mint Dial Rotary",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "mint body",
+        "moon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-mint-dial-rotary.png",
+      "promptFile": "prompts/pocket-tech-mint-dial-rotary.txt"
+    },
+    {
+      "id": "holo-finds-mint-foil-frame",
+      "name": "Mint Foil Frame",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 11,
+      "dropRole": "codex-chase",
+      "price": 1350,
+      "traits": [
+        "mint body",
+        "button accent",
+        "foil edge detail",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-mint-foil-frame.png",
+      "promptFile": "prompts/holo-finds-mint-foil-frame.txt"
+    },
+    {
+      "id": "desk-pets-mint-puffy-comet",
+      "name": "Mint Puffy Comet",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "mint body",
+        "bubble accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-mint-puffy-comet.png",
+      "promptFile": "prompts/desk-pets-mint-puffy-comet.txt"
+    },
+    {
+      "id": "snack-relics-mint-toy-straw",
+      "name": "Mint Toy Straw",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "mint body",
+        "ribbon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-mint-toy-straw.png",
+      "promptFile": "prompts/snack-relics-mint-toy-straw.txt"
+    },
+    {
+      "id": "pocket-tech-berry-disc-player",
+      "name": "Berry Disc Player",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "berry body",
+        "foil accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-berry-disc-player.png",
+      "promptFile": "prompts/pocket-tech-berry-disc-player.txt"
+    },
+    {
+      "id": "holo-finds-berry-sparkle-tab",
+      "name": "Berry Sparkle Tab",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "berry body",
+        "pixel accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-berry-sparkle-tab.png",
+      "promptFile": "prompts/holo-finds-berry-sparkle-tab.txt"
+    },
+    {
+      "id": "desk-pets-berry-bubble-beetle",
+      "name": "Berry Bubble Beetle",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "berry body",
+        "glow accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-berry-bubble-beetle.png",
+      "promptFile": "prompts/desk-pets-berry-bubble-beetle.txt"
+    },
+    {
+      "id": "snack-relics-berry-cereal-badge",
+      "name": "Berry Cereal Badge",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2280,
+      "traits": [
+        "berry body",
+        "star accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-berry-cereal-badge.png",
+      "promptFile": "prompts/snack-relics-berry-cereal-badge.txt"
+    },
+    {
+      "id": "pocket-tech-lemon-antenna-tv",
+      "name": "Lemon Antenna Tv",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "lemon body",
+        "heart accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-lemon-antenna-tv.png",
+      "promptFile": "prompts/pocket-tech-lemon-antenna-tv.txt"
+    },
+    {
+      "id": "holo-finds-lemon-lucky-seal",
+      "name": "Lemon Lucky Seal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "lemon body",
+        "moon accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-lemon-lucky-seal.png",
+      "promptFile": "prompts/holo-finds-lemon-lucky-seal.txt"
+    },
+    {
+      "id": "desk-pets-lemon-soft-cube",
+      "name": "Lemon Soft Cube",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "lemon body",
+        "button accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-lemon-soft-cube.png",
+      "promptFile": "prompts/desk-pets-lemon-soft-cube.txt"
+    },
+    {
+      "id": "snack-relics-lemon-capsule-crown",
+      "name": "Lemon Capsule Crown",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "lemon body",
+        "bubble accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-lemon-capsule-crown.png",
+      "promptFile": "prompts/snack-relics-lemon-capsule-crown.txt"
+    },
+    {
+      "id": "pocket-tech-coral-synth-keys",
+      "name": "Coral Synth Keys",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "coral body",
+        "ribbon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-coral-synth-keys.png",
+      "promptFile": "prompts/pocket-tech-coral-synth-keys.txt"
+    },
+    {
+      "id": "holo-finds-coral-rainbow-chip",
+      "name": "Coral Rainbow Chip",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "coral body",
+        "foil accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-coral-rainbow-chip.png",
+      "promptFile": "prompts/holo-finds-coral-rainbow-chip.txt"
+    },
+    {
+      "id": "desk-pets-coral-wobble-wink",
+      "name": "Coral Wobble Wink",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "coral body",
+        "pixel accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-coral-wobble-wink.png",
+      "promptFile": "prompts/desk-pets-coral-wobble-wink.txt"
+    },
+    {
+      "id": "snack-relics-coral-tiny-launcher",
+      "name": "Coral Tiny Launcher",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "coral body",
+        "glow accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-coral-tiny-launcher.png",
+      "promptFile": "prompts/snack-relics-coral-tiny-launcher.txt"
+    },
+    {
+      "id": "pocket-tech-sky-projector-pod",
+      "name": "Sky Projector Pod",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "sky body",
+        "star accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-sky-projector-pod.png",
+      "promptFile": "prompts/pocket-tech-sky-projector-pod.txt"
+    },
+    {
+      "id": "holo-finds-sky-display-slab",
+      "name": "Sky Display Slab",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 13,
+      "dropRole": "codex-chase",
+      "price": 1250,
+      "traits": [
+        "sky body",
+        "heart accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-sky-display-slab.png",
+      "promptFile": "prompts/holo-finds-sky-display-slab.txt"
+    },
+    {
+      "id": "desk-pets-sky-tiny-moon",
+      "name": "Sky Tiny Moon",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "sky body",
+        "moon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-sky-tiny-moon.png",
+      "promptFile": "prompts/desk-pets-sky-tiny-moon.txt"
+    },
+    {
+      "id": "snack-relics-sky-bubble-token",
+      "name": "Sky Bubble Token",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "sky body",
+        "button accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-sky-bubble-token.png",
+      "promptFile": "prompts/snack-relics-sky-bubble-token.txt"
+    },
+    {
+      "id": "pocket-tech-grape-bubble-modem",
+      "name": "Grape Bubble Modem",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "grape body",
+        "bubble accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-grape-bubble-modem.png",
+      "promptFile": "prompts/pocket-tech-grape-bubble-modem.txt"
+    },
+    {
+      "id": "holo-finds-grape-shimmer-tag",
+      "name": "Grape Shimmer Tag",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "grape body",
+        "ribbon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-grape-shimmer-tag.png",
+      "promptFile": "prompts/holo-finds-grape-shimmer-tag.txt"
+    },
+    {
+      "id": "desk-pets-grape-desk-dumpling",
+      "name": "Grape Desk Dumpling",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "grape body",
+        "foil accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-grape-desk-dumpling.png",
+      "promptFile": "prompts/desk-pets-grape-desk-dumpling.txt"
+    },
+    {
+      "id": "snack-relics-grape-lucky-scoop",
+      "name": "Grape Lucky Scoop",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2320,
+      "traits": [
+        "grape body",
+        "pixel accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-grape-lucky-scoop.png",
+      "promptFile": "prompts/snack-relics-grape-lucky-scoop.txt"
+    },
+    {
+      "id": "pocket-tech-melon-tiny-tablet",
+      "name": "Melon Tiny Tablet",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "melon body",
+        "glow accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-melon-tiny-tablet.png",
+      "promptFile": "prompts/pocket-tech-melon-tiny-tablet.txt"
+    },
+    {
+      "id": "holo-finds-melon-arcade-sticker",
+      "name": "Melon Arcade Sticker",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "melon body",
+        "star accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-melon-arcade-sticker.png",
+      "promptFile": "prompts/holo-finds-melon-arcade-sticker.txt"
+    },
+    {
+      "id": "desk-pets-melon-star-seed",
+      "name": "Melon Star Seed",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "melon body",
+        "heart accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-melon-star-seed.png",
+      "promptFile": "prompts/desk-pets-melon-star-seed.txt"
+    },
+    {
+      "id": "snack-relics-melon-snack-stamp",
+      "name": "Melon Snack Stamp",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "melon body",
+        "moon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-melon-snack-stamp.png",
+      "promptFile": "prompts/snack-relics-melon-snack-stamp.txt"
+    },
+    {
+      "id": "pocket-tech-peach-capsule-scanner",
+      "name": "Peach Capsule Scanner",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "peach body",
+        "button accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-peach-capsule-scanner.png",
+      "promptFile": "prompts/pocket-tech-peach-capsule-scanner.txt"
+    },
+    {
+      "id": "holo-finds-peach-bubble-crest",
+      "name": "Peach Bubble Crest",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "peach body",
+        "bubble accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-peach-bubble-crest.png",
+      "promptFile": "prompts/holo-finds-peach-bubble-crest.txt"
+    },
+    {
+      "id": "desk-pets-peach-jelly-leaf",
+      "name": "Peach Jelly Leaf",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "peach body",
+        "ribbon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-peach-jelly-leaf.png",
+      "promptFile": "prompts/desk-pets-peach-jelly-leaf.txt"
+    },
+    {
+      "id": "snack-relics-peach-foil-wrapper",
+      "name": "Peach Foil Wrapper",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "peach body",
+        "foil accent",
+        "foil edge detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-peach-foil-wrapper.png",
+      "promptFile": "prompts/snack-relics-peach-foil-wrapper.txt"
+    },
+    {
+      "id": "pocket-tech-teal-pocket-speaker",
+      "name": "Teal Pocket Speaker",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "teal body",
+        "pixel accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-teal-pocket-speaker.png",
+      "promptFile": "prompts/pocket-tech-teal-pocket-speaker.txt"
+    },
+    {
+      "id": "holo-finds-teal-plush-badge",
+      "name": "Teal Plush Badge",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 6,
+      "dropRole": "codex-chase",
+      "price": 1290,
+      "traits": [
+        "teal body",
+        "glow accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-teal-plush-badge.png",
+      "promptFile": "prompts/holo-finds-teal-plush-badge.txt"
+    },
+    {
+      "id": "desk-pets-teal-pocket-pebble",
+      "name": "Teal Pocket Pebble",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "teal body",
+        "star accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-teal-pocket-pebble.png",
+      "promptFile": "prompts/desk-pets-teal-pocket-pebble.txt"
+    },
+    {
+      "id": "snack-relics-teal-vending-gem",
+      "name": "Teal Vending Gem",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "teal body",
+        "heart accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-teal-vending-gem.png",
+      "promptFile": "prompts/snack-relics-teal-vending-gem.txt"
+    },
+    {
+      "id": "pocket-tech-lilac-candy-earbuds",
+      "name": "Lilac Candy Earbuds",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "lilac body",
+        "moon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-lilac-candy-earbuds.png",
+      "promptFile": "prompts/pocket-tech-lilac-candy-earbuds.txt"
+    },
+    {
+      "id": "holo-finds-lilac-orbit-decal",
+      "name": "Lilac Orbit Decal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "lilac body",
+        "button accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-lilac-orbit-decal.png",
+      "promptFile": "prompts/holo-finds-lilac-orbit-decal.txt"
+    },
+    {
+      "id": "desk-pets-lilac-snug-capsule",
+      "name": "Lilac Snug Capsule",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "lilac body",
+        "bubble accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-lilac-snug-capsule.png",
+      "promptFile": "prompts/desk-pets-lilac-snug-capsule.txt"
+    },
+    {
+      "id": "snack-relics-lilac-packet-mascot",
+      "name": "Lilac Packet Mascot",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2220,
+      "traits": [
+        "lilac body",
+        "ribbon accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-lilac-packet-mascot.png",
+      "promptFile": "prompts/snack-relics-lilac-packet-mascot.txt"
+    },
+    {
+      "id": "pocket-tech-bubblegum-game-brick",
+      "name": "Bubblegum Game Brick",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "bubblegum body",
+        "foil accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-bubblegum-game-brick.png",
+      "promptFile": "prompts/pocket-tech-bubblegum-game-brick.txt"
+    },
+    {
+      "id": "holo-finds-bubblegum-foil-card",
+      "name": "Bubblegum Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "bubblegum body",
+        "pixel accent",
+        "foil edge detail",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-bubblegum-foil-card.png",
+      "promptFile": "prompts/holo-finds-bubblegum-foil-card.txt"
+    },
+    {
+      "id": "desk-pets-bubblegum-mochi-blob",
+      "name": "Bubblegum Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "bubblegum body",
+        "glow accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-bubblegum-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-bubblegum-mochi-blob.txt"
+    },
+    {
+      "id": "snack-relics-bubblegum-rocket-prize",
+      "name": "Bubblegum Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "bubblegum body",
+        "star accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-bubblegum-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-bubblegum-rocket-prize.txt"
+    },
+    {
+      "id": "pocket-tech-blueberry-pixel-pet-cam",
+      "name": "Blueberry Pixel Pet Cam",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "blueberry body",
+        "heart accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-blueberry-pixel-pet-cam.png",
+      "promptFile": "prompts/pocket-tech-blueberry-pixel-pet-cam.txt"
+    },
+    {
+      "id": "holo-finds-blueberry-sticker-slab",
+      "name": "Blueberry Sticker Slab",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "blueberry body",
+        "moon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-blueberry-sticker-slab.png",
+      "promptFile": "prompts/holo-finds-blueberry-sticker-slab.txt"
+    },
+    {
+      "id": "desk-pets-blueberry-sleepy-star",
+      "name": "Blueberry Sleepy Star",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "blueberry body",
+        "button accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-blueberry-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-blueberry-sleepy-star.txt"
+    },
+    {
+      "id": "snack-relics-blueberry-capsule-ghost",
+      "name": "Blueberry Capsule Ghost",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "blueberry body",
+        "bubble accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-blueberry-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-blueberry-capsule-ghost.txt"
+    },
+    {
+      "id": "pocket-tech-citrus-mini-console",
+      "name": "Citrus Mini Console",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "citrus body",
+        "ribbon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-citrus-mini-console.png",
+      "promptFile": "prompts/pocket-tech-citrus-mini-console.txt"
+    },
+    {
+      "id": "holo-finds-citrus-ticket-relic",
+      "name": "Citrus Ticket Relic",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 8,
+      "dropRole": "codex-chase",
+      "price": 1330,
+      "traits": [
+        "citrus body",
+        "foil accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-citrus-ticket-relic.png",
+      "promptFile": "prompts/holo-finds-citrus-ticket-relic.txt"
+    },
+    {
+      "id": "desk-pets-citrus-button-sprout",
+      "name": "Citrus Button Sprout",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "citrus body",
+        "pixel accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-citrus-button-sprout.png",
+      "promptFile": "prompts/desk-pets-citrus-button-sprout.txt"
+    },
+    {
+      "id": "snack-relics-citrus-vending-ring",
+      "name": "Citrus Vending Ring",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "citrus body",
+        "glow accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-citrus-vending-ring.png",
+      "promptFile": "prompts/snack-relics-citrus-vending-ring.txt"
+    },
+    {
+      "id": "pocket-tech-sunrise-mouse-ball",
+      "name": "Sunrise Mouse Ball",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "sunrise body",
+        "star accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-sunrise-mouse-ball.png",
+      "promptFile": "prompts/pocket-tech-sunrise-mouse-ball.txt"
+    },
+    {
+      "id": "holo-finds-sunrise-pog-stack",
+      "name": "Sunrise Pog Stack",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "sunrise body",
+        "heart accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-sunrise-pog-stack.png",
+      "promptFile": "prompts/holo-finds-sunrise-pog-stack.txt"
+    },
+    {
+      "id": "desk-pets-sunrise-tiny-desk-dino",
+      "name": "Sunrise Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "sunrise body",
+        "moon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-sunrise-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-sunrise-tiny-desk-dino.txt"
+    },
+    {
+      "id": "snack-relics-sunrise-crinkle-pack",
+      "name": "Sunrise Crinkle Pack",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2260,
+      "traits": [
+        "sunrise body",
+        "button accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-sunrise-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-sunrise-crinkle-pack.txt"
+    },
+    {
+      "id": "pocket-tech-cloud-tape-deck",
+      "name": "Cloud Tape Deck",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "cloud body",
+        "bubble accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-cloud-tape-deck.png",
+      "promptFile": "prompts/pocket-tech-cloud-tape-deck.txt"
+    },
+    {
+      "id": "holo-finds-cloud-prism-token",
+      "name": "Cloud Prism Token",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "cloud body",
+        "ribbon accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-cloud-prism-token.png",
+      "promptFile": "prompts/holo-finds-cloud-prism-token.txt"
+    },
+    {
+      "id": "desk-pets-cloud-pillow-pal-2",
+      "name": "Cloud Pillow Pal 2",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "cloud body",
+        "foil accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-cloud-pillow-pal-2.png",
+      "promptFile": "prompts/desk-pets-cloud-pillow-pal-2.txt"
+    },
+    {
+      "id": "snack-relics-cloud-soda-tab",
+      "name": "Cloud Soda Tab",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "cloud body",
+        "pixel accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-cloud-soda-tab.png",
+      "promptFile": "prompts/snack-relics-cloud-soda-tab.txt"
+    },
+    {
+      "id": "pocket-tech-pebble-pager-pal",
+      "name": "Pebble Pager Pal",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "pebble body",
+        "glow accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-pebble-pager-pal.png",
+      "promptFile": "prompts/pocket-tech-pebble-pager-pal.txt"
+    },
+    {
+      "id": "holo-finds-pebble-moon-badge",
+      "name": "Pebble Moon Badge",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "pebble body",
+        "star accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-pebble-moon-badge.png",
+      "promptFile": "prompts/holo-finds-pebble-moon-badge.txt"
+    },
+    {
+      "id": "desk-pets-pebble-button-charm-2",
+      "name": "Pebble Button Charm 2",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "pebble body",
+        "heart accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-pebble-button-charm-2.png",
+      "promptFile": "prompts/desk-pets-pebble-button-charm-2.txt"
+    },
+    {
+      "id": "snack-relics-pebble-gum-token",
+      "name": "Pebble Gum Token",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "pebble body",
+        "moon accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-pebble-gum-token.png",
+      "promptFile": "prompts/snack-relics-pebble-gum-token.txt"
+    },
+    {
+      "id": "pocket-tech-sherbet-robo-walkie",
+      "name": "Sherbet Robo Walkie",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "sherbet body",
+        "button accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-sherbet-robo-walkie.png",
+      "promptFile": "prompts/pocket-tech-sherbet-robo-walkie.txt"
+    },
+    {
+      "id": "holo-finds-sherbet-star-stamp",
+      "name": "Sherbet Star Stamp",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 10,
+      "dropRole": "codex-chase",
+      "price": 1370,
+      "traits": [
+        "sherbet body",
+        "bubble accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-sherbet-star-stamp.png",
+      "promptFile": "prompts/holo-finds-sherbet-star-stamp.txt"
+    },
+    {
+      "id": "desk-pets-sherbet-cloud-cubby",
+      "name": "Sherbet Cloud Cubby",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "sherbet body",
+        "ribbon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-sherbet-cloud-cubby.png",
+      "promptFile": "prompts/desk-pets-sherbet-cloud-cubby.txt"
+    },
+    {
+      "id": "snack-relics-sherbet-mini-spoon",
+      "name": "Sherbet Mini Spoon",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "sherbet body",
+        "foil accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-sherbet-mini-spoon.png",
+      "promptFile": "prompts/snack-relics-sherbet-mini-spoon.txt"
+    },
+    {
+      "id": "pocket-tech-marshmallow-jelly-joystick",
+      "name": "Marshmallow Jelly Joystick",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "marshmallow body",
+        "pixel accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-marshmallow-jelly-joystick.png",
+      "promptFile": "prompts/pocket-tech-marshmallow-jelly-joystick.txt"
+    },
+    {
+      "id": "holo-finds-marshmallow-chrome-charm",
+      "name": "Marshmallow Chrome Charm",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "marshmallow body",
+        "glow accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-marshmallow-chrome-charm.png",
+      "promptFile": "prompts/holo-finds-marshmallow-chrome-charm.txt"
+    },
+    {
+      "id": "desk-pets-marshmallow-bean-buddy",
+      "name": "Marshmallow Bean Buddy",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "marshmallow body",
+        "star accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-marshmallow-bean-buddy.png",
+      "promptFile": "prompts/desk-pets-marshmallow-bean-buddy.txt"
+    },
+    {
+      "id": "snack-relics-marshmallow-wrapper-charm",
+      "name": "Marshmallow Wrapper Charm",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2300,
+      "traits": [
+        "marshmallow body",
+        "heart accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-marshmallow-wrapper-charm.png",
+      "promptFile": "prompts/snack-relics-marshmallow-wrapper-charm.txt"
+    },
+    {
+      "id": "pocket-tech-opal-boombox",
+      "name": "Opal Boombox",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "opal body",
+        "moon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-opal-boombox.png",
+      "promptFile": "prompts/pocket-tech-opal-boombox.txt"
+    },
+    {
+      "id": "holo-finds-opal-glimmer-pass",
+      "name": "Opal Glimmer Pass",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "opal body",
+        "button accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-opal-glimmer-pass.png",
+      "promptFile": "prompts/holo-finds-opal-glimmer-pass.txt"
+    },
+    {
+      "id": "desk-pets-opal-pebble-stack",
+      "name": "Opal Pebble Stack",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "opal body",
+        "bubble accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-opal-pebble-stack.png",
+      "promptFile": "prompts/desk-pets-opal-pebble-stack.txt"
+    },
+    {
+      "id": "snack-relics-opal-prize-whistle",
+      "name": "Opal Prize Whistle",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "opal body",
+        "ribbon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-opal-prize-whistle.png",
+      "promptFile": "prompts/snack-relics-opal-prize-whistle.txt"
+    },
+    {
+      "id": "pocket-tech-starlit-keyboard",
+      "name": "Starlit Keyboard",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "starlit body",
+        "foil accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-starlit-keyboard.png",
+      "promptFile": "prompts/pocket-tech-starlit-keyboard.txt"
+    },
+    {
+      "id": "holo-finds-starlit-holo-puck",
+      "name": "Starlit Holo Puck",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "starlit body",
+        "pixel accent",
+        "foil edge detail",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-starlit-holo-puck.png",
+      "promptFile": "prompts/holo-finds-starlit-holo-puck.txt"
+    },
+    {
+      "id": "desk-pets-starlit-mini-sprout-pot",
+      "name": "Starlit Mini Sprout Pot",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "starlit body",
+        "glow accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-starlit-mini-sprout-pot.png",
+      "promptFile": "prompts/desk-pets-starlit-mini-sprout-pot.txt"
+    },
+    {
+      "id": "snack-relics-starlit-jelly-coin",
+      "name": "Starlit Jelly Coin",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 46,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "starlit body",
+        "star accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-starlit-jelly-coin.png",
+      "promptFile": "prompts/snack-relics-starlit-jelly-coin.txt"
+    },
+    {
+      "id": "pocket-tech-prism-dial-rotary",
+      "name": "Prism Dial Rotary",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "prism body",
+        "heart accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-prism-dial-rotary.png",
+      "promptFile": "prompts/pocket-tech-prism-dial-rotary.txt"
+    },
+    {
+      "id": "holo-finds-prism-foil-frame",
+      "name": "Prism Foil Frame",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 12,
+      "dropRole": "codex-chase",
+      "price": 1270,
+      "traits": [
+        "prism body",
+        "moon accent",
+        "foil edge detail",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-prism-foil-frame.png",
+      "promptFile": "prompts/holo-finds-prism-foil-frame.txt"
+    },
+    {
+      "id": "desk-pets-prism-puffy-comet",
+      "name": "Prism Puffy Comet",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "prism body",
+        "button accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-prism-puffy-comet.png",
+      "promptFile": "prompts/desk-pets-prism-puffy-comet.txt"
+    },
+    {
+      "id": "snack-relics-prism-toy-straw",
+      "name": "Prism Toy Straw",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "prism body",
+        "bubble accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-prism-toy-straw.png",
+      "promptFile": "prompts/snack-relics-prism-toy-straw.txt"
+    },
+    {
+      "id": "pocket-tech-taffy-disc-player",
+      "name": "Taffy Disc Player",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "taffy body",
+        "ribbon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-taffy-disc-player.png",
+      "promptFile": "prompts/pocket-tech-taffy-disc-player.txt"
+    },
+    {
+      "id": "holo-finds-taffy-sparkle-tab",
+      "name": "Taffy Sparkle Tab",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "taffy body",
+        "foil accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-taffy-sparkle-tab.png",
+      "promptFile": "prompts/holo-finds-taffy-sparkle-tab.txt"
+    },
+    {
+      "id": "desk-pets-taffy-bubble-beetle",
+      "name": "Taffy Bubble Beetle",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "taffy body",
+        "pixel accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-taffy-bubble-beetle.png",
+      "promptFile": "prompts/desk-pets-taffy-bubble-beetle.txt"
+    },
+    {
+      "id": "snack-relics-taffy-cereal-badge",
+      "name": "Taffy Cereal Badge",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2200,
+      "traits": [
+        "taffy body",
+        "glow accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-taffy-cereal-badge.png",
+      "promptFile": "prompts/snack-relics-taffy-cereal-badge.txt"
+    },
+    {
+      "id": "pocket-tech-gummy-antenna-tv",
+      "name": "Gummy Antenna Tv",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "gummy body",
+        "star accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-gummy-antenna-tv.png",
+      "promptFile": "prompts/pocket-tech-gummy-antenna-tv.txt"
+    },
+    {
+      "id": "holo-finds-gummy-lucky-seal",
+      "name": "Gummy Lucky Seal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "gummy body",
+        "heart accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-gummy-lucky-seal.png",
+      "promptFile": "prompts/holo-finds-gummy-lucky-seal.txt"
+    },
+    {
+      "id": "desk-pets-gummy-soft-cube",
+      "name": "Gummy Soft Cube",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "gummy body",
+        "moon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-gummy-soft-cube.png",
+      "promptFile": "prompts/desk-pets-gummy-soft-cube.txt"
+    },
+    {
+      "id": "snack-relics-gummy-capsule-crown",
+      "name": "Gummy Capsule Crown",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "gummy body",
+        "button accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-gummy-capsule-crown.png",
+      "promptFile": "prompts/snack-relics-gummy-capsule-crown.txt"
+    },
+    {
+      "id": "pocket-tech-chrome-synth-keys",
+      "name": "Chrome Synth Keys",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "chrome body",
+        "bubble accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-chrome-synth-keys.png",
+      "promptFile": "prompts/pocket-tech-chrome-synth-keys.txt"
+    },
+    {
+      "id": "holo-finds-chrome-rainbow-chip",
+      "name": "Chrome Rainbow Chip",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "chrome body",
+        "ribbon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-chrome-rainbow-chip.png",
+      "promptFile": "prompts/holo-finds-chrome-rainbow-chip.txt"
+    },
+    {
+      "id": "desk-pets-chrome-wobble-wink",
+      "name": "Chrome Wobble Wink",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 94,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "chrome body",
+        "foil accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-chrome-wobble-wink.png",
+      "promptFile": "prompts/desk-pets-chrome-wobble-wink.txt"
+    },
+    {
+      "id": "snack-relics-chrome-tiny-launcher",
+      "name": "Chrome Tiny Launcher",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 39,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "chrome body",
+        "pixel accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-chrome-tiny-launcher.png",
+      "promptFile": "prompts/snack-relics-chrome-tiny-launcher.txt"
+    },
+    {
+      "id": "pocket-tech-dreamy-projector-pod",
+      "name": "Dreamy Projector Pod",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 520,
+      "traits": [
+        "dreamy body",
+        "glow accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-dreamy-projector-pod.png",
+      "promptFile": "prompts/pocket-tech-dreamy-projector-pod.txt"
+    },
+    {
+      "id": "holo-finds-dreamy-display-slab",
+      "name": "Dreamy Display Slab",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 14,
+      "dropRole": "codex-chase",
+      "price": 1310,
+      "traits": [
+        "dreamy body",
+        "star accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-dreamy-display-slab.png",
+      "promptFile": "prompts/holo-finds-dreamy-display-slab.txt"
+    },
+    {
+      "id": "desk-pets-dreamy-tiny-moon",
+      "name": "Dreamy Tiny Moon",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "dreamy body",
+        "heart accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-dreamy-tiny-moon.png",
+      "promptFile": "prompts/desk-pets-dreamy-tiny-moon.txt"
+    },
+    {
+      "id": "snack-relics-dreamy-bubble-token",
+      "name": "Dreamy Bubble Token",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "dreamy body",
+        "moon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-dreamy-bubble-token.png",
+      "promptFile": "prompts/snack-relics-dreamy-bubble-token.txt"
+    },
+    {
+      "id": "pocket-tech-mint-bubble-modem",
+      "name": "Mint Bubble Modem",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "mint body",
+        "button accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-mint-bubble-modem.png",
+      "promptFile": "prompts/pocket-tech-mint-bubble-modem.txt"
+    },
+    {
+      "id": "holo-finds-mint-shimmer-tag",
+      "name": "Mint Shimmer Tag",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "mint body",
+        "bubble accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-mint-shimmer-tag.png",
+      "promptFile": "prompts/holo-finds-mint-shimmer-tag.txt"
+    },
+    {
+      "id": "desk-pets-mint-desk-dumpling",
+      "name": "Mint Desk Dumpling",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "mint body",
+        "ribbon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-mint-desk-dumpling.png",
+      "promptFile": "prompts/desk-pets-mint-desk-dumpling.txt"
+    },
+    {
+      "id": "snack-relics-mint-lucky-scoop",
+      "name": "Mint Lucky Scoop",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2240,
+      "traits": [
+        "mint body",
+        "foil accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-mint-lucky-scoop.png",
+      "promptFile": "prompts/snack-relics-mint-lucky-scoop.txt"
+    },
+    {
+      "id": "pocket-tech-berry-tiny-tablet",
+      "name": "Berry Tiny Tablet",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "berry body",
+        "pixel accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-berry-tiny-tablet.png",
+      "promptFile": "prompts/pocket-tech-berry-tiny-tablet.txt"
+    },
+    {
+      "id": "holo-finds-berry-arcade-sticker",
+      "name": "Berry Arcade Sticker",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "berry body",
+        "glow accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-berry-arcade-sticker.png",
+      "promptFile": "prompts/holo-finds-berry-arcade-sticker.txt"
+    },
+    {
+      "id": "desk-pets-berry-star-seed",
+      "name": "Berry Star Seed",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "berry body",
+        "star accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-berry-star-seed.png",
+      "promptFile": "prompts/desk-pets-berry-star-seed.txt"
+    },
+    {
+      "id": "snack-relics-berry-snack-stamp",
+      "name": "Berry Snack Stamp",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 178,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "berry body",
+        "heart accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-berry-snack-stamp.png",
+      "promptFile": "prompts/snack-relics-berry-snack-stamp.txt"
+    },
+    {
+      "id": "pocket-tech-lemon-capsule-scanner",
+      "name": "Lemon Capsule Scanner",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "lemon body",
+        "moon accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-lemon-capsule-scanner.png",
+      "promptFile": "prompts/pocket-tech-lemon-capsule-scanner.txt"
+    },
+    {
+      "id": "holo-finds-lemon-bubble-crest",
+      "name": "Lemon Bubble Crest",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 300,
+      "traits": [
+        "lemon body",
+        "button accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-lemon-bubble-crest.png",
+      "promptFile": "prompts/holo-finds-lemon-bubble-crest.txt"
+    },
+    {
+      "id": "desk-pets-lemon-jelly-leaf",
+      "name": "Lemon Jelly Leaf",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 96,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "lemon body",
+        "bubble accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-lemon-jelly-leaf.png",
+      "promptFile": "prompts/desk-pets-lemon-jelly-leaf.txt"
+    },
+    {
+      "id": "snack-relics-lemon-foil-wrapper",
+      "name": "Lemon Foil Wrapper",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 41,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "lemon body",
+        "ribbon accent",
+        "foil edge detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-lemon-foil-wrapper.png",
+      "promptFile": "prompts/snack-relics-lemon-foil-wrapper.txt"
+    },
+    {
+      "id": "pocket-tech-coral-pocket-speaker",
+      "name": "Coral Pocket Speaker",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 560,
+      "traits": [
+        "coral body",
+        "foil accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-coral-pocket-speaker.png",
+      "promptFile": "prompts/pocket-tech-coral-pocket-speaker.txt"
+    },
+    {
+      "id": "holo-finds-coral-plush-badge",
+      "name": "Coral Plush Badge",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 7,
+      "dropRole": "codex-chase",
+      "price": 1350,
+      "traits": [
+        "coral body",
+        "pixel accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-coral-plush-badge.png",
+      "promptFile": "prompts/holo-finds-coral-plush-badge.txt"
+    },
+    {
+      "id": "desk-pets-coral-pocket-pebble",
+      "name": "Coral Pocket Pebble",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "coral body",
+        "glow accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-coral-pocket-pebble.png",
+      "promptFile": "prompts/desk-pets-coral-pocket-pebble.txt"
+    },
+    {
+      "id": "snack-relics-coral-vending-gem",
+      "name": "Coral Vending Gem",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 280,
+      "traits": [
+        "coral body",
+        "star accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-coral-vending-gem.png",
+      "promptFile": "prompts/snack-relics-coral-vending-gem.txt"
+    },
+    {
+      "id": "pocket-tech-sky-candy-earbuds",
+      "name": "Sky Candy Earbuds",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "sky body",
+        "heart accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-sky-candy-earbuds.png",
+      "promptFile": "prompts/pocket-tech-sky-candy-earbuds.txt"
+    },
+    {
+      "id": "holo-finds-sky-orbit-decal",
+      "name": "Sky Orbit Decal",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 176,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "sky body",
+        "moon accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-sky-orbit-decal.png",
+      "promptFile": "prompts/holo-finds-sky-orbit-decal.txt"
+    },
+    {
+      "id": "desk-pets-sky-snug-capsule",
+      "name": "Sky Snug Capsule",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 97,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "sky body",
+        "button accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-sky-snug-capsule.png",
+      "promptFile": "prompts/desk-pets-sky-snug-capsule.txt"
+    },
+    {
+      "id": "snack-relics-sky-packet-mascot",
+      "name": "Sky Packet Mascot",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2280,
+      "traits": [
+        "sky body",
+        "bubble accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-sky-packet-mascot.png",
+      "promptFile": "prompts/snack-relics-sky-packet-mascot.txt"
+    },
+    {
+      "id": "pocket-tech-grape-game-brick",
+      "name": "Grape Game Brick",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 260,
+      "traits": [
+        "grape body",
+        "ribbon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-grape-game-brick.png",
+      "promptFile": "prompts/pocket-tech-grape-game-brick.txt"
+    },
+    {
+      "id": "holo-finds-grape-foil-card",
+      "name": "Grape Foil Card",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "grape body",
+        "foil accent",
+        "foil edge detail",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-grape-foil-card.png",
+      "promptFile": "prompts/holo-finds-grape-foil-card.txt"
+    },
+    {
+      "id": "desk-pets-grape-mochi-blob",
+      "name": "Grape Mochi Blob",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "grape body",
+        "pixel accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-grape-mochi-blob.png",
+      "promptFile": "prompts/desk-pets-grape-mochi-blob.txt"
+    },
+    {
+      "id": "snack-relics-grape-rocket-prize",
+      "name": "Grape Rocket Prize",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 164,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "grape body",
+        "glow accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-grape-rocket-prize.png",
+      "promptFile": "prompts/snack-relics-grape-rocket-prize.txt"
+    },
+    {
+      "id": "pocket-tech-melon-pixel-pet-cam",
+      "name": "Melon Pixel Pet Cam",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "melon body",
+        "star accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-melon-pixel-pet-cam.png",
+      "promptFile": "prompts/pocket-tech-melon-pixel-pet-cam.txt"
+    },
+    {
+      "id": "holo-finds-melon-sticker-slab",
+      "name": "Melon Sticker Slab",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 340,
+      "traits": [
+        "melon body",
+        "heart accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-melon-sticker-slab.png",
+      "promptFile": "prompts/holo-finds-melon-sticker-slab.txt"
+    },
+    {
+      "id": "desk-pets-melon-sleepy-star",
+      "name": "Melon Sleepy Star",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 98,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "melon body",
+        "moon accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-melon-sleepy-star.png",
+      "promptFile": "prompts/desk-pets-melon-sleepy-star.txt"
+    },
+    {
+      "id": "snack-relics-melon-capsule-ghost",
+      "name": "Melon Capsule Ghost",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 43,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "melon body",
+        "button accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-melon-capsule-ghost.png",
+      "promptFile": "prompts/snack-relics-melon-capsule-ghost.txt"
+    },
+    {
+      "id": "pocket-tech-peach-mini-console",
+      "name": "Peach Mini Console",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 42,
+      "dropRole": "codex-rare",
+      "price": 600,
+      "traits": [
+        "peach body",
+        "bubble accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-peach-mini-console.png",
+      "promptFile": "prompts/pocket-tech-peach-mini-console.txt"
+    },
+    {
+      "id": "holo-finds-peach-ticket-relic",
+      "name": "Peach Ticket Relic",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 9,
+      "dropRole": "codex-chase",
+      "price": 1250,
+      "traits": [
+        "peach body",
+        "ribbon accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-peach-ticket-relic.png",
+      "promptFile": "prompts/holo-finds-peach-ticket-relic.txt"
+    },
+    {
+      "id": "desk-pets-peach-button-sprout",
+      "name": "Peach Button Sprout",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "peach body",
+        "foil accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-peach-button-sprout.png",
+      "promptFile": "prompts/desk-pets-peach-button-sprout.txt"
+    },
+    {
+      "id": "snack-relics-peach-vending-ring",
+      "name": "Peach Vending Ring",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 320,
+      "traits": [
+        "peach body",
+        "pixel accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-peach-vending-ring.png",
+      "promptFile": "prompts/snack-relics-peach-vending-ring.txt"
+    },
+    {
+      "id": "pocket-tech-teal-mouse-ball",
+      "name": "Teal Mouse Ball",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 38,
+      "dropRole": "codex-rare",
+      "price": 540,
+      "traits": [
+        "teal body",
+        "glow accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-teal-mouse-ball.png",
+      "promptFile": "prompts/pocket-tech-teal-mouse-ball.txt"
+    },
+    {
+      "id": "holo-finds-teal-pog-stack",
+      "name": "Teal Pog Stack",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 180,
+      "dropRole": "codex-common",
+      "price": 240,
+      "traits": [
+        "teal body",
+        "star accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-teal-pog-stack.png",
+      "promptFile": "prompts/holo-finds-teal-pog-stack.txt"
+    },
+    {
+      "id": "desk-pets-teal-tiny-desk-dino",
+      "name": "Teal Tiny Desk Dino",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 99,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "teal body",
+        "heart accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-teal-tiny-desk-dino.png",
+      "promptFile": "prompts/desk-pets-teal-tiny-desk-dino.txt"
+    },
+    {
+      "id": "snack-relics-teal-crinkle-pack",
+      "name": "Teal Crinkle Pack",
+      "family": "Snack Relics",
+      "rarity": "One-Off",
+      "editionSize": 1,
+      "dropRole": "codex-one-off",
+      "price": 2320,
+      "traits": [
+        "teal body",
+        "moon accent",
+        "foil corner detail",
+        "tiny serial-stamp shape"
+      ],
+      "renderFile": "renders/snack-relics-teal-crinkle-pack.png",
+      "promptFile": "prompts/snack-relics-teal-crinkle-pack.txt"
+    },
+    {
+      "id": "pocket-tech-lilac-tape-deck",
+      "name": "Lilac Tape Deck",
+      "family": "Pocket Tech",
+      "rarity": "Common",
+      "editionSize": 174,
+      "dropRole": "codex-common",
+      "price": 160,
+      "traits": [
+        "lilac body",
+        "button accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-lilac-tape-deck.png",
+      "promptFile": "prompts/pocket-tech-lilac-tape-deck.txt"
+    },
+    {
+      "id": "holo-finds-lilac-prism-token",
+      "name": "Lilac Prism Token",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 180,
+      "traits": [
+        "lilac body",
+        "bubble accent",
+        "foil rim",
+        "soft sparkle flecks"
+      ],
+      "renderFile": "renders/holo-finds-lilac-prism-token.png",
+      "promptFile": "prompts/holo-finds-lilac-prism-token.txt"
+    },
+    {
+      "id": "desk-pets-lilac-pillow-pal",
+      "name": "Lilac Pillow Pal",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 170,
+      "dropRole": "codex-common",
+      "price": 200,
+      "traits": [
+        "lilac body",
+        "ribbon accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-lilac-pillow-pal.png",
+      "promptFile": "prompts/desk-pets-lilac-pillow-pal.txt"
+    },
+    {
+      "id": "snack-relics-lilac-soda-tab",
+      "name": "Lilac Soda Tab",
+      "family": "Snack Relics",
+      "rarity": "Common",
+      "editionSize": 168,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "lilac body",
+        "foil accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-lilac-soda-tab.png",
+      "promptFile": "prompts/snack-relics-lilac-soda-tab.txt"
+    },
+    {
+      "id": "pocket-tech-bubblegum-pager-pal",
+      "name": "Bubblegum Pager Pal",
+      "family": "Pocket Tech",
+      "rarity": "Uncommon",
+      "editionSize": 93,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "bubblegum body",
+        "pixel accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-bubblegum-pager-pal.png",
+      "promptFile": "prompts/pocket-tech-bubblegum-pager-pal.txt"
+    },
+    {
+      "id": "holo-finds-bubblegum-moon-badge",
+      "name": "Bubblegum Moon Badge",
+      "family": "Holo Finds",
+      "rarity": "Uncommon",
+      "editionSize": 92,
+      "dropRole": "codex-uncommon",
+      "price": 380,
+      "traits": [
+        "bubblegum body",
+        "glow accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-bubblegum-moon-badge.png",
+      "promptFile": "prompts/holo-finds-bubblegum-moon-badge.txt"
+    },
+    {
+      "id": "desk-pets-bubblegum-button-charm",
+      "name": "Bubblegum Button Charm",
+      "family": "Desk Pets",
+      "rarity": "Uncommon",
+      "editionSize": 100,
+      "dropRole": "codex-uncommon",
+      "price": 400,
+      "traits": [
+        "bubblegum body",
+        "star accent",
+        "toy seam detail",
+        "blush cheeks"
+      ],
+      "renderFile": "renders/desk-pets-bubblegum-button-charm.png",
+      "promptFile": "prompts/desk-pets-bubblegum-button-charm.txt"
+    },
+    {
+      "id": "snack-relics-bubblegum-gum-token",
+      "name": "Bubblegum Gum Token",
+      "family": "Snack Relics",
+      "rarity": "Rare",
+      "editionSize": 45,
+      "dropRole": "codex-rare",
+      "price": 480,
+      "traits": [
+        "bubblegum body",
+        "heart accent",
+        "foil corner detail",
+        "toy prize silhouette"
+      ],
+      "renderFile": "renders/snack-relics-bubblegum-gum-token.png",
+      "promptFile": "prompts/snack-relics-bubblegum-gum-token.txt"
+    },
+    {
+      "id": "pocket-tech-blueberry-robo-walkie",
+      "name": "Blueberry Robo Walkie",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 44,
+      "dropRole": "codex-rare",
+      "price": 500,
+      "traits": [
+        "blueberry body",
+        "moon accent",
+        "rounded tech shell",
+        "sticker antenna"
+      ],
+      "renderFile": "renders/pocket-tech-blueberry-robo-walkie.png",
+      "promptFile": "prompts/pocket-tech-blueberry-robo-walkie.txt"
+    },
+    {
+      "id": "holo-finds-blueberry-star-stamp",
+      "name": "Blueberry Star Stamp",
+      "family": "Holo Finds",
+      "rarity": "Ultra Rare",
+      "editionSize": 11,
+      "dropRole": "codex-chase",
+      "price": 1290,
+      "traits": [
+        "blueberry body",
+        "button accent",
+        "foil rim",
+        "iridescent chase shimmer"
+      ],
+      "renderFile": "renders/holo-finds-blueberry-star-stamp.png",
+      "promptFile": "prompts/holo-finds-blueberry-star-stamp.txt"
+    },
+    {
+      "id": "desk-pets-blueberry-cloud-cubby",
+      "name": "Blueberry Cloud Cubby",
+      "family": "Desk Pets",
+      "rarity": "Common",
+      "editionSize": 172,
+      "dropRole": "codex-common",
+      "price": 220,
+      "traits": [
+        "blueberry body",
+        "bubble accent",
+        "soft vinyl body",
+        "button eyes"
+      ],
+      "renderFile": "renders/desk-pets-blueberry-cloud-cubby.png",
+      "promptFile": "prompts/desk-pets-blueberry-cloud-cubby.txt"
+    },
+    {
+      "id": "snack-relics-blueberry-mini-spoon",
+      "name": "Blueberry Mini Spoon",
+      "family": "Snack Relics",
+      "rarity": "Uncommon",
+      "editionSize": 95,
+      "dropRole": "codex-uncommon",
+      "price": 360,
+      "traits": [
+        "blueberry body",
+        "ribbon accent",
+        "glossy plastic shell",
+        "rounded token edge"
+      ],
+      "renderFile": "renders/snack-relics-blueberry-mini-spoon.png",
+      "promptFile": "prompts/snack-relics-blueberry-mini-spoon.txt"
+    },
+    {
+      "id": "pocket-tech-citrus-jelly-joystick",
+      "name": "Citrus Jelly Joystick",
+      "family": "Pocket Tech",
+      "rarity": "Rare",
+      "editionSize": 40,
+      "dropRole": "codex-rare",
+      "price": 580,
+      "traits": [
+        "citrus body",
+        "foil accent",
+        "rubbery feet",
+        "chunky side dial"
+      ],
+      "renderFile": "renders/pocket-tech-citrus-jelly-joystick.png",
+      "promptFile": "prompts/pocket-tech-citrus-jelly-joystick.txt"
+    },
+    {
+      "id": "holo-finds-citrus-chrome-charm",
+      "name": "Citrus Chrome Charm",
+      "family": "Holo Finds",
+      "rarity": "Common",
+      "editionSize": 166,
+      "dropRole": "codex-common",
+      "price": 280,
+      "traits": [
+        "citrus body",
+        "pixel accent",
+        "clear plastic sleeve",
+        "rounded display slab"
+      ],
+      "renderFile": "renders/holo-finds-citrus-chrome-charm.png",
+      "promptFile": "prompts/holo-finds-citrus-chrome-charm.txt"
     }
   ]
 }

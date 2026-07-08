@@ -1,7 +1,10 @@
 Use case: stylized-concept
-Asset type: Yoink Desk Pets item render
-Primary request: Coral Sleepy Star Charm.
-Subject: a sleepy star charm in coral vinyl with dangling ring, closed-eye face, yellow accent charm, and glossy highlights.
-Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl or clay lighting, rounded chunky forms, pastel body colors, one bold accent color, sticker-like details, clean pastel studio background, centered front three-quarter view, no real logos, no readable text.
-Composition/framing: single centered object, square image, generous padding, readable at small mobile-card thumbnail size.
-Constraints: no real brand logos, no exact existing characters, no readable fake text, no watermark, no clutter, no casino or gambling cues.
+Asset type: Yoink marketplace collectible item render
+Primary request: Create "Coral Sleepy Star Charm" as a Yoink Desk Pets collectible.
+Subject: small mascot desk objects with simple faces and soft toy forms; specific object traits: sleepy star body, coral vinyl, dangling charm, yellow accent.
+Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl or clay lighting, rounded chunky forms, pastel body colors, one bold accent color, and sticker-like details.
+Scene/backdrop: clean pastel digital studio background with generous padding and a soft contact shadow.
+Composition/framing: centered front three-quarter view, square 1024px source framing, item readable at 96px thumbnail size.
+Rarity treatment: Rare; foil edge, glossy accent, or shiny trim that supports the object.
+Constraints: no real logos, no readable text, no watermark, no exact protected characters, no casino or loot-box language.
+Avoid: dark moody lighting, realistic grime, horror styling, busy backgrounds, cropped object edges, flat icon style.
