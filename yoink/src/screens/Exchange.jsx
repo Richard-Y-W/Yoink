@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { s } from '../style.js';
 import ItemArt from '../components/ItemArt.jsx';
 import CandleChart from '../components/CandleChart.jsx';
-import { bellCheckin, devClearForcedBell, devForceBellLive, fetchBell, fetchCandles, fetchExchange, sellOnFloor, tradeTicker } from '../api.js';
+import { bellCheckin, buyOnFloor, devClearForcedBell, devForceBellLive, fetchBell, fetchCandles, fetchExchange, sellOnFloor } from '../api.js';
 import { artStageBackground } from '../itemArt.js';
 import { marketTheme } from '../marketTheme.js';
-import { bellLabel, canFloorSell, estFloorSale, fmtClock, fmtWait } from '../bellView.js';
-import { QTY_PRESETS, canTrade, clampQty, confirmLabel, maxTradable, positionGain, flashDirection } from '../exchangeView.js';
+import { bellLabel, canFloorBuy, canFloorSell, estFloorSale, fmtClock, fmtWait } from '../bellView.js';
+import { clampQty, flashDirection } from '../exchangeView.js';
 
 const { ink, wash, line, muted, brand, attentionBadgeBackground, attentionBadgeText } = marketTheme;
 
@@ -15,7 +15,6 @@ const POLL_MS = 2000;
 const LIVE_POLL_MS = 750;
 const TF_OPTIONS = ['1m', '5m', '15m', '1h', '4h'];
 const PERSONALITY_LABELS = { steady: 'Steady', moody: 'Moody', wild: 'Wild' };
-const SIDE_LABELS = { buy: 'Buy', sell: 'Sell' };
 
 const fmt = (n) => Math.round(n).toLocaleString();
 
@@ -63,20 +62,23 @@ function StreakChip({ streak, dark = false }) {
   return (
     <span style={s(`display:inline-flex;align-items:center;gap:4px;background:${dark ? 'rgba(255,255,255,.12)' : wash};border-radius:999px;padding:3px 9px;font:800 10px 'Nunito';color:${dark ? '#FFB84D' : ink}`)}>
       <span className="mi" style={s(`font-size:13px;color:${dark ? '#FFB84D' : UP};font-variation-settings:'FILL' 1`)}>notifications_active</span>
-      {exchanges} exchange{exchanges === 1 ? '' : 's'} · {streak.days}d streak{streak.freezes > 0 ? ' · freeze' : ''}
+      {exchanges} bell{exchanges === 1 ? '' : 's'} rung · {streak.days}d streak{streak.freezes > 0 ? ' · freeze' : ''}
     </span>
   );
 }
 
 // The Bell card: the live floor when a session is running, otherwise the
 // next-bell countdown with the confirmed lineup and the rumor.
-function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onTrade, onOpenTicker, onToast }) {
+function BellCard({ bell, tickerById, busy, balance, flashes, onBuy, onSell, onOpenTicker, onToast }) {
   if (!bell) return null;
   const live = bell.live;
 
   if (live) {
-    const events = live.events ?? [];
-    const event = events.length > 0 ? events[Math.floor(nowMs / 4000) % events.length] : null;
+    // The tape is causal: fills only show once their timestamp passes, and
+    // the same fill is what pushed the price — feed line and chart agree.
+    const fired = (live.events ?? []).filter((fill) => fill.atMs <= bell.now);
+    const event = fired.length > 0 ? fired[fired.length - 1] : null;
+    const canPlay = Boolean(live.attended || live.eligibility?.ok);
     const minutesLeft = live.closesInMs / 60000;
     const phase = live.closesInMs > 20 * 60000 ? 'OPENING CROSS' : minutesLeft <= 5 ? 'CLOSING CROSS' : 'LIVE TAPE';
     return (
@@ -91,13 +93,13 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
           </div>
           <div style={s("text-align:right")}>
             <div style={s("font:800 9px 'Nunito';letter-spacing:.1em;color:#7E8C9A")}>CLOSE</div>
-            <div style={s("font:700 16px 'Fredoka';color:#FFB84D")}>{fmtClock(live.endsAt - nowMs)}</div>
+            <div style={s("font:700 16px 'Fredoka';color:#FFB84D")}>{fmtClock(live.closesInMs)}</div>
           </div>
         </div>
         <div style={s("display:flex;align-items:center;justify-content:space-between;gap:8px")}>
           <StreakChip streak={bell.streak} dark />
           <span style={s(`font:800 10.5px 'Nunito';color:${live.banked > 0 ? '#FFB84D' : '#B7ABF0'}`)}>
-            {live.banked > 0 ? `Banked this bell: Ȳ${fmt(live.banked)}` : `${live.sellsLeft} floor slot${live.sellsLeft === 1 ? '' : 's'} this session`}
+            {live.banked > 0 ? `Banked this bell: Ȳ${fmt(live.banked)}` : `${live.buysLeft} buy${live.buysLeft === 1 ? '' : 's'} · ${live.sellsLeft} sell${live.sellsLeft === 1 ? '' : 's'} left`}
           </span>
         </div>
         {live.eligibility && !live.eligibility.ok && (
@@ -111,24 +113,17 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
           const badge = ROLE_BADGES[row.role] ?? ROLE_BADGES.confirmed;
           const up = row.multPct >= 0;
           const ticker = tickerById.get(row.tickerId);
-          const heldShares = ticker?.shares ?? 0;
-          const buyVerdict = canTrade('buy', 1, {
-            balance,
-            price: row.price,
-            shares: heldShares,
-            buysLeftToday: ticker?.buysLeftToday ?? 0,
-          });
-          const sellVerdict = canTrade('sell', 1, {
-            balance,
-            price: row.price,
-            shares: heldShares,
-            buysLeftToday: ticker?.buysLeftToday ?? 0,
-          });
-          const quickHolding = row.holdings[0] ?? null;
-          const quickMaxQty = quickHolding ? Math.min(quickHolding.quantity, live.sellsLeft) : 0;
-          const quickOne = quickHolding ? estFloorSale(quickHolding.unitPrice, row.multPct, 1) : null;
-          const quickAll = quickHolding ? estFloorSale(quickHolding.unitPrice, row.multPct, Math.max(1, quickMaxQty)) : null;
-          const quickVerdict = quickHolding ? canFloorSell(1, { own: quickHolding.quantity, sellsLeft: live.sellsLeft }) : { ok: false };
+          // Exit the cheapest lot first — biggest realized win per sell.
+          const lot = [...row.holdings].sort((a, b) => a.unitPrice - b.unitPrice)[0] ?? null;
+          const maxQty = lot ? Math.min(lot.quantity, live.sellsLeft) : 0;
+          const sellOne = estFloorSale(row.price, 1);
+          const sellMax = estFloorSale(row.price, Math.max(1, maxQty));
+          const sellVerdict = canFloorSell(1, { own: row.own, sellsLeft: live.sellsLeft });
+          const buyVerdict = canFloorBuy(1, { balance, ask: row.ask, buysLeft: live.buysLeft });
+          const avgBasis = row.own > 0
+            ? row.holdings.reduce((sum, holding) => sum + holding.unitPrice * holding.quantity, 0) / row.own
+            : 0;
+          const liveGain = row.own > 0 ? Math.round((row.price * 0.95 - avgBasis) * row.own) : 0;
           return (
             <div key={row.tickerId} style={s("background:#131F2A;border:1px solid #24303B;border-radius:10px;overflow:hidden;min-width:0")}>
               <button
@@ -147,8 +142,8 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
                 <MiniMarketChart points={ticker?.spark ?? []} up={up} />
                 <div style={s("display:flex;align-items:center;justify-content:space-between;gap:5px")}>
                   <span style={s(`font:700 14px 'Fredoka';color:#fff;border-radius:6px;padding:1px 4px;margin-left:-4px;${flashes[row.tickerId] ? `animation:${flashes[row.tickerId] === 'up' ? 'yflashup' : 'yflashdn'} .65s ease both` : ''}`)}>Ȳ{fmt(row.price)}</span>
-                  <span style={s(`font:800 8px 'Nunito';color:${heldShares > 0 ? '#20D16B' : row.own > 0 ? '#FFB84D' : '#7E8C9A'}`)}>
-                    {heldShares > 0 ? `${heldShares} SHR` : row.own > 0 ? `OWN ${row.own}` : 'WATCH'}
+                  <span style={s(`font:800 8px 'Nunito';color:${row.own > 0 ? '#FFB84D' : '#7E8C9A'}`)}>
+                    {row.own > 0 ? `OWN ${row.own}` : 'WATCH'}
                   </span>
                 </div>
               </button>
@@ -156,42 +151,39 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
                 <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:5px")}>
                   <button
                     type="button"
-                    disabled={busy || !buyVerdict.ok}
-                    onClick={() => onTrade(row.tickerId, 'buy', 1)}
-                    style={s(`border:0;border-radius:8px;background:#20D16B;color:#07170D;font:800 9.5px 'Fredoka';padding:8px 3px;cursor:pointer;opacity:${busy || !buyVerdict.ok ? 0.45 : 1}`)}
+                    disabled={busy || !canPlay || !buyVerdict.ok}
+                    onClick={() => onBuy(row.tickerId, 1)}
+                    style={s(`border:0;border-radius:8px;background:#20D16B;color:#07170D;font:800 9.5px 'Fredoka';padding:8px 3px;cursor:pointer;opacity:${busy || !canPlay || !buyVerdict.ok ? 0.45 : 1}`)}
                   >
-                    Buy 1 · Ȳ{fmt(row.price)}
+                    Buy 1 · Ȳ{fmt(row.ask)}
                   </button>
                   <button
                     type="button"
-                    disabled={busy || !sellVerdict.ok}
-                    onClick={() => onTrade(row.tickerId, 'sell', 1)}
-                    style={s(`border:1.5px solid ${sellVerdict.ok ? '#FF4D5E' : '#445462'};border-radius:8px;background:transparent;color:${sellVerdict.ok ? '#FF8C98' : '#7E8C9A'};font:800 9.5px 'Fredoka';padding:6.5px 3px;cursor:pointer;opacity:${busy || !sellVerdict.ok ? 0.45 : 1}`)}
+                    disabled={busy || !canPlay || !sellVerdict.ok}
+                    onClick={() => lot && onSell(lot, 1)}
+                    style={s(`border:0;border-radius:8px;background:${sellVerdict.ok ? '#FFB84D' : '#1B2630'};color:${sellVerdict.ok ? '#171326' : '#7E8C9A'};font:800 9.5px 'Fredoka';padding:8px 3px;cursor:pointer;opacity:${busy || !canPlay || !sellVerdict.ok ? 0.45 : 1}`)}
                   >
-                    Sell 1{heldShares > 0 ? ` · ${heldShares}` : ''}
+                    Sell 1 · +Ȳ{fmt(sellOne.net)}
                   </button>
                 </div>
                 {row.own > 0 ? (
-                  <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:5px")}>
+                  <div style={s("display:flex;align-items:center;justify-content:space-between;gap:5px")}>
+                    <span style={s("font:800 8px 'Nunito';color:#9AA7B3;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap")}>
+                      avg Ȳ{fmt(avgBasis)} · <b style={s(`color:${liveGain >= 0 ? '#20D16B' : '#FF4D5E'}`)}>{liveGain >= 0 ? '+' : '-'}Ȳ{fmt(Math.abs(liveGain))}</b>
+                    </span>
                     <button
                       type="button"
-                      disabled={busy || !quickVerdict.ok}
-                      onClick={() => quickHolding && onSell(quickHolding, 1)}
-                      style={s(`border:0;border-radius:8px;background:#FFB84D;color:#171326;font:700 9.5px 'Fredoka';padding:8px 3px;cursor:pointer;opacity:${busy || !quickVerdict.ok ? 0.45 : 1}`)}
+                      disabled={busy || maxQty < 1}
+                      onClick={() => lot && onSell(lot, maxQty)}
+                      style={s(`border:1px solid #FFB84D;border-radius:6px;background:transparent;color:#FFB84D;font:800 8px 'Fredoka';padding:3px 6px;cursor:pointer;white-space:nowrap;opacity:${busy || maxQty < 1 ? 0.45 : 1}`)}
                     >
-                      Sell 1 · +Ȳ{quickOne ? fmt(quickOne.net) : 0}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busy || quickMaxQty < 1}
-                      onClick={() => quickHolding && onSell(quickHolding, quickMaxQty)}
-                      style={s(`border:1.5px solid #FFB84D;border-radius:8px;background:transparent;color:#FFB84D;font:700 9.5px 'Fredoka';padding:6.5px 3px;cursor:pointer;opacity:${busy || quickMaxQty < 1 ? 0.45 : 1}`)}
-                    >
-                      Max · +Ȳ{quickAll ? fmt(quickAll.net) : 0}
+                      Dump {Math.max(1, maxQty)} · +Ȳ{fmt(sellMax.net)}
                     </button>
                   </div>
                 ) : (
-                  <div style={s("height:29px;display:flex;align-items:center;justify-content:center;font:800 8px 'Nunito';letter-spacing:.08em;color:#7E8C9A")}>VIEW ONLY</div>
+                  <div style={s("display:flex;align-items:center;justify-content:center;font:800 8px 'Nunito';letter-spacing:.05em;color:#7E8C9A;text-align:center")}>
+                    SHOP MSRP Ȳ{fmt(row.base)} · DELIVERS IN ~4 MIN
+                  </div>
                 )}
               </div>
             </div>
@@ -201,7 +193,9 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
 
         {event && (
           <div style={s("background:#0F1820;border:1px solid #24303B;border-radius:9px;padding:7px 9px;font:700 10px 'Nunito';color:#9AA7B3;text-align:center")}>
-            <span style={s("color:#FFB84D")}>{event.trader}</span> hit {event.qty} ${event.tickerId} {event.pct >= 0 ? '+' : ''}{event.pct}%
+            <span style={s("color:#FFB84D")}>{event.trader}</span>{' '}
+            <span style={s(`color:${event.side === 'buy' ? '#20D16B' : '#FF4D5E'}`)}>{event.side === 'buy' ? 'bought' : 'dumped'}</span>{' '}
+            {event.qty} ${event.tickerId} — watch the tape
           </div>
         )}
       </div>
@@ -262,7 +256,7 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
             <div key={entry.label} style={s("display:flex;align-items:center;justify-content:space-between;gap:8px")}>
               <span style={s(`font:700 11px 'Nunito';color:${muted}`)}>{entry.label}</span>
               <span style={s(`font:700 11px 'Nunito';color:${ink}`)}>
-                {entry.trader} · ${entry.tickerId} <b style={s(`color:${entry.pct >= 0 ? UP : muted}`)}>{entry.pct >= 0 ? '+' : ''}{entry.pct}%</b>
+                {entry.trader === 'you' ? <b style={s(`color:${brand}`)}>you</b> : entry.trader} · ${entry.tickerId} <b style={s(`color:${entry.pct >= 0 ? UP : muted}`)}>{entry.pct >= 0 ? '+' : ''}{entry.pct}%</b>
               </span>
             </div>
           ))}
@@ -280,7 +274,6 @@ function BellCard({ bell, tickerById, nowMs, busy, balance, flashes, onSell, onT
 export default function Exchange({ balance = 0, onWallet = () => {}, onToast = () => {}, onBack = () => {} }) {
   const [data, setData] = useState(null);
   const [bell, setBell] = useState(null);
-  const [nowMs, setNowMs] = useState(() => Date.now());
   const [detailId, setDetailId] = useState(null);
   const [tf, setTf] = useState('5m');
   const [side, setSide] = useState('buy');
@@ -332,26 +325,43 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
       refresh();
       refreshBell();
     }, bell?.live ? LIVE_POLL_MS : POLL_MS);
-    const clock = window.setInterval(() => setNowMs(Date.now()), 1000);
     return () => {
       window.clearInterval(poll);
-      window.clearInterval(clock);
       window.clearTimeout(flashTimer.current);
     };
   }, [bell?.live?.key]);
 
   // Attendance: opening the floor during a live session rings the bell
-  // once per session and feeds the Duolingo-style streak.
+  // once per session and feeds the Duolingo-style streak. If the player
+  // isn't eligible yet (not enough lineup items), hold off — a delivery
+  // mid-session flips eligibility.ok and this retries.
   useEffect(() => {
     const key = bell?.live?.key;
     if (!key || bell.live.attended || checkedInKey.current === key) return;
+    if (bell.live.eligibility && !bell.live.eligibility.ok) return;
     checkedInKey.current = key;
     bellCheckin().then((result) => {
       if (result?.ok && result.first) {
-        onToast(`Exchange joined! ${result.streak.days}-day streak · ${result.streak.bellsRung} total`);
+        onToast(`Bell rung! ${result.streak.days}-day streak · ${result.streak.bellsRung} bells total`);
       }
     }).catch(() => {});
-  }, [bell?.live?.key, bell?.live?.attended]);
+  }, [bell?.live?.key, bell?.live?.attended, bell?.live?.eligibility?.ok]);
+
+  // Closing ceremony: when the session the player was watching ends,
+  // celebrate the exit — banked chips become real, the report is in.
+  const lastLiveRef = useRef(null);
+  useEffect(() => {
+    if (bell?.live) {
+      lastLiveRef.current = { key: bell.live.key, banked: bell.live.banked };
+      return;
+    }
+    if (!bell || !lastLiveRef.current) return;
+    const { banked } = lastLiveRef.current;
+    lastLiveRef.current = null;
+    onToast(banked > 0
+      ? `Bell closed — Ȳ${fmt(banked)} banked this session`
+      : 'Bell closed — the Floor Report is in');
+  }, [bell?.live?.key, bell?.live?.banked, bell]);
 
   const handleFloorSell = async (holding, qty) => {
     if (busy) return;
@@ -365,8 +375,27 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
       appliedSeq.current = requestSeq.current;
       if (result.wallet) onWallet(result.wallet);
       onToast(result.realized > 0
-        ? `Floor sale +Ȳ${fmt(result.net)} · Ȳ${fmt(result.realized)} profit banked`
-        : `Floor sale +Ȳ${fmt(result.net)} banked`);
+        ? `Sold ${result.qty} $${result.tickerId} at Ȳ${fmt(result.unit)} · +Ȳ${fmt(result.realized)} profit banked`
+        : `Sold ${result.qty} $${result.tickerId} at Ȳ${fmt(result.unit)} · +Ȳ${fmt(result.net)} banked`);
+      refreshBell();
+      refresh();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleFloorBuy = async (tickerId, qty) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const result = await buyOnFloor(tickerId, qty);
+      if (!result.ok) {
+        onToast(result.error ?? 'The floor refused the buy');
+        return;
+      }
+      appliedSeq.current = requestSeq.current;
+      if (result.wallet) onWallet(result.wallet);
+      onToast(`Filled ${result.qty} $${result.tickerId} at Ȳ${fmt(result.unit)} — it's in your Pocket`);
       refreshBell();
       refresh();
     } finally {
@@ -392,73 +421,6 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
     }
   };
 
-  const handleTrade = async () => {
-    if (!detail || busy) return;
-    const verdict = canTrade(side, qty, {
-      balance,
-      price: detail.price,
-      shares: detail.shares,
-      buysLeftToday: detail.buysLeftToday,
-    });
-    if (!verdict.ok) {
-      onToast(verdict.reason);
-      return;
-    }
-    setBusy(true);
-    try {
-      const result = await tradeTicker(detail.id, side, qty);
-      if (!result.ok) {
-        onToast(result.error ?? 'Trade did not fill');
-        return;
-      }
-      appliedSeq.current = requestSeq.current;
-      if (result.wallet) onWallet(result.wallet);
-      const profit = result.side === 'sell' && result.realized !== 0
-        ? ` · ${result.realized > 0 ? '+' : '-'}Ȳ${fmt(Math.abs(result.realized))} P/L`
-        : '';
-      onToast(`${SIDE_LABELS[result.side]} ${result.shares} $${result.tickerId ?? detail.id} filled at Ȳ${fmt(result.price)}${profit}`);
-      setQty(1);
-      refresh();
-      refreshBell();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleQuickTrade = async (tickerId, tradeSide, tradeQty = 1) => {
-    if (busy) return;
-    const ticker = data?.tickers?.find((candidate) => candidate.id === tickerId);
-    if (!ticker) return;
-    const verdict = canTrade(tradeSide, tradeQty, {
-      balance,
-      price: ticker.price,
-      shares: ticker.shares,
-      buysLeftToday: ticker.buysLeftToday,
-    });
-    if (!verdict.ok) {
-      onToast(verdict.reason);
-      return;
-    }
-    setBusy(true);
-    try {
-      const result = await tradeTicker(tickerId, tradeSide, tradeQty);
-      if (!result.ok) {
-        onToast(result.error ?? 'Trade did not fill');
-        return;
-      }
-      appliedSeq.current = requestSeq.current;
-      if (result.wallet) onWallet(result.wallet);
-      const profit = result.side === 'sell' && result.realized !== 0
-        ? ` · ${result.realized > 0 ? '+' : '-'}Ȳ${fmt(Math.abs(result.realized))} P/L`
-        : '';
-      onToast(`${SIDE_LABELS[result.side]} ${result.shares} $${result.tickerId ?? tickerId} filled at Ȳ${fmt(result.price)}${profit}`);
-      refresh();
-      refreshBell();
-    } finally {
-      setBusy(false);
-    }
-  };
-
   // Candle feed for the open detail page; token guards tf/ticker switches.
   useEffect(() => {
     if (!detailId) return undefined;
@@ -478,6 +440,8 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
   const tickerById = new Map(tickers.map((ticker) => [ticker.id, ticker]));
   const detail = detailId ? tickers.find((ticker) => ticker.id === detailId) : null;
   const liveIds = new Set((bell?.live?.lineup ?? []).map((row) => row.tickerId));
+  const liveRow = detailId ? bell?.live?.lineup?.find((row) => row.tickerId === detailId) ?? null : null;
+  const liveLot = liveRow ? [...liveRow.holdings].sort((a, b) => a.unitPrice - b.unitPrice)[0] ?? null : null;
 
   const windowHigh = candles ? Math.max(...candles.map((c) => c.h)) : null;
   const windowLow = candles ? Math.min(...candles.map((c) => c.l)) : null;
@@ -502,7 +466,7 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
                 {detail
                   ? detail.name
                   : isLive
-                    ? 'Floor open · sell Pocket items now'
+                    ? 'Floor open · trade the lineup live'
                     : bell?.next
                       ? `Next floor ${bellLabel(bell.next.startsAt)}`
                       : 'Timed floor sessions'}
@@ -585,83 +549,96 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
               ))}
             </div>
 
-            {/* instant ticket */}
-            <div style={s("background:#fff;border:1px solid #EDEAF6;border-radius:18px;padding:11px;display:flex;flex-direction:column;gap:9px;box-shadow:0 2px 8px rgba(23,19,38,.05)")}>
-              <div style={s("display:flex;align-items:center;justify-content:space-between;gap:8px")}>
-                <div>
-                  <div style={s(`font:800 9px 'Nunito';letter-spacing:.12em;color:${muted}`)}>INSTANT TICKET</div>
-                  <div style={s(`font:700 12px 'Fredoka';color:${ink};margin-top:1px`)}>
-                    Hold {detail.shares} · {detail.shares > 0 ? `${positionGain(detail.shares, detail.avgCost, detail.price) >= 0 ? '+' : '-'}Ȳ${fmt(Math.abs(positionGain(detail.shares, detail.avgCost, detail.price)))} live P/L` : 'no position'}
+            {/* floor ticket — the real exchange: buy and sell items at the live tape */}
+            {liveRow ? (
+              <div style={s("background:#fff;border:1px solid #EDEAF6;border-radius:18px;padding:11px;display:flex;flex-direction:column;gap:9px;box-shadow:0 2px 8px rgba(23,19,38,.05)")}>
+                <div style={s("display:flex;align-items:center;justify-content:space-between;gap:8px")}>
+                  <div>
+                    <div style={s(`font:800 9px 'Nunito';letter-spacing:.12em;color:${muted}`)}>FLOOR TICKET · LIVE</div>
+                    <div style={s(`font:700 12px 'Fredoka';color:${ink};margin-top:1px`)}>
+                      {liveRow.own > 0
+                        ? `Own ${liveRow.own} · avg Ȳ${fmt(liveRow.holdings.reduce((sum, holding) => sum + holding.unitPrice * holding.quantity, 0) / liveRow.own)}`
+                        : 'No position yet'}
+                    </div>
                   </div>
+                  <span style={s(`font:800 10px 'Nunito';color:${brand};background:${wash};border-radius:999px;padding:4px 8px`)}>
+                    {bell.live.buysLeft} buys · {bell.live.sellsLeft} sells left
+                  </span>
                 </div>
-                <span style={s(`font:800 10px 'Nunito';color:${detail.buysLeftToday > 0 ? brand : muted};background:${wash};border-radius:999px;padding:4px 8px`)}>
-                  {detail.buysLeftToday} buys left
-                </span>
-              </div>
-              <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:7px")}>
-                {['buy', 'sell'].map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    aria-pressed={side === option}
-                    onClick={() => {
-                      setSide(option);
-                      setQty((current) => Math.min(current, Math.max(1, maxTradable(option, { balance, price: detail.price, shares: detail.shares }))));
-                    }}
-                    style={s(`border:1.5px solid ${side === option ? (option === 'buy' ? UP : brand) : line};border-radius:10px;background:${side === option ? (option === 'buy' ? UP : brand) : '#fff'};color:${side === option ? '#fff' : ink};font:700 13px 'Fredoka';padding:9px 0;cursor:pointer`)}
-                  >
-                    {SIDE_LABELS[option]}
-                  </button>
-                ))}
-              </div>
-              <div style={s("display:grid;grid-template-columns:34px 1fr 34px;gap:7px;align-items:center")}>
-                <button type="button" aria-label="Decrease quantity" onClick={() => setQty((current) => clampQty(current - 1))} style={s(`height:34px;border:1.5px solid ${line};border-radius:10px;background:#fff;cursor:pointer`)}>
-                  <span className="mi" style={s(`font-size:18px;color:${ink}`)}>remove</span>
-                </button>
-                <input
-                  aria-label="Trade quantity"
-                  inputMode="numeric"
-                  value={qty}
-                  onChange={(event) => setQty(clampQty(event.target.value))}
-                  style={s(`height:34px;border:1.5px solid ${line};border-radius:10px;text-align:center;font:800 16px 'Fredoka';color:${ink};background:#fff`)}
-                />
-                <button type="button" aria-label="Increase quantity" onClick={() => setQty((current) => clampQty(current + 1))} style={s(`height:34px;border:1.5px solid ${line};border-radius:10px;background:#fff;cursor:pointer`)}>
-                  <span className="mi" style={s(`font-size:18px;color:${ink}`)}>add</span>
-                </button>
-              </div>
-              <div style={s("display:grid;grid-template-columns:repeat(4,1fr);gap:6px")}>
-                {QTY_PRESETS.map((preset) => (
-                  <button key={preset} type="button" onClick={() => setQty(clampQty(preset))} style={s(`border:1.5px solid ${line};border-radius:9px;background:#fff;color:${muted};font:800 10px 'Nunito';padding:6px 0;cursor:pointer`)}>
-                    {preset}
-                  </button>
-                ))}
-                <button type="button" onClick={() => setQty(Math.max(1, maxTradable(side, { balance, price: detail.price, shares: detail.shares })))} style={s(`border:1.5px solid ${line};border-radius:9px;background:#fff;color:${muted};font:800 10px 'Nunito';padding:6px 0;cursor:pointer`)}>
-                  MAX
-                </button>
-              </div>
-              {(() => {
-                const verdict = canTrade(side, qty, {
-                  balance,
-                  price: detail.price,
-                  shares: detail.shares,
-                  buysLeftToday: detail.buysLeftToday,
-                });
-                const total = detail.price * qty;
-                return (
-                  <>
-                    {!verdict.ok && <div style={s(`font:800 10.5px 'Nunito';color:${muted};text-align:center`)}>{verdict.reason}</div>}
+                <div style={s("display:grid;grid-template-columns:1fr 1fr;gap:7px")}>
+                  {['buy', 'sell'].map((option) => (
                     <button
+                      key={option}
                       type="button"
-                      disabled={busy || !verdict.ok}
-                      onClick={handleTrade}
-                      style={s(`border:0;border-radius:13px;background:${side === 'buy' ? UP : brand};color:#fff;font:700 13px 'Fredoka';padding:12px 0;cursor:pointer;opacity:${busy || !verdict.ok ? 0.5 : 1};box-shadow:0 4px 10px rgba(23,19,38,.15)`)}
+                      aria-pressed={side === option}
+                      onClick={() => { setSide(option); setQty(1); }}
+                      style={s(`border:1.5px solid ${side === option ? (option === 'buy' ? UP : brand) : line};border-radius:10px;background:${side === option ? (option === 'buy' ? UP : brand) : '#fff'};color:${side === option ? '#fff' : ink};font:700 13px 'Fredoka';padding:9px 0;cursor:pointer`)}
                     >
-                      {confirmLabel(side, qty, detail.id, total)}
+                      {option === 'buy' ? `Buy · Ȳ${fmt(liveRow.ask)}` : `Sell · Ȳ${fmt(estFloorSale(liveRow.price, 1).net)}`}
                     </button>
-                  </>
-                );
-              })()}
-            </div>
+                  ))}
+                </div>
+                <div style={s("display:grid;grid-template-columns:34px 1fr 34px;gap:7px;align-items:center")}>
+                  <button type="button" aria-label="Decrease quantity" onClick={() => setQty((current) => clampQty(current - 1))} style={s(`height:34px;border:1.5px solid ${line};border-radius:10px;background:#fff;cursor:pointer`)}>
+                    <span className="mi" style={s(`font-size:18px;color:${ink}`)}>remove</span>
+                  </button>
+                  <input
+                    aria-label="Trade quantity"
+                    inputMode="numeric"
+                    value={qty}
+                    onChange={(event) => setQty(clampQty(event.target.value))}
+                    style={s(`height:34px;border:1.5px solid ${line};border-radius:10px;text-align:center;font:800 16px 'Fredoka';color:${ink};background:#fff`)}
+                  />
+                  <button type="button" aria-label="Increase quantity" onClick={() => setQty((current) => clampQty(current + 1))} style={s(`height:34px;border:1.5px solid ${line};border-radius:10px;background:#fff;cursor:pointer`)}>
+                    <span className="mi" style={s(`font-size:18px;color:${ink}`)}>add</span>
+                  </button>
+                </div>
+                {(() => {
+                  const maxQty = side === 'buy'
+                    ? Math.min(bell.live.buysLeft, Math.floor(balance / (liveRow.ask || 1)))
+                    : Math.min(liveLot?.quantity ?? 0, bell.live.sellsLeft);
+                  const verdict = side === 'buy'
+                    ? canFloorBuy(qty, { balance, ask: liveRow.ask, buysLeft: bell.live.buysLeft })
+                    : canFloorSell(qty, { own: liveLot?.quantity ?? 0, sellsLeft: bell.live.sellsLeft });
+                  const est = side === 'buy' ? liveRow.ask * qty : estFloorSale(liveRow.price, qty).net;
+                  return (
+                    <>
+                      <div style={s("display:grid;grid-template-columns:repeat(4,1fr);gap:6px")}>
+                        {[1, 2, 3].map((preset) => (
+                          <button key={preset} type="button" onClick={() => setQty(clampQty(preset))} style={s(`border:1.5px solid ${qty === preset ? brand : line};border-radius:9px;background:#fff;color:${qty === preset ? brand : muted};font:800 10px 'Nunito';padding:6px 0;cursor:pointer`)}>
+                            {preset}
+                          </button>
+                        ))}
+                        <button type="button" onClick={() => setQty(clampQty(Math.max(1, maxQty)))} style={s(`border:1.5px solid ${line};border-radius:9px;background:#fff;color:${muted};font:800 10px 'Nunito';padding:6px 0;cursor:pointer`)}>
+                          MAX {Math.max(0, maxQty)}
+                        </button>
+                      </div>
+                      {!verdict.ok && <div style={s(`font:800 10.5px 'Nunito';color:${muted};text-align:center`)}>{verdict.reason}</div>}
+                      <button
+                        type="button"
+                        disabled={busy || !verdict.ok}
+                        onClick={() => (side === 'buy'
+                          ? handleFloorBuy(detail.id, qty)
+                          : liveLot && handleFloorSell(liveLot, qty))}
+                        style={s(`border:0;border-radius:13px;background:${side === 'buy' ? UP : brand};color:#fff;font:700 13px 'Fredoka';padding:12px 0;cursor:pointer;opacity:${busy || !verdict.ok ? 0.5 : 1};box-shadow:0 4px 10px rgba(23,19,38,.15)`)}
+                      >
+                        {side === 'buy' ? `Buy ${qty} $${detail.id} · Ȳ${fmt(liveRow.ask * qty)}` : `Sell ${qty} $${detail.id} · +Ȳ${fmt(est)}`}
+                      </button>
+                    </>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div style={s("background:#fff;border:1px solid #EDEAF6;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;box-shadow:0 2px 8px rgba(23,19,38,.05);text-align:center")}>
+                <div style={s(`font:800 9px 'Nunito';letter-spacing:.12em;color:${muted}`)}>FLOOR CLOSED</div>
+                <div style={s(`font:700 13px 'Fredoka';color:${ink}`)}>
+                  ${detail.id} trades when its bell rings
+                </div>
+                <div style={s(`font:700 10.5px 'Nunito';color:${muted}`)}>
+                  {bell?.next ? `Next bell ${bellLabel(bell.next.startsAt)} — stock up in the shop first` : 'Stock up in the shop first'}
+                </div>
+              </div>
+            )}
 
             <button
               type="button"
@@ -698,12 +675,11 @@ export default function Exchange({ balance = 0, onWallet = () => {}, onToast = (
             <BellCard
               bell={bell}
               tickerById={tickerById}
-              nowMs={nowMs}
               busy={busy}
               balance={balance}
               flashes={flashes}
+              onBuy={handleFloorBuy}
               onSell={handleFloorSell}
-              onTrade={handleQuickTrade}
               onOpenTicker={(tickerId) => { setDetailId(tickerId); setTf('5m'); }}
               onToast={onToast}
             />

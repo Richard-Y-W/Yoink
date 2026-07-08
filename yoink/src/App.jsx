@@ -91,14 +91,20 @@ export default function App() {
     }).catch(() => {});
   }, []);
 
-  // Ambient bell status for the shop header chip: live now, or the next
-  // bell's time. Light 30s poll — the Exchange screen has its own.
+  // Ambient bell status for the shop: live now, or the next bell's time,
+  // plus which art kinds are on the floor so listings can wear a bell
+  // badge — the shop is where the pre-bell run happens. Light 30s poll;
+  // the Exchange screen has its own.
   const refreshBellStatus = useCallback(() => {
     fetchBell().then((data) => {
       if (!data?.next) return;
-      setBellStatus(data.live
-        ? { live: true, label: 'LIVE' }
-        : { live: false, label: bellLabel(data.next.startsAt) });
+      const live = Boolean(data.live);
+      const lineup = live ? (data.live.lineup ?? []) : (data.next.confirmed ?? []);
+      setBellStatus({
+        live,
+        label: live ? 'LIVE' : bellLabel(data.next.startsAt),
+        artKinds: lineup.map((row) => row.artKind).filter(Boolean),
+      });
     }).catch(() => {});
   }, []);
 
@@ -166,6 +172,7 @@ export default function App() {
             onOpenCart={handleOpenCart}
             onToast={showToast}
             artStyle={artStyle}
+            bell={bellStatus}
           />
         ) : isExchange ? (
           <Exchange

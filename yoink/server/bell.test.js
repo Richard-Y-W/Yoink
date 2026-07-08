@@ -3,8 +3,10 @@ import assert from 'node:assert/strict';
 import {
   AISLES,
   BELL_MINUTES,
+  FLOOR_BUY_MARKUP,
   FLOOR_FEE,
   MIN_BELL_ITEMS_TO_JOIN,
+  SESSION_BUY_CAP,
   SESSION_MS,
   SESSION_SELL_CAP,
   STREAK_FREEZES,
@@ -17,6 +19,7 @@ import {
   nextSessionAfter,
   rumorAisleFor,
   sessionBoost,
+  simFlowImpact,
   simTradesFor,
   streetMultiplier,
   uCurve,
@@ -166,6 +169,116 @@ test('sim trades and floor report are deterministic with all four labels', () =>
     'Biggest winner', 'Luckiest wildcard', 'Diamond hands', 'Bagholder of the bell',
   ]);
   assert.ok(report.entries[0].pct >= report.entries[3].pct);
+});
+
+test('sim fills are timestamped inside the session and move the price when they land', () => {
+  const session = liveSessionAt(LIVE);
+  const fills = simTradesFor(session);
+  for (const fill of fills) {
+    assert.ok(fill.atMs >= session.start && fill.atMs < session.end);
+    assert.ok(fill.side === 'buy' || fill.side === 'sell');
+  }
+  // Pick a fill and check the tape jumps in its direction at its timestamp.
+  const fill = fills[0];
+  const ticker = getTicker(fill.tickerId);
+  const before = simFlowImpact(ticker, fill.atMs - 1);
+  const after = simFlowImpact(ticker, fill.atMs + 1);
+  if (fill.side === 'buy') assert.ok(after > before);
+  else assert.ok(after < before);
+});
+
+test('floor report ranks player trades against the sim traders', () => {
+  const session = liveSessionAt(LIVE);
+  const monster = { trader: 'you', tickerId: lineupFor(session)[0].ticker.id, role: 'confirmed', qty: 1, pct: 999 };
+  const report = floorReportFor(session, [monster]);
+  assert.equal(report.entries[0].label, 'Biggest winner');
+  assert.equal(report.entries[0].trader, 'you');
+  assert.equal(report.entries[0].pct, 999);
+  // Without extra trades the report is unchanged sim-only output.
+  assert.ok(floorReportFor(session).entries.every((entry) => entry.trader !== 'you'));
+});
+
+test('floorBuy fills at the ask, lands in the collection, and pushes the tape', () => {
+  const store = createStore({ state: freshState(1000000, bellBag()) });
+  const live = liveSessionAt(LIVE);
+  const entry = lineupFor(live)[0];
+  const ticker = entry.ticker;
+
+  const before = store.getBell(LIVE).live.lineup.find((row) => row.tickerId === ticker.id);
+  const buy = store.floorBuy({ tickerId: ticker.id, quantity: 2 }, LIVE);
+  assert.equal(buy.ok, true);
+  assert.equal(buy.qty, 2);
+  assert.equal(buy.unit, before.ask);
+  assert.equal(buy.buysLeft, SESSION_BUY_CAP - 2);
+
+  // The item is real: it joined the collection as a floor lot.
+  const lot = store.getCollection(LIVE).find((item) => item.id === `floor-${ticker.id}`);
+  assert.equal(lot.quantity, 2);
+  assert.equal(lot.unitPrice, buy.unit);
+
+  // Market impact: same instant, higher tape — only the fill differs.
+  const after = store.getBell(LIVE).live.lineup.find((row) => row.tickerId === ticker.id);
+  assert.ok(after.price > before.price);
+});
+
+test('floorBuy enforces the session cap and the coin balance', () => {
+  const store = createStore({ state: freshState(1000000, bellBag()) });
+  const ticker = lineupFor(liveSessionAt(LIVE))[0].ticker;
+  const over = store.floorBuy({ tickerId: ticker.id, quantity: SESSION_BUY_CAP + 1 }, LIVE);
+  assert.equal(over.ok, false);
+  assert.match(over.error, /per session/);
+
+  const poor = createStore({ state: freshState(10, bellBag()) });
+  const broke = poor.floorBuy({ tickerId: ticker.id, quantity: 1 }, LIVE);
+  assert.equal(broke.ok, false);
+  assert.ok(broke.shortBy > 0);
+});
+
+test('floorBuy needs the ownership prerequisite, like selling', () => {
+  const store = createStore({ state: freshState(1000000, []) });
+  const ticker = lineupFor(liveSessionAt(LIVE))[0].ticker;
+  const result = store.floorBuy({ tickerId: ticker.id, quantity: 1 }, LIVE);
+  assert.equal(result.ok, false);
+  assert.equal(result.eligibility.ok, false);
+});
+
+test('floor sells fill at market price and push the tape down', () => {
+  const store = createStore({ state: freshState(1000000, bellBag()) });
+  const live = liveSessionAt(LIVE);
+  const entry = lineupFor(live)[0];
+  const before = store.getBell(LIVE).live.lineup.find((row) => row.tickerId === entry.ticker.id);
+  const sale = store.floorSell({ itemId: `c-${entry.ticker.id}`, quantity: 1 }, LIVE);
+  assert.equal(sale.ok, true);
+  assert.equal(sale.unit, before.price);
+  assert.equal(sale.fee, Math.round(sale.gross * FLOOR_FEE));
+  const after = store.getBell(LIVE).live.lineup.find((row) => row.tickerId === entry.ticker.id);
+  assert.ok(after.price < before.price);
+});
+
+test('getBell puts the player on the last report when their sale tops it', () => {
+  const live = liveSessionAt(LIVE);
+  const entry = lineupFor(live)[0];
+  const state = freshState();
+  // A 900% flip: basis Ȳ1,000 (net − realized), banked Ȳ10,000.
+  state.bell.sales.push({
+    key: live.key,
+    itemId: 'c-monster',
+    title: 'Monster flip',
+    tickerId: entry.ticker.id,
+    qty: 1,
+    unit: 10500,
+    fee: 500,
+    net: 10000,
+    realized: 9000,
+    at: LIVE,
+  });
+  const store = createStore({ state });
+  const bell = store.getBell(live.end + 60000);
+  assert.equal(bell.lastReport.key, live.key);
+  assert.equal(bell.lastReport.entries[0].label, 'Biggest winner');
+  assert.equal(bell.lastReport.entries[0].trader, 'you');
+  assert.equal(bell.lastReport.entries[0].pct, 900);
+  assert.equal(bell.lastReport.playerBanked, 10000);
 });
 
 test('getBell between bells: no live block, next preview hides rumor item and wildcards', () => {

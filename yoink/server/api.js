@@ -148,6 +148,12 @@ export function createApiMiddleware(store, { dev = false } = {}) {
         const result = store.floorSell(body, now());
         return json(res, result.ok ? 200 : 422, result);
       }
+      if (req.method === 'POST' && path === '/api/bell/buy') {
+        const body = await readBody(req);
+        if (!body) return json(res, 400, { error: 'Invalid JSON body' });
+        const result = store.floorBuy(body, now());
+        return json(res, result.ok ? 200 : 422, result);
+      }
       return json(res, 404, { error: 'Not found' });
     } catch (error) {
       return json(res, 500, { error: String(error?.message ?? error) });

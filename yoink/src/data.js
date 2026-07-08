@@ -31,6 +31,8 @@ export const bazaarItems = [
   mk({ id: 4, name: 'Vintage Polaroid Camera',        img: 'polaroid',     tag: 'RETRO', hue: 'teal',   price: '2,200', was: '2,800', rate: '4.9', sold: '880',  almost: true,  left: 38 }),
   mk({ id: 5, name: 'Bubble Lava Lamp',               img: 'lava lamp',    tag: 'TREND', hue: 'coral',  price: '760',   was: '1,100', rate: '4.6', sold: '1.3k', almost: false, left: 0 }),
   mk({ id: 6, name: 'Squishy Mochi Plush',            img: 'mochi plush',  tag: 'CUTE',  hue: 'blue',   price: '290',   was: '420',   rate: '5.0', sold: '9.8k', almost: true,  left: 8 }),
+  mk({ id: 7, name: 'Chunky CRT TV · Wood Grain',     img: 'crt tv',       tag: 'RETRO', hue: 'purple', price: '980',   was: '1,400', rate: '4.8', sold: '640',  almost: true,  left: 12 }),
+  mk({ id: 8, name: 'Mini Disco Ball Keychain',       img: 'disco ball',   tag: 'HOT',   hue: 'teal',   price: '195',   was: '260',   rate: '4.7', sold: '3.2k', almost: false, left: 0 }),
 ];
 
 export const chips = ['Y2K', 'Retro', 'Oddities', 'Plushies', 'Stickers', 'Tech'];
@@ -66,6 +68,22 @@ export function makeMarketFeed(start, count) {
     'Holographic Pog Slammer Set',
     'Glass Marble Jar · 80 pc',
     'Enamel Pin Grab Bag',
+    'Squishy Mochi Plush · Jumbo',
+    'Crystal Boba Charm Keychain',
+    'Retro Arcade Coin — lucky token',
+    'Mini Claw Machine (works!)',
+    'Kawaii Eraser Set · 40 pc',
+    'Galaxy Slime Jar · glitter storm',
+    'Chunky CRT TV · wood grain',
+    'Furby 1998 — still talks',
+    'Clear Pager · Y2K teal',
+    'Snow Globe · tiny snowman',
+    'Mixtape Cassette Lot · 10 pc',
+    'Quad Roller Skates · glitter',
+    'Speed Puzzle Cube · pastel',
+    'Butterfly Hair Clips · 12 pc',
+    'Auto-Return Yo-Yo · holo',
+    'Mini Disco Ball Keychain',
   ];
   const imgs = [
     'polaroid sx-70',
@@ -84,6 +102,22 @@ export function makeMarketFeed(start, count) {
     'pog set',
     'marble jar',
     'pin bag',
+    'mochi plush',
+    'boba charm',
+    'arcade coin',
+    'claw machine',
+    'eraser set',
+    'slime jar',
+    'crt tv',
+    'furby',
+    'pager',
+    'snow globe',
+    'cassette lot',
+    'roller skates',
+    'puzzle cube',
+    'butterfly clips',
+    'holo yoyo',
+    'disco ball',
   ];
   const sellers = [
     'retro_optics',
@@ -99,7 +133,7 @@ export function makeMarketFeed(start, count) {
   ];
   const conds = ['New', 'Used · Good', 'Used · Fair', 'Refurbished', 'Graded'];
   const modes = ['bin', 'auction', 'offer', 'bin', 'auction', 'bin'];
-  const prices = [120, 18400, 4800, 340, 520, 2900, 260, 1500, 90, 210, 75, 640, 430, 180, 120, 55];
+  const prices = [120, 18400, 4800, 340, 520, 2900, 260, 1500, 90, 210, 75, 640, 430, 180, 120, 55, 290, 480, 180, 1400, 95, 210, 980, 1250, 380, 240, 160, 890, 130, 85, 145, 195];
   const out = [];
 
   for (let i = 0; i < count; i += 1) {
@@ -159,9 +193,9 @@ const CATEGORY_MATCHERS = {
   Deals: (item) => item.shipFree,
   'Ending soon': (item) => item.isAuction,
   'Trading cards': (item) => /charizard|pog|beanie|pin|card/i.test(item.name),
-  'Retro tech': (item) => /polaroid|imac|walkman|console|phone|tamagotchi/i.test(item.name),
+  'Retro tech': (item) => /polaroid|imac|walkman|console|phone|tamagotchi|crt|pager|cassette/i.test(item.name),
   Vintage: (item) => /used|graded|refurbished/i.test(item.cond),
-  Plushies: (item) => /plush|sanrio|gacha|beanie/i.test(item.name),
+  Plushies: (item) => /plush|sanrio|gacha|beanie|furby/i.test(item.name),
 };
 
 export function filterMarketFeed(items, { category = 'For you', mode = 'All', query = '' } = {}) {
@@ -200,6 +234,8 @@ export const dropItems = [
   mk({ id: 2, name: 'Holo Trading Card · Foil', img: 'foil card',    hue: 'pink',   price: '1,250', left: 23, total: 60 }),
   mk({ id: 3, name: 'Pixel Mini Console',       img: 'mini console', hue: 'teal',   price: '2,900', left: 4,  total: 30 }),
   mk({ id: 4, name: 'Galaxy Slime Jar',         img: 'slime jar',    hue: 'blue',   price: '210',   left: 51, total: 120 }),
+  mk({ id: 5, name: 'Furby 1998 · Sealed',      img: 'furby',        hue: 'purple', price: '1,250', left: 6,  total: 25 }),
+  mk({ id: 6, name: 'Glitter Roller Skates',    img: 'roller skates', hue: 'pink',  price: '890',   left: 14, total: 45 }),
 ].map((it) => ({ ...it, leftPct: Math.max(6, Math.round((it.left / it.total) * 100)) }));
 
 export const pocketItems = [
@@ -207,6 +243,8 @@ export const pocketItems = [
   mk({ id: 2, name: 'Mini Claw Machine',     img: 'claw machine', hue: 'yellow', price: '1,400' }),
   mk({ id: 3, name: 'Kawaii Cat Eraser Set', img: 'eraser set',   hue: 'pink',   price: '95' }),
   mk({ id: 4, name: 'Pixel Heart Pin',       img: 'heart pin',    hue: 'coral',  price: '150' }),
+  mk({ id: 5, name: 'Auto-Return Holo Yo-Yo', img: 'holo yoyo',   hue: 'teal',   price: '145' }),
+  mk({ id: 6, name: 'Butterfly Clip Set',    img: 'butterfly clips', hue: 'purple', price: '85' }),
 ];
 
 export const sets = [

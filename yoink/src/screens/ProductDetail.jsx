@@ -43,9 +43,10 @@ const POLICY_DETAILS = {
   'Shipping policy': 'Yoink express: packed in 30 seconds, delivered in about 4 minutes. Watch it in Orders.',
 };
 
-export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl' }) {
+export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl', bell = null }) {
   const detail = useMemo(() => makeProductDetail(listing), [listing]);
   const artKind = useMemo(() => resolveArtKind(listing) ?? resolveArtKind(detail), [listing, detail]);
+  const onBell = Boolean(artKind && bell?.artKinds?.includes(artKind));
   const [spinDeg, setSpinDeg] = useState(null);
   const dragRef = useRef(null);
   const canSpin = artKind && artStyle === 'spin';
@@ -208,6 +209,17 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
             {detail.discount}
           </span>
         </div>
+
+        {onBell && (
+          <div style={s(`display:flex;align-items:center;gap:9px;margin-top:13px;padding:11px 13px;border-radius:14px;background:#171326;${bell.live ? 'animation:ypulse 1.6s infinite' : ''}`)}>
+            <span className="mi" style={s("font-size:19px;color:#FFB84D;font-variation-settings:'FILL' 1;flex:none")}>notifications_active</span>
+            <div style={s("font:700 12.5px 'Nunito';color:#fff")}>
+              {bell.live
+                ? <>This item is <span style={s("color:#FFB84D")}>on the floor right now</span> — it delivers in ~4 min, the bell is open longer</>
+                : <>On the <span style={s("color:#FFB84D")}>{bell.label} bell</span> — buy it now, flip it on the floor</>}
+            </div>
+          </div>
+        )}
 
         <div style={s(`display:flex;align-items:center;gap:9px;margin-top:13px;padding:11px 13px;border-radius:14px;background:${wash};border:1.5px dashed #C9BEF0`)}>
           <span style={s(`width:24px;height:24px;border-radius:50%;background:${brand};display:inline-flex;align-items:center;justify-content:center;font:700 12px 'Fredoka';color:#fff;flex:none`)}>

@@ -19,8 +19,9 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl' }) {
+function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl', bell = null, onBellTap = () => {} }) {
   const artKind = resolveArtKind(item);
+  const onBell = Boolean(artKind && bell?.artKinds?.includes(artKind));
   return (
     <div
       role="button"
@@ -45,6 +46,28 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
           {item.name}
         </div>
         <div style={s("display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:5px 0 6px")}>
+          {onBell && (
+            <span
+              role="button"
+              tabIndex={0}
+              aria-label={bell.live ? 'On the floor now — open the Bell' : `On the next bell at ${bell.label} — open the Bell`}
+              onClick={(event) => {
+                event.stopPropagation();
+                onBellTap();
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onBellTap();
+                }
+              }}
+              style={s(`display:inline-flex;align-items:center;gap:2px;font:700 9.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:2px 7px 2px 5px;border-radius:6px;cursor:pointer;${bell.live ? 'animation:ypulse 1.6s infinite' : ''}`)}
+            >
+              <span className="mi" style={s("font-size:11px;font-variation-settings:'FILL' 1")}>notifications_active</span>
+              {bell.live ? 'On the floor now' : `Next bell ${bell.label}`}
+            </span>
+          )}
           <span style={s(`font:700 9.5px 'Nunito';color:${ink};background:${wash};padding:2px 7px;border-radius:6px`)}>
             {item.cond}
           </span>
@@ -134,7 +157,7 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
     return next;
   });
   const feedEndRef = useRef(null);
-  const lastLoadRef = useRef(0);
+  const pendingStartRef = useRef(-1);
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
@@ -144,15 +167,18 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
 
   // Next pages come from the backend; the local generator (same logic the
   // server uses) stays as an offline fallback so scrolling never dead-ends.
+  // Guard by in-flight page, not by time: a time throttle silently drops
+  // the chained load that filtered search relies on, stalling the spinner.
   const loadMore = useCallback(() => {
-    const now = Date.now();
-    if (now - lastLoadRef.current < 200) return;
-    lastLoadRef.current = now;
     const start = feedLengthRef.current;
+    if (pendingStartRef.current === start) return;
+    pendingStartRef.current = start;
     fetchFeed(start, MARKET_PAGE_SIZE).then((page) => {
+      pendingStartRef.current = -1;
       if (!Array.isArray(page.items) || page.items.length === 0) return;
       setFeed((existing) => (existing.length === start ? existing.concat(page.items) : existing));
     }).catch(() => {
+      pendingStartRef.current = -1;
       setFeed((existing) => (existing.length === start ? appendMarketFeed(existing) : existing));
     });
   }, []);
@@ -342,6 +368,8 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
               saved={savedIds.has(item.id)}
               onToggleSave={toggleSave}
               artStyle={artStyle}
+              bell={bell}
+              onBellTap={onBellTap}
             />
           ))}
           {filtersActive && visibleFeed.length === 0 && !hasMore && (

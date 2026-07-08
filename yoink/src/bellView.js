@@ -23,16 +23,28 @@ export function bellLabel(timestamp) {
 
 // Why the floor-sell button is (or isn't) tappable.
 export function canFloorSell(qty, { own = 0, sellsLeft = 0 } = {}) {
-  if (own <= 0) return { ok: false, reason: 'You don’t own this yet — it’s in the shop' };
-  if (sellsLeft <= 0) return { ok: false, reason: 'Floor cap reached this session — back next bell' };
+  if (own <= 0) return { ok: false, reason: 'You don’t own this yet — buy it first' };
+  if (sellsLeft <= 0) return { ok: false, reason: 'Sell slots used this session — back next bell' };
   if (qty > own) return { ok: false, reason: `You only have ${own}` };
-  if (qty > sellsLeft) return { ok: false, reason: `Only ${sellsLeft} floor slot${sellsLeft === 1 ? '' : 's'} left this session` };
+  if (qty > sellsLeft) return { ok: false, reason: `Only ${sellsLeft} sell slot${sellsLeft === 1 ? '' : 's'} left this session` };
   return { ok: true, reason: null };
 }
 
-// Client-side preview of a floor sale; the server recomputes exactly.
-export function estFloorSale(unitPrice, multPct, qty, feePct = 0.05) {
-  const unit = Math.max(1, Math.round(unitPrice * (1 + multPct / 100)));
+// Why the floor-buy button is (or isn't) tappable.
+export function canFloorBuy(qty, { balance = 0, ask = 1, buysLeft = 0 } = {}) {
+  if (buysLeft <= 0) return { ok: false, reason: 'Buy slots used this session — back next bell' };
+  if (qty > buysLeft) return { ok: false, reason: `Only ${buysLeft} buy slot${buysLeft === 1 ? '' : 's'} left this session` };
+  const total = ask * qty;
+  if (total > balance) {
+    return { ok: false, reason: `Not enough coins — need Ȳ${(total - balance).toLocaleString()} more` };
+  }
+  return { ok: true, reason: null };
+}
+
+// Client-side preview of a floor sale at the live market price; the server
+// recomputes exactly.
+export function estFloorSale(marketPrice, qty, feePct = 0.05) {
+  const unit = Math.max(1, Math.round(marketPrice));
   const gross = unit * qty;
   const fee = Math.round(gross * feePct);
   return { unit, gross, fee, net: gross - fee };

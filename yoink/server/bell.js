@@ -22,8 +22,22 @@ export const WARMUP_MS = 30 * 60000;
 export const FLOOR_FEE = 0.05;           // the floor's cut on every sale — the economy's sink
 export const FLOOR_BUY_MARKUP = 0.03;    // live-floor ask spread; prevents free buy→sell loops
 export const SESSION_SELL_CAP = 3;       // items sellable per player per session
+export const SESSION_BUY_CAP = 5;        // items buyable on the floor per session
 export const MIN_BELL_ITEMS_TO_JOIN = 2;  // own at least a couple lineup items before joining
 export const STREAK_FREEZES = 1;         // missed days absorbed before a streak resets
+
+// Order-flow price impact: every fill (player or sim) pushes the price and
+// the push decays with this half-life. This is what makes the tape causal —
+// price moves because somebody traded, not because a noise field wiggled.
+export const IMPACT_HALF_LIFE_MIN = 12;
+export const PLAYER_IMPACT_PER_ITEM = 0.012; // log-price push per item traded
+export const PLAYER_IMPACT_CAP = 0.04;       // per-fill cap (< round-trip spread, so self-pumping loses)
+export const SIM_IMPACT_PER_ITEM = 0.008;
+
+export function decayedImpact(delta, at, now) {
+  if (now < at) return 0;
+  return delta * Math.pow(0.5, (now - at) / (IMPACT_HALF_LIFE_MIN * 60000));
+}
 
 export const LINEUP_ROLES = ['confirmed', 'confirmed', 'rumor', 'wildcard', 'wildcard'];
 
@@ -141,33 +155,37 @@ export function sessionBoost(ticker, now = Date.now()) {
   const gap = u * Math.abs(u) * 0.62 + 0.08;
   const ramp = smooth(Math.min(1, minutesIn / 4));
 
+  // Path noise sits under the sim order flow now — small enough that the
+  // moves players can attribute to fills dominate the session tape.
   const path = uCurve(minutesIn) * (
     0.7 * octave(session.seed + ticker.seed, 51, minutesIn, 1.5) +
     0.3 * octave(session.seed + ticker.seed, 52, minutesIn, 4)
-  ) * 0.16;
+  ) * 0.10;
 
   const boost = gap * ramp + path;
   return Math.max(-0.7, Math.min(0.7, boost));
 }
 
 // Session-aware price: the base engine everywhere, times the session story
-// when a ticker's bell is ringing. This is the price function the whole
-// store uses, so charts, paper trades and floor sales all see the spike.
+// and the sim order flow when a ticker's bell is ringing. This is the price
+// function the whole store uses, so charts and floor fills all see it.
 export function bellPriceAt(ticker, now = Date.now()) {
   const base = priceAt(ticker, now);
-  const boost = sessionBoost(ticker, now);
-  if (boost === 0) return base;
-  return Math.max(1, Math.round(base * Math.exp(boost)));
+  const push = sessionBoost(ticker, now) + simFlowImpact(ticker, now);
+  if (push === 0) return base;
+  return Math.max(1, Math.round(base * Math.exp(push)));
 }
 
 export function streetMultiplier(ticker, now = Date.now()) {
   return bellPriceAt(ticker, now) / ticker.base;
 }
 
-// Sim-trader stories for a session: deterministic little wins and losses
-// that make the floor feel populated. Used live (as the activity feed) and
-// at the close (as the Floor Report).
-export function simTradesFor(session, count = 6) {
+// Sim-trader order flow for a session: deterministic fills with real
+// timestamps (clustered at the open and the close, like actual volume)
+// and a side. Each fill pushes the price via simFlowImpact, so the live
+// feed line and the chart move together — the tape is causal. Also used
+// at the close as the Floor Report.
+export function simTradesFor(session, count = 10) {
   const lineup = lineupFor(session);
   const out = [];
   for (let i = 0; i < count; i += 1) {
@@ -176,13 +194,46 @@ export function simTradesFor(session, count = 6) {
     const u = hashNoise(session.seed + 631, i * 3 + 2) * 2 - 1;
     const pct = Math.round((u * Math.abs(u) * 0.5 + 0.04) * 100);
     const qty = 1 + (Math.floor(hashNoise(session.seed + 631, i * 3 + 2) * 3) % 3);
-    out.push({ trader, tickerId: entry.ticker.id, role: entry.role, qty, pct });
+    const side = hashNoise(session.seed + 797, i) < 0.58 ? 'buy' : 'sell';
+    // U-curve arrival times: evens crowd the open, odds crowd the close.
+    const w = hashNoise(session.seed + 733, i);
+    const minutesIn = i % 2 === 0 ? 0.4 + w * w * 8 : 24.5 - w * w * 10;
+    out.push({
+      trader,
+      tickerId: entry.ticker.id,
+      role: entry.role,
+      qty,
+      pct,
+      side,
+      atMs: session.start + Math.round(minutesIn * 60000),
+    });
   }
-  return out;
+  return out.sort((a, b) => a.atMs - b.atMs);
 }
 
-export function floorReportFor(session) {
-  const trades = simTradesFor(session);
+// Decayed log-price push from all sim fills that have already happened.
+// Pure f(ticker, now) — candles can replay any moment of any session.
+export function simFlowImpact(ticker, now = Date.now()) {
+  const sessions = [];
+  const live = liveSessionAt(now);
+  if (live) sessions.push(live);
+  const closed = lastClosedSession(now);
+  if (closed && (!live || closed.key !== live.key) && now - closed.end < 3 * 3600 * 1000) {
+    sessions.push(closed);
+  }
+  let sum = 0;
+  for (const session of sessions) {
+    for (const fill of simTradesFor(session)) {
+      if (fill.tickerId !== ticker.id || fill.atMs > now) continue;
+      const dir = fill.side === 'buy' ? 1 : -1;
+      sum += decayedImpact(dir * SIM_IMPACT_PER_ITEM * fill.qty, fill.atMs, now);
+    }
+  }
+  return sum;
+}
+
+export function floorReportFor(session, extraTrades = []) {
+  const trades = [...simTradesFor(session), ...extraTrades];
   const sorted = [...trades].sort((a, b) => b.pct - a.pct);
   const winner = sorted[0];
   const bagholder = sorted[sorted.length - 1];

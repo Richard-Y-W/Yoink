@@ -9,11 +9,16 @@ import { makeMarketFeed, MARKET_MAX_ITEMS, dropItems, questDefs } from '../src/d
 import { getCheckoutTotals } from '../src/cart.js';
 import { resolveArtKind } from '../src/itemArt.js';
 import {
+  FLOOR_BUY_MARKUP,
   FLOOR_FEE,
   MIN_BELL_ITEMS_TO_JOIN,
+  PLAYER_IMPACT_CAP,
+  PLAYER_IMPACT_PER_ITEM,
+  SESSION_BUY_CAP,
   SESSION_SELL_CAP,
   STREAK_FREEZES,
   bellPriceAt,
+  decayedImpact,
   floorReportFor,
   lastClosedSession,
   lineupFor,
@@ -21,7 +26,6 @@ import {
   nextSessionAfter,
   rumorAisleFor,
   simTradesFor,
-  streetMultiplier,
 } from './bell.js';
 import {
   TICKERS,
@@ -81,7 +85,7 @@ function defaultState() {
     questClaims: [],
     orderSeq: 1000,
     exchange: { positions: {}, trades: [], rookieLeft: ROOKIE_TRADES },
-    bell: { sales: [], attendance: [], streak: 0, streakDay: null, freezes: STREAK_FREEZES, bellsRung: 0 },
+    bell: { sales: [], buys: [], flow: [], attendance: [], streak: 0, streakDay: null, freezes: STREAK_FREEZES, bellsRung: 0 },
   };
 }
 
@@ -101,8 +105,10 @@ export function createStore({ file = null, state = null, random = Math.random } 
     data.exchange = { positions: {}, trades: [], rookieLeft: ROOKIE_TRADES };
   }
   if (!data.bell || typeof data.bell !== 'object') {
-    data.bell = { sales: [], attendance: [], streak: 0, streakDay: null, freezes: STREAK_FREEZES, bellsRung: 0 };
+    data.bell = { sales: [], buys: [], flow: [], attendance: [], streak: 0, streakDay: null, freezes: STREAK_FREEZES, bellsRung: 0 };
   }
+  if (!Array.isArray(data.bell.buys)) data.bell.buys = [];
+  if (!Array.isArray(data.bell.flow)) data.bell.flow = [];
 
   const save = () => {
     if (!file) return;
@@ -277,6 +283,32 @@ export function createStore({ file = null, state = null, random = Math.random } 
     return data.collection;
   };
 
+  // ── the price the whole store trades at ────────────────────────────────
+  // Engine price (fBm + session story + sim order flow) times the player's
+  // own decaying market impact. Every fill the player makes pushes the tape;
+  // deterministic replay means candles show those pushes at the right bars.
+  const pruneFlow = (now) => {
+    data.bell.flow = data.bell.flow.filter((fill) => now - fill.at < 4 * 3600 * 1000);
+  };
+
+  const playerFlowImpact = (tickerId, t) => data.bell.flow.reduce(
+    (sum, fill) => (fill.tickerId === tickerId ? sum + decayedImpact(fill.delta, fill.at, t) : sum),
+    0,
+  );
+
+  const floorPrice = (ticker, t) => {
+    const price = bellPriceAt(ticker, t);
+    const flow = playerFlowImpact(ticker.id, t);
+    if (flow === 0) return price;
+    return Math.max(1, Math.round(price * Math.exp(flow)));
+  };
+
+  const pushPlayerFlow = (tickerId, direction, qty, now) => {
+    const delta = direction * Math.min(PLAYER_IMPACT_PER_ITEM * qty, PLAYER_IMPACT_CAP);
+    data.bell.flow.push({ tickerId, delta, at: now });
+    pruneFlow(now);
+  };
+
   const buysToday = (tickerId, now) => {
     const day = localDay(now);
     return data.exchange.trades.filter((trade) => trade.tickerId === tickerId && trade.day === day && trade.side === 'buy').length;
@@ -285,7 +317,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
   const getExchange = (now = Date.now()) => {
     const positions = data.exchange.positions;
     const tickers = TICKERS.map((ticker) => {
-      const decorated = decorateTicker(ticker, now, bellPriceAt);
+      const decorated = decorateTicker(ticker, now, floorPrice);
       const position = positions[ticker.id];
       return {
         ...decorated,
@@ -318,9 +350,9 @@ export function createStore({ file = null, state = null, random = Math.random } 
   const getCandles = (tickerId, tf, count, now = Date.now()) => {
     const ticker = getTicker(String(tickerId ?? ''));
     if (!ticker) return null;
-    const candles = candlesFor(ticker, tf, count, now, bellPriceAt);
+    const candles = candlesFor(ticker, tf, count, now, floorPrice);
     if (!candles) return null;
-    return { tickerId: ticker.id, tf, candles, price: bellPriceAt(ticker, now) };
+    return { tickerId: ticker.id, tf, candles, price: floorPrice(ticker, now) };
   };
 
   const tradeExchange = ({ tickerId, side, shares } = {}, now = Date.now()) => {
@@ -332,7 +364,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
       return { ok: false, error: `Trade 1–${MAX_SHARES_PER_TRADE} shares at a time` };
     }
 
-    const price = bellPriceAt(ticker, now);
+    const price = floorPrice(ticker, now);
     const positions = data.exchange.positions;
     const position = positions[ticker.id] ?? { shares: 0, avgCost: 0 };
     let refund = 0;
@@ -396,6 +428,9 @@ export function createStore({ file = null, state = null, random = Math.random } 
   const sessionSales = (key) => data.bell.sales.filter((sale) => sale.key === key);
   const sessionSoldCount = (key) => sessionSales(key).reduce((sum, sale) => sum + sale.qty, 0);
   const sessionBanked = (key) => sessionSales(key).reduce((sum, sale) => sum + sale.net, 0);
+  const sessionBoughtCount = (key) => data.bell.buys
+    .filter((buy) => buy.key === key)
+    .reduce((sum, buy) => sum + buy.qty, 0);
 
   // Duolingo-style daily streak: consecutive days with at least one bell
   // attended. A single missed day burns a freeze instead of the streak;
@@ -438,7 +473,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
   const decorateLineup = (session, now, revealAll) => lineupFor(session)
     .filter((entry) => revealAll || entry.role === 'confirmed')
     .map((entry) => {
-      const price = bellPriceAt(entry.ticker, now);
+      const price = floorPrice(entry.ticker, now);
       const holdings = holdingsFor(entry.ticker.artKind);
       return {
         tickerId: entry.ticker.id,
@@ -447,6 +482,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
         role: entry.role,
         base: entry.ticker.base,
         price,
+        ask: Math.max(1, Math.round(price * (1 + FLOOR_BUY_MARKUP))),
         multPct: Math.round((price / entry.ticker.base - 1) * 100),
         own: holdings.reduce((sum, holding) => sum + holding.quantity, 0),
         holdings,
@@ -466,12 +502,28 @@ export function createStore({ file = null, state = null, random = Math.random } 
     };
   };
 
+  // The player's floor sales as report entries, ranked against the sim
+  // traders — the leaderboard only means something if "you" are on it.
+  const playerFloorTrades = (session) => {
+    const lineup = lineupFor(session);
+    return sessionSales(session.key).map((sale) => {
+      const basis = sale.net - sale.realized;
+      return {
+        trader: 'you',
+        tickerId: sale.tickerId,
+        role: lineup.find((entry) => entry.ticker.id === sale.tickerId)?.role ?? 'confirmed',
+        qty: sale.qty,
+        pct: basis > 0 ? Math.round((sale.realized / basis) * 100) : 0,
+      };
+    });
+  };
+
   const getBell = (now = Date.now()) => {
     syncDeliveries(now);
     const live = liveSessionAt(now);
     const next = nextSessionAfter(now);
     const closed = lastClosedSession(now);
-    const report = floorReportFor(closed);
+    const report = floorReportFor(closed, playerFloorTrades(closed));
     return {
       now,
       live: live
@@ -482,10 +534,12 @@ export function createStore({ file = null, state = null, random = Math.random } 
           lineup: decorateLineup(live, now, true),
           sellsLeft: Math.max(0, SESSION_SELL_CAP - sessionSoldCount(live.key)),
           sellCap: SESSION_SELL_CAP,
+          buysLeft: Math.max(0, SESSION_BUY_CAP - sessionBoughtCount(live.key)),
+          buyCap: SESSION_BUY_CAP,
           banked: sessionBanked(live.key),
           attended: data.bell.attendance.includes(live.key),
           eligibility: bellEligibility(live),
-          events: simTradesFor(live, 4),
+          events: simTradesFor(live),
         }
         : null,
       next: {
@@ -553,13 +607,16 @@ export function createStore({ file = null, state = null, random = Math.random } 
 
     const ticker = lineupEntry.ticker;
     const basis = Number(entry.unitPrice) || ticker.base;
-    const unit = Math.max(1, Math.round(basis * streetMultiplier(ticker, now)));
+    // Sells fill at the market price, whatever you paid — that's an
+    // exchange. Your edge is the spread between basis and the live tape.
+    const unit = floorPrice(ticker, now);
     const gross = unit * qty;
     const fee = Math.round(gross * FLOOR_FEE);
     const net = gross - fee;
     const realized = net - basis * qty;
 
     data.wallet.balance += net;
+    pushPlayerFlow(ticker.id, -1, qty, now);
     entry.quantity -= qty;
     if (entry.quantity <= 0) data.collection = data.collection.filter((candidate) => candidate !== entry);
     data.bell.sales.push({
@@ -587,6 +644,74 @@ export function createStore({ file = null, state = null, random = Math.random } 
       realized,
       sellsLeft: Math.max(0, SESSION_SELL_CAP - sessionSoldCount(live.key)),
       banked: sessionBanked(live.key),
+      wallet: getWallet(now),
+      streak: { days: data.bell.streak, freezes: data.bell.freezes, bellsRung: data.bell.bellsRung },
+    };
+  };
+
+  // Buy on the live floor: fills instantly at the ask (market + spread),
+  // lands straight in the collection as a real item, and pushes the tape
+  // up. The shop stays the calm MSRP door; this is the thrill door.
+  const floorBuy = ({ tickerId, quantity } = {}, now = Date.now()) => {
+    const live = liveSessionAt(now);
+    if (!live) return { ok: false, error: 'The floor is closed — buy when the bell rings' };
+    syncDeliveries(now);
+    const alreadyAttended = data.bell.attendance.includes(live.key);
+    const eligibility = bellEligibility(live);
+    if (!alreadyAttended && !eligibility.ok) {
+      return {
+        ok: false,
+        error: `The bell needs a couple items to play — you have ${eligibility.owned}/${eligibility.required}`,
+        eligibility,
+      };
+    }
+    const lineupEntry = lineupFor(live).find((candidate) => candidate.ticker.id === String(tickerId ?? ''));
+    if (!lineupEntry) return { ok: false, error: 'That ticker isn’t on the floor this session' };
+    const qty = Math.floor(Number(quantity) || 0);
+    if (qty < 1) return { ok: false, error: 'Buy at least 1' };
+    const bought = sessionBoughtCount(live.key);
+    if (bought + qty > SESSION_BUY_CAP) {
+      return { ok: false, error: `The floor fills ${SESSION_BUY_CAP} buys per session — ${Math.max(0, SESSION_BUY_CAP - bought)} left` };
+    }
+
+    const ticker = lineupEntry.ticker;
+    const unit = Math.max(1, Math.round(floorPrice(ticker, now) * (1 + FLOOR_BUY_MARKUP)));
+    const total = unit * qty;
+    if (total > data.wallet.balance) {
+      return { ok: false, error: 'Not enough coins', shortBy: total - data.wallet.balance, wallet: getWallet(now) };
+    }
+
+    data.wallet.balance -= total;
+    // One floor position per ticker; repeat buys average into the basis.
+    const id = `floor-${ticker.id}`;
+    const existing = data.collection.find((candidate) => candidate.id === id);
+    if (existing) {
+      const newQty = existing.quantity + qty;
+      existing.unitPrice = Math.round(((Number(existing.unitPrice) || 0) * existing.quantity + total) / newQty);
+      existing.quantity = newQty;
+    } else {
+      data.collection.push({
+        id,
+        title: ticker.name,
+        imageLabel: ticker.name,
+        imageStripe: '',
+        seller: 'the_floor',
+        unitPrice: unit,
+        quantity: qty,
+        acquiredAt: now,
+      });
+    }
+    data.bell.buys.push({ key: live.key, tickerId: ticker.id, qty, unit, total, at: now });
+    pushPlayerFlow(ticker.id, 1, qty, now);
+    markAttendance(live, now);
+    save();
+    return {
+      ok: true,
+      tickerId: ticker.id,
+      qty,
+      unit,
+      total,
+      buysLeft: Math.max(0, SESSION_BUY_CAP - sessionBoughtCount(live.key)),
       wallet: getWallet(now),
       streak: { days: data.bell.streak, freezes: data.bell.freezes, bellsRung: data.bell.bellsRung },
     };
@@ -653,6 +778,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
     getBell,
     bellCheckin,
     floorSell,
+    floorBuy,
     seedBellInventory,
     resetBellSessionSales,
   };

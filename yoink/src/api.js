@@ -28,5 +28,6 @@ export const tradeTicker = (tickerId, side, shares) => post('/api/exchange/trade
 export const fetchBell = () => request('/api/bell');
 export const bellCheckin = () => post('/api/bell/checkin');
 export const sellOnFloor = (itemId, quantity) => post('/api/bell/sell', { itemId, quantity });
+export const buyOnFloor = (tickerId, quantity) => post('/api/bell/buy', { tickerId, quantity });
 export const devForceBellLive = () => post('/api/dev/bell/force-live');
 export const devClearForcedBell = () => post('/api/dev/bell/clear-force');

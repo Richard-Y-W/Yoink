@@ -8,7 +8,7 @@ const price = (item) => Number(String(item.price).replace(/,/g, ''));
 test('category chips narrow the feed to matching listings', () => {
   const retro = filterMarketFeed(feed, { category: 'Retro tech' });
   assert.ok(retro.length > 0);
-  assert.ok(retro.every((item) => /polaroid|imac|walkman|console|phone|tamagotchi/i.test(item.name)));
+  assert.ok(retro.every((item) => /polaroid|imac|walkman|console|phone|tamagotchi|crt|pager|cassette/i.test(item.name)));
 
   const ending = filterMarketFeed(feed, { category: 'Ending soon' });
   assert.ok(ending.length > 0);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { canFloorSell, estFloorSale, fmtClock, fmtWait } from './bellView.js';
+import { canFloorBuy, canFloorSell, estFloorSale, fmtClock, fmtWait } from './bellView.js';
 
 test('fmtClock renders m:ss and clamps at zero', () => {
   assert.equal(fmtClock(14 * 60000 + 22000), '14:22');
@@ -16,15 +16,22 @@ test('fmtWait renders friendly waits', () => {
 });
 
 test('canFloorSell explains every blocked state', () => {
-  assert.match(canFloorSell(1, { own: 0, sellsLeft: 3 }).reason, /in the shop/);
+  assert.match(canFloorSell(1, { own: 0, sellsLeft: 3 }).reason, /buy it first/);
   assert.match(canFloorSell(1, { own: 2, sellsLeft: 0 }).reason, /next bell/);
   assert.match(canFloorSell(3, { own: 2, sellsLeft: 3 }).reason, /only have 2/);
-  assert.match(canFloorSell(3, { own: 5, sellsLeft: 2 }).reason, /2 floor slots/);
+  assert.match(canFloorSell(3, { own: 5, sellsLeft: 2 }).reason, /2 sell slots/);
   assert.equal(canFloorSell(2, { own: 2, sellsLeft: 2 }).ok, true);
 });
 
-test('estFloorSale applies the street multiplier and the 5% fee', () => {
-  const sale = estFloorSale(340, 36, 2);
+test('canFloorBuy explains every blocked state', () => {
+  assert.match(canFloorBuy(1, { balance: 9999, ask: 100, buysLeft: 0 }).reason, /next bell/);
+  assert.match(canFloorBuy(3, { balance: 9999, ask: 100, buysLeft: 2 }).reason, /2 buy slots/);
+  assert.match(canFloorBuy(2, { balance: 150, ask: 100, buysLeft: 5 }).reason, /Ȳ50 more/);
+  assert.equal(canFloorBuy(2, { balance: 200, ask: 100, buysLeft: 5 }).ok, true);
+});
+
+test('estFloorSale quotes the market price minus the 5% fee', () => {
+  const sale = estFloorSale(462, 2);
   assert.equal(sale.unit, 462);
   assert.equal(sale.gross, 924);
   assert.equal(sale.fee, 46);
