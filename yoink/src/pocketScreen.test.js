@@ -63,6 +63,7 @@ test('placeholder trophy viewer manages dialog focus without duplicate close lab
   assert.match(viewerSource, /querySelectorAll/);
   assert.match(viewerSource, /focusable/);
   assert.match(viewerSource, /preventDefault/);
+  assert.match(viewerSource, /document\.activeElement === dialog/);
   assert.equal(viewerSource.match(/aria-label="Close trophy viewer"/g)?.length, 1);
 });
 
@@ -70,4 +71,10 @@ test('App no longer passes stale shop-era props to Pocket', () => {
   const pocketCall = appSource.match(/<Pocket[\s\S]*?\/>/)?.[0] ?? '';
   assert.doesNotMatch(pocketCall, /streak=/);
   assert.doesNotMatch(pocketCall, /onAddToCart=/);
+});
+
+test('Pocket lazy-loads the trophy viewer so Three.js is not in the initial route chunk', () => {
+  assert.match(pocketSource, /lazy\(\(\) => import\('\.\.\/components\/HoloTrophyViewer\.jsx'\)\)/);
+  assert.match(pocketSource, /Suspense/);
+  assert.doesNotMatch(pocketSource, /import HoloTrophyViewer from/);
 });

@@ -36,7 +36,7 @@ export default function Account({
   streak = 0,
   ordersInFlight = 0,
   cartCount = 0,
-  watchedCount = 0,
+  pocketCount = 0,
   onOpenCart = () => {},
   onOpenPocket = () => {},
   onOpenOrders = () => {},
@@ -59,7 +59,7 @@ export default function Account({
     },
     {
       label: 'Pocket',
-      detail: `${watchedCount} saved find${watchedCount === 1 ? '' : 's'}`,
+      detail: pocketCount ? `${pocketCount} holo troph${pocketCount === 1 ? 'y' : 'ies'}` : 'Open Holo shelf',
       icon: 'inventory_2',
       bg: '#C7F5EC',
       tint: '#12865A',
@@ -101,7 +101,7 @@ export default function Account({
       <div style={s('position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid #EEEAF6;padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px')}>
         <div>
           <div style={s(`font:800 22px 'Fredoka';color:${ink}`)}>Account</div>
-          <div style={s(`font:700 12px 'Nunito';color:${muted}`)}>Orders, wallet, and saved finds</div>
+          <div style={s(`font:700 12px 'Nunito';color:${muted}`)}>Orders, wallet, and Pocket</div>
         </div>
         <button type="button" aria-label="Open cart" onClick={onOpenCart} style={s(`border:0;border-radius:16px;background:${brand};color:#fff;padding:8px 11px;font:800 12px 'Fredoka';display:flex;align-items:center;gap:5px;cursor:pointer;box-shadow:0 5px 12px rgba(106,90,205,.30)`)}>
           <span className="mi" style={s("font-size:16px;font-variation-settings:'FILL' 1")}>shopping_cart</span>
@@ -132,7 +132,7 @@ export default function Account({
           <div style={s("position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px")}>
             {[
               { label: 'Streak', value: `${streak}d` },
-              { label: 'Pocket', value: watchedCount },
+              { label: 'Pocket', value: pocketCount },
               { label: 'Orders', value: ordersInFlight },
             ].map((stat) => (
               <div key={stat.label} style={s(`background:${wash};border:1.5px solid ${line};border-radius:8px;padding:9px 6px;text-align:center`)}>

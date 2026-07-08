@@ -39,3 +39,12 @@ test('app gives account quick actions real handlers', () => {
   assert.doesNotMatch(appSource, /onOpenWatching=/);
   assert.match(appSource, /onOpenOrders=\{\(\) => handleSelectTab\(APP_SCREENS\.orders\)\}/);
 });
+
+test('account Pocket stats are not wired to watched listings', () => {
+  assert.match(accountSource, /pocketCount = 0/);
+  assert.match(accountSource, /holo troph/);
+  assert.match(appSource, /pocketCount=\{pocketCount\}/);
+  assert.doesNotMatch(accountSource, /watchedCount/);
+  assert.doesNotMatch(accountSource, /saved find/);
+  assert.doesNotMatch(appSource, /watchedCount=\{watchedListings\.length\}/);
+});

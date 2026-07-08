@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchCollection } from '../api.js';
 import PocketShelf from '../components/PocketShelf.jsx';
-import HoloTrophyViewer from '../components/HoloTrophyViewer.jsx';
 import { makePocketHoloItems } from '../pocketItems.js';
 import { s } from '../style.js';
 import { marketTheme } from '../marketTheme.js';
@@ -19,6 +18,7 @@ const {
 } = marketTheme;
 
 const noop = () => {};
+const HoloTrophyViewer = lazy(() => import('../components/HoloTrophyViewer.jsx'));
 
 function PocketHeader({ balance, cartCount, onOpenCart }) {
   return (
@@ -187,7 +187,11 @@ export default function Pocket({
         )}
       </main>
 
-      <HoloTrophyViewer item={viewerItem} onClose={closeViewer} />
+      {viewerItem && (
+        <Suspense fallback={null}>
+          <HoloTrophyViewer item={viewerItem} onClose={closeViewer} />
+        </Suspense>
+      )}
     </div>
   );
 }
