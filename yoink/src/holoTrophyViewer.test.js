@@ -35,22 +35,34 @@ test('Holo slab source reserves the Task 5 Three.js interaction hooks', () => {
 });
 
 test('Holo slab builds the Chrome Heart card as sculpted 3D layers', () => {
-  assert.match(slabSource, /createChromeHeartToyCard/);
-  assert.match(slabSource, /createPuffyHeartShape/);
+  assert.match(slabSource, /createHighDetailChromeHeartCard/);
+  assert.match(slabSource, /createReferenceHeartShape/);
   assert.match(slabSource, /createSparkleShape/);
   assert.match(slabSource, /createSoftVinylMaterial/);
+  assert.match(slabSource, /createIridescentChromeMaterial/);
+  assert.match(slabSource, /createFoilGlitterMaterial/);
   assert.match(slabSource, /chromeHeartPreset/);
-  assert.match(slabSource, /gumdropCornerGuards/);
-  assert.match(slabSource, /jellyCaseRails/);
+  assert.match(slabSource, /slimCornerProtectors/);
+  assert.match(slabSource, /slimGlassRails/);
   assert.match(slabSource, /raisedChromeHeart/);
   assert.match(slabSource, /frontToyCardFace/);
+  assert.match(slabSource, /thinCardCore/);
+  assert.match(slabSource, /nestedIridescentFrame/);
+  assert.match(slabSource, /microGlitterField/);
+  assert.match(slabSource, /chromeHeartInnerGlow/);
+  assert.match(slabSource, /heartEyeHighlight/);
   assert.match(slabSource, /bottomBadgePlate/);
   assert.match(slabSource, /pastelStickerSparkles/);
   assert.match(slabSource, /mirroredToyBack/);
   assert.match(slabSource, /backToyHeart/);
+  assert.match(slabSource, /referenceBadgeDetails/);
+  assert.match(slabSource, /referenceBackDetails/);
   assert.doesNotMatch(slabSource, /rainbowCircuitFrame/);
   assert.doesNotMatch(slabSource, /reverseSerialDots/);
   assert.doesNotMatch(slabSource, /serialDot/);
+  assert.doesNotMatch(slabSource, /gumdropCornerGuards/);
+  assert.doesNotMatch(slabSource, /frontCandyFrame/);
+  assert.doesNotMatch(slabSource, /backCandyFrame/);
   assert.doesNotMatch(slabSource, /new THREE\.TextureLoader/);
   assert.doesNotMatch(slabSource, /createLabelTexture/);
 });

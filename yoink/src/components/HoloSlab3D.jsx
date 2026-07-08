@@ -5,7 +5,7 @@ import { marketTheme } from '../marketTheme.js';
 
 const { ink, brand } = marketTheme;
 
-const DEFAULT_TRAITS = ['rainbow foil frame', 'chunky toy slab', 'sparkle flecks'];
+const DEFAULT_TRAITS = ['slabbed foil card', 'chrome heart icon', 'rainbow shimmer'];
 const POINTER_EVENT_NAME = 'pointermove';
 const HOLO_PALETTES = {
   pink: ['#FF3D9A', '#FFB84D', '#10B5A0'],
@@ -62,13 +62,14 @@ function createRoundedSlabGeometry(width, height, depth, radius, bevelSize = 0.0
   return geometry;
 }
 
-function createPuffyHeartShape() {
+function createReferenceHeartShape() {
   const shape = new THREE.Shape();
-  shape.moveTo(0, -0.5);
-  shape.bezierCurveTo(-0.72, -0.18, -0.76, 0.28, -0.36, 0.43);
-  shape.bezierCurveTo(-0.18, 0.5, -0.04, 0.4, 0, 0.25);
-  shape.bezierCurveTo(0.04, 0.4, 0.18, 0.5, 0.36, 0.43);
-  shape.bezierCurveTo(0.76, 0.28, 0.72, -0.18, 0, -0.5);
+  shape.moveTo(0, -0.58);
+  shape.bezierCurveTo(-0.52, -0.34, -0.78, -0.02, -0.68, 0.27);
+  shape.bezierCurveTo(-0.58, 0.58, -0.2, 0.59, -0.05, 0.31);
+  shape.bezierCurveTo(-0.02, 0.24, 0.02, 0.24, 0.05, 0.31);
+  shape.bezierCurveTo(0.2, 0.59, 0.58, 0.58, 0.68, 0.27);
+  shape.bezierCurveTo(0.78, -0.02, 0.52, -0.34, 0, -0.58);
   return shape;
 }
 
@@ -138,7 +139,31 @@ function createSoftVinylMaterial(options) {
   });
 }
 
-function createHoloFoilMaterial({ palette, timeUniform, foilUniform }) {
+function createIridescentChromeMaterial({
+  color = '#FFF8FF',
+  emissive = '#B8F6FF',
+  emissiveIntensity = 0.16,
+  metalness = 0.32,
+  roughness = 0.14,
+} = {}) {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    roughness,
+    metalness,
+    clearcoat: 1,
+    clearcoatRoughness: 0.05,
+    iridescence: 0.95,
+    iridescenceIOR: 1.45,
+    iridescenceThicknessRange: [120, 520],
+    reflectivity: 0.9,
+    sheen: 0.35,
+    sheenColor: new THREE.Color('#FF7BD5'),
+    emissive,
+    emissiveIntensity,
+  });
+}
+
+function createFoilGlitterMaterial({ palette, timeUniform, foilUniform }) {
   return new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
     uniforms: {
@@ -163,18 +188,26 @@ function createHoloFoilMaterial({ palette, timeUniform, foilUniform }) {
       uniform vec3 uAccentB;
       uniform vec3 uAccentC;
       void main() {
-        float softBand = sin((vUv.x * 3.4 + vUv.y * 2.2 + uTime * 0.36) * 3.14159);
-        float blush = sin((vUv.x * 1.7 - vUv.y * 1.35 + uTime * 0.2) * 6.28318) * 0.5 + 0.5;
-        float confetti = smoothstep(0.82, 1.0, sin((vUv.x * 13.0 - vUv.y * 9.0 + uTime * 0.9) * 3.14159) * 0.5 + 0.5);
-        float glassGlint = smoothstep(0.72, 1.0, sin((vUv.x + vUv.y + uTime * 0.12) * 12.0) * 0.5 + 0.5);
-        vec3 creamyBase = vec3(1.0, 0.95, 0.84);
-        vec3 rainbow = 0.56 + 0.44 * cos(6.28318 * (vec3(0.0, 0.34, 0.68) + vUv.x * 0.52 + vUv.y * 0.32 + uTime * 0.03));
-        vec3 candy = mix(uAccent, uAccentB, 0.5 + softBand * 0.16);
-        candy = mix(candy, uAccentC, blush * 0.24);
-        vec3 color = mix(creamyBase, candy, 0.54 + foilUniform * 0.12);
-        color = mix(color, rainbow, 0.18 + foilUniform * 0.16);
-        color += glassGlint * vec3(0.23, 0.2, 0.18);
-        color += confetti * vec3(0.16, 0.2, 0.18);
+        float bandA = sin((vUv.x * 4.8 + vUv.y * 2.4 + uTime * 0.32) * 3.14159) * 0.5 + 0.5;
+        float bandB = sin((vUv.x * -2.2 + vUv.y * 5.8 - uTime * 0.18) * 3.14159) * 0.5 + 0.5;
+        float diagonal = smoothstep(0.58, 0.98, sin((vUv.x + vUv.y * 0.84 + uTime * 0.1) * 31.0) * 0.5 + 0.5);
+        float glitterA = smoothstep(0.93, 1.0, fract(sin(dot(floor(vUv * 62.0), vec2(12.9898, 78.233))) * 43758.5453));
+        float glitterB = smoothstep(0.965, 1.0, fract(sin(dot(floor(vUv * 118.0), vec2(39.346, 11.135))) * 24634.6345));
+        vec3 peach = vec3(1.0, 0.62, 0.42);
+        vec3 magenta = vec3(1.0, 0.18, 0.62);
+        vec3 violet = vec3(0.45, 0.22, 1.0);
+        vec3 cyan = vec3(0.22, 0.92, 1.0);
+        vec3 gold = vec3(1.0, 0.88, 0.28);
+        vec3 deepFoil = mix(peach, magenta, bandA);
+        deepFoil = mix(deepFoil, violet, bandB * 0.72);
+        deepFoil = mix(deepFoil, cyan, smoothstep(0.18, 0.92, vUv.x) * 0.38);
+        deepFoil = mix(deepFoil, gold, smoothstep(0.0, 1.0, vUv.y) * 0.24);
+        vec3 paletteWash = mix(uAccent, uAccentB, bandA * 0.42);
+        paletteWash = mix(paletteWash, uAccentC, bandB * 0.25);
+        vec3 color = mix(deepFoil, paletteWash, 0.16 + foilUniform * 0.08);
+        color += diagonal * vec3(0.34, 0.22, 0.32);
+        color += glitterA * vec3(0.95, 0.9, 1.0);
+        color += glitterB * vec3(1.0, 0.72, 0.86);
         gl_FragColor = vec4(color, 1.0);
       }
     `,
@@ -237,24 +270,24 @@ function createSparkleMesh({ name, material, x, y, z, scale = 1, rotationZ = 0 }
   return mesh;
 }
 
-function createJellyCaseRails({ railMaterial }) {
-  const jellyCaseRails = new THREE.Group();
-  jellyCaseRails.name = 'jellyCaseRails';
-  const jellyHighlightMaterial = createSoftVinylMaterial({
+function createSlimGlassRails({ railMaterial }) {
+  const slimGlassRails = new THREE.Group();
+  slimGlassRails.name = 'slimGlassRails';
+  const glassHighlightMaterial = createSoftVinylMaterial({
     color: '#FFFFFF',
-    roughness: 0.1,
+    roughness: 0.08,
     metalness: 0,
     clearcoat: 1,
     transparent: true,
-    opacity: 0.46,
+    opacity: 0.58,
   });
-  jellyHighlightMaterial.depthWrite = false;
+  glassHighlightMaterial.depthWrite = false;
 
   const rails = [
-    ['leftJellyRail', 0.22, 2.42, -0.98, 0, 0],
-    ['rightJellyRail', 0.22, 2.42, 0.98, 0, 0],
-    ['topJellyRail', 1.48, 0.18, 0, 1.33, 0],
-    ['bottomJellyRail', 1.48, 0.18, 0, -1.33, 0],
+    ['leftSlimGlassRail', 0.13, 2.42, -0.98, 0, 0],
+    ['rightSlimGlassRail', 0.13, 2.42, 0.98, 0, 0],
+    ['topSlimGlassRail', 1.42, 0.1, 0, 1.32, 0],
+    ['bottomSlimGlassRail', 1.42, 0.1, 0, -1.32, 0],
   ];
 
   rails.forEach(([name, width, height, x, y, rotationZ]) => {
@@ -262,38 +295,38 @@ function createJellyCaseRails({ railMaterial }) {
       name,
       width,
       height,
-      depth: 0.11,
-      radius: 0.08,
+      depth: 0.065,
+      radius: 0.055,
       material: railMaterial,
       x,
       y,
-      z: 0.2,
+      z: 0.17,
       rotationZ,
-      bevelSize: 0.035,
+      bevelSize: 0.018,
     });
     const highlight = createRoundedPlate({
       name: `${name}SoftHighlight`,
-      width: width * 0.42,
-      height: height * 0.74,
+      width: width * 0.36,
+      height: height * 0.86,
       depth: 0.012,
-      radius: Math.min(width, height) * 0.2,
-      material: jellyHighlightMaterial,
-      x: x - width * 0.12,
-      y: y + height * 0.08,
-      z: 0.27,
+      radius: Math.min(width, height) * 0.22,
+      material: glassHighlightMaterial,
+      x: x - width * 0.16,
+      y: y + height * 0.04,
+      z: 0.22,
       rotationZ,
       bevelSize: 0.004,
     });
-    jellyCaseRails.add(rail, highlight);
-    addOutline(jellyCaseRails, rail, brand, 0.12);
+    slimGlassRails.add(rail, highlight);
+    addOutline(slimGlassRails, rail, ink, 0.18);
   });
 
-  return jellyCaseRails;
+  return slimGlassRails;
 }
 
-function createGumdropCornerGuards({ pinkMaterial }) {
-  const gumdropCornerGuards = new THREE.Group();
-  gumdropCornerGuards.name = 'gumdropCornerGuards';
+function createSlimCornerProtectors({ pinkMaterial }) {
+  const slimCornerProtectors = new THREE.Group();
+  slimCornerProtectors.name = 'slimCornerProtectors';
   const guardHighlightMaterial = createSoftVinylMaterial({
     color: '#FFFFFF',
     roughness: 0.12,
@@ -306,67 +339,67 @@ function createGumdropCornerGuards({ pinkMaterial }) {
   [-1, 1].forEach((signX) => {
     [-1, 1].forEach((signY) => {
       const guardGroup = new THREE.Group();
-      guardGroup.name = `gumdropCornerGuard${signX > 0 ? 'Right' : 'Left'}${signY > 0 ? 'Top' : 'Bottom'}`;
+      guardGroup.name = `slimCornerProtector${signX > 0 ? 'Right' : 'Left'}${signY > 0 ? 'Top' : 'Bottom'}`;
 
       const horizontalGuard = createRoundedPlate({
         name: 'horizontalGuard',
-        width: 0.6,
-        height: 0.24,
-        depth: 0.16,
-        radius: 0.13,
+        width: 0.52,
+        height: 0.18,
+        depth: 0.1,
+        radius: 0.09,
         material: pinkMaterial,
-        x: signX * 0.66,
+        x: signX * 0.69,
         y: signY * 1.28,
-        z: 0.34,
-        bevelSize: 0.046,
+        z: 0.3,
+        bevelSize: 0.03,
       });
       const verticalGuard = createRoundedPlate({
         name: 'verticalGuard',
-        width: 0.24,
-        height: 0.62,
-        depth: 0.16,
-        radius: 0.13,
+        width: 0.18,
+        height: 0.54,
+        depth: 0.1,
+        radius: 0.09,
         material: pinkMaterial,
         x: signX * 0.91,
-        y: signY * 1.02,
-        z: 0.35,
-        bevelSize: 0.046,
+        y: signY * 1.05,
+        z: 0.305,
+        bevelSize: 0.03,
       });
       const elbow = createDisc({
-        name: 'gumdropElbow',
-        radius: 0.18,
-        depth: 0.165,
+        name: 'curvedProtectorElbow',
+        radius: 0.135,
+        depth: 0.105,
         material: pinkMaterial,
-        x: signX * 0.81,
-        y: signY * 1.18,
-        z: 0.36,
+        x: signX * 0.83,
+        y: signY * 1.19,
+        z: 0.315,
       });
       const guardGloss = createRoundedPlate({
-        name: 'gumdropCornerGloss',
-        width: 0.26,
-        height: 0.052,
+        name: 'cornerProtectorGloss',
+        width: 0.24,
+        height: 0.042,
         depth: 0.014,
         radius: 0.026,
         material: guardHighlightMaterial,
         x: signX * 0.72,
-        y: signY * 1.34,
-        z: 0.45,
+        y: signY * 1.335,
+        z: 0.385,
         rotationZ: signX * signY * -0.22,
         bevelSize: 0.004,
       });
 
       guardGroup.add(horizontalGuard, verticalGuard, elbow, guardGloss);
-      addOutline(guardGroup, horizontalGuard, brand, 0.18);
-      addOutline(guardGroup, verticalGuard, brand, 0.18);
-      addOutline(guardGroup, elbow, brand, 0.16);
-      gumdropCornerGuards.add(guardGroup);
+      addOutline(guardGroup, horizontalGuard, ink, 0.28);
+      addOutline(guardGroup, verticalGuard, ink, 0.28);
+      addOutline(guardGroup, elbow, ink, 0.24);
+      slimCornerProtectors.add(guardGroup);
     });
   });
 
-  return gumdropCornerGuards;
+  return slimCornerProtectors;
 }
 
-function createChromeHeartToyCard({
+function createHighDetailChromeHeartCard({
   palette,
   timeUniform,
   foilUniform,
@@ -378,10 +411,12 @@ function createChromeHeartToyCard({
   chromeHeartPreset.name = 'chromeHeartPreset';
   chromeHeartPreset.userData = { name, rarityLabel, traitLine };
 
-  const holoMaterial = createHoloFoilMaterial({ palette, timeUniform, foilUniform });
-  const backHoloMaterial = createHoloFoilMaterial({ palette, timeUniform, foilUniform });
+  const holoMaterial = createFoilGlitterMaterial({ palette, timeUniform, foilUniform });
+  const backHoloMaterial = createFoilGlitterMaterial({ palette, timeUniform, foilUniform });
   const pinkMaterial = createSoftVinylMaterial({
-    color: '#FF7DB5',
+    color: '#FF8FC5',
+    roughness: 0.2,
+    metalness: 0.04,
     clearcoat: 1,
     emissive: '#FF3D9A',
     emissiveIntensity: 0.12,
@@ -402,29 +437,26 @@ function createChromeHeartToyCard({
   });
   const railMaterial = createSoftVinylMaterial({
     color: '#FFFFFF',
-    roughness: 0.1,
+    roughness: 0.06,
     clearcoat: 1,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.42,
   });
   railMaterial.depthWrite = false;
 
-  const chromeMaterial = createSoftVinylMaterial({
+  const chromeMaterial = createIridescentChromeMaterial({
     color: '#FDF7FF',
-    roughness: 0.18,
-    metalness: 0.24,
-    clearcoat: 1,
     emissive: '#D5F5FF',
     emissiveIntensity: 0.16,
   });
-  const heartRimMaterial = createSoftVinylMaterial({
-    color: '#7A61D8',
-    roughness: 0.26,
-    metalness: 0.08,
-    clearcoat: 0.95,
-    emissive: palette[0],
-    emissiveIntensity: 0.08,
+  const heartRimMaterial = createIridescentChromeMaterial({
+    color: '#B39CFF',
+    emissive: '#FF7BD5',
+    emissiveIntensity: 0.1,
+    metalness: 0.22,
+    roughness: 0.2,
   });
+  const darkRimMaterial = createSoftVinylMaterial({ color: '#24172F', roughness: 0.32, metalness: 0.02, clearcoat: 0.65 });
   const cheekMaterial = new THREE.MeshBasicMaterial({ color: '#FF6B9D' });
   const eyeMaterial = new THREE.MeshBasicMaterial({ color: '#171326' });
   const whiteShineMaterial = new THREE.MeshBasicMaterial({
@@ -454,47 +486,49 @@ function createChromeHeartToyCard({
 
   const backToyCardFace = createRoundedPlate({
     name: 'backToyCardFace',
-    width: 1.58,
-    height: 2.26,
-    depth: 0.065,
+    width: 1.52,
+    height: 2.16,
+    depth: 0.045,
     radius: 0.18,
     material: backHoloMaterial,
-    z: -0.14,
-    bevelSize: 0.022,
+    z: -0.12,
+    bevelSize: 0.015,
   });
   mirroredToyBack.add(backToyCardFace);
   addOutline(mirroredToyBack, backToyCardFace, brand, 0.18);
 
-  const backCandyFrame = new THREE.Group();
-  backCandyFrame.name = 'backCandyFrame';
+  const referenceBackDetails = new THREE.Group();
+  referenceBackDetails.name = 'referenceBackDetails';
   [
-    ['backTopCandyBand', 1.1, 0.09, 0, 0.82, pinkMaterial],
-    ['backBottomCandyBand', 1.02, 0.09, 0.02, -0.82, yellowShineMaterial],
-    ['backLeftCandyBand', 0.09, 1.48, -0.56, 0, mintMaterial],
-    ['backRightCandyBand', 0.09, 1.48, 0.56, 0, lavenderMaterial],
+    ['backTopIridescentLine', 1.1, 0.05, 0, 0.82, pinkMaterial],
+    ['backBottomIridescentLine', 1.04, 0.05, 0.02, -0.82, yellowShineMaterial],
+    ['backLeftIridescentLine', 0.05, 1.46, -0.56, 0, mintMaterial],
+    ['backRightIridescentLine', 0.05, 1.46, 0.56, 0, lavenderMaterial],
+    ['backInnerTopLine', 0.84, 0.032, 0.04, 0.62, purplePlateMaterial],
+    ['backInnerBottomLine', 0.78, 0.032, -0.04, -0.62, purplePlateMaterial],
   ].forEach(([detailName, width, height, x, y, material]) => {
-    backCandyFrame.add(createRoundedPlate({
+    referenceBackDetails.add(createRoundedPlate({
       name: detailName,
       width,
       height,
-      depth: 0.035,
-      radius: 0.045,
+      depth: 0.02,
+      radius: 0.024,
       material,
       x,
       y,
-      z: -0.225,
-      bevelSize: 0.01,
+      z: -0.205,
+      bevelSize: 0.005,
     }));
   });
-  mirroredToyBack.add(backCandyFrame);
+  mirroredToyBack.add(referenceBackDetails);
 
   const backToyHeart = new THREE.Mesh(
-    createExtrudedShapeGeometry(createPuffyHeartShape(), 0.075, 0.018, 5),
+    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.055, 0.012, 5),
     chromeMaterial,
   );
   backToyHeart.name = 'backToyHeart';
-  backToyHeart.position.set(0, 0.09, -0.28);
-  backToyHeart.scale.set(0.63, 0.63, 1);
+  backToyHeart.position.set(0, 0.08, -0.245);
+  backToyHeart.scale.set(0.55, 0.55, 1);
   mirroredToyBack.add(backToyHeart);
   addOutline(mirroredToyBack, backToyHeart, brand, 0.15);
 
@@ -518,7 +552,7 @@ function createChromeHeartToyCard({
       material,
       x,
       y,
-      z: -0.305,
+      z: -0.265,
       scale,
       rotationZ,
     }));
@@ -529,53 +563,88 @@ function createChromeHeartToyCard({
     name: 'backToyRibbon',
     width: 0.82,
     height: 0.24,
-    depth: 0.05,
+    depth: 0.032,
     radius: 0.1,
     material: creamMaterial,
     x: 0,
     y: -0.86,
-    z: -0.255,
+    z: -0.225,
     bevelSize: 0.014,
   });
   mirroredToyBack.add(backToyRibbon);
   chromeHeartPreset.add(mirroredToyBack);
 
+  const thinCardCore = new THREE.Group();
+  thinCardCore.name = 'thinCardCore';
   const frontToyCardFace = createRoundedPlate({
     name: 'frontToyCardFace',
-    width: 1.52,
-    height: 2.18,
-    depth: 0.07,
+    width: 1.48,
+    height: 2.12,
+    depth: 0.045,
     radius: 0.15,
     material: holoMaterial,
     z: 0.13,
-    bevelSize: 0.02,
+    bevelSize: 0.014,
   });
-  chromeHeartPreset.add(frontToyCardFace);
-  addOutline(chromeHeartPreset, frontToyCardFace, brand, 0.2);
+  thinCardCore.add(frontToyCardFace);
+  addOutline(thinCardCore, frontToyCardFace, ink, 0.28);
+  chromeHeartPreset.add(thinCardCore);
 
-  const frontCandyFrame = new THREE.Group();
-  frontCandyFrame.name = 'frontCandyFrame';
+  const nestedIridescentFrame = new THREE.Group();
+  nestedIridescentFrame.name = 'nestedIridescentFrame';
   [
-    ['topCandyRail', 1.16, 0.085, 0, 0.88, mintMaterial],
-    ['bottomCandyRail', 1.05, 0.085, -0.04, -0.88, yellowShineMaterial],
-    ['leftCandyRail', 0.085, 1.56, -0.6, -0.02, pinkMaterial],
-    ['rightCandyRail', 0.085, 1.56, 0.6, 0.02, lavenderMaterial],
+    ['outerTopIridescentFrame', 1.14, 0.052, 0, 0.88, mintMaterial],
+    ['outerBottomIridescentFrame', 1.06, 0.052, -0.04, -0.9, yellowShineMaterial],
+    ['outerLeftIridescentFrame', 0.052, 1.62, -0.61, -0.02, pinkMaterial],
+    ['outerRightIridescentFrame', 0.052, 1.62, 0.61, 0.02, lavenderMaterial],
+    ['innerTopIridescentFrame', 0.86, 0.034, 0.08, 0.68, purplePlateMaterial],
+    ['innerBottomIridescentFrame', 0.78, 0.034, -0.06, -0.68, purplePlateMaterial],
+    ['innerLeftIridescentFrame', 0.034, 1.08, -0.46, -0.05, mintMaterial],
+    ['innerRightIridescentFrame', 0.034, 1.08, 0.46, 0.04, pinkMaterial],
   ].forEach(([frameName, width, height, x, y, material]) => {
     const frameMesh = createRoundedPlate({
       name: frameName,
       width,
       height,
-      depth: 0.035,
-      radius: 0.042,
+      depth: 0.024,
+      radius: 0.02,
       material,
       x,
       y,
-      z: 0.24,
-      bevelSize: 0.012,
+      z: 0.215,
+      bevelSize: 0.006,
     });
-    frontCandyFrame.add(frameMesh);
+    nestedIridescentFrame.add(frameMesh);
   });
-  chromeHeartPreset.add(frontCandyFrame);
+  chromeHeartPreset.add(nestedIridescentFrame);
+
+  const microGlitterField = new THREE.Group();
+  microGlitterField.name = 'microGlitterField';
+  [
+    [-0.32, 0.52, 0.011, pinkMaterial],
+    [-0.08, 0.58, 0.008, yellowShineMaterial],
+    [0.22, 0.49, 0.01, mintMaterial],
+    [0.38, 0.32, 0.007, lavenderMaterial],
+    [-0.4, 0.16, 0.008, yellowShineMaterial],
+    [0.46, 0.04, 0.01, pinkMaterial],
+    [-0.3, -0.22, 0.007, mintMaterial],
+    [0.32, -0.3, 0.008, yellowShineMaterial],
+    [-0.44, -0.52, 0.01, lavenderMaterial],
+    [0.1, -0.55, 0.007, pinkMaterial],
+    [0.46, -0.62, 0.009, mintMaterial],
+    [-0.08, 0.3, 0.006, whiteShineMaterial],
+  ].forEach(([x, y, radius, material], index) => {
+    microGlitterField.add(createDisc({
+      name: `microGlitterFleck${index + 1}`,
+      radius,
+      depth: 0.006,
+      material,
+      x,
+      y,
+      z: 0.255 + index * 0.0005,
+    }));
+  });
+  chromeHeartPreset.add(microGlitterField);
 
   const pastelStickerSparkles = new THREE.Group();
   pastelStickerSparkles.name = 'pastelStickerSparkles';
@@ -641,52 +710,82 @@ function createChromeHeartToyCard({
   raisedChromeHeart.name = 'raisedChromeHeart';
 
   const heartShadow = new THREE.Mesh(
-    createExtrudedShapeGeometry(createPuffyHeartShape(), 0.11, 0.03, 7),
-    heartRimMaterial,
+    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.07, 0.018, 7),
+    darkRimMaterial,
   );
   heartShadow.name = 'heartDarkRim';
-  heartShadow.position.set(0.02, -0.02, 0.33);
-  heartShadow.scale.set(0.88, 0.88, 1);
+  heartShadow.position.set(0.012, -0.018, 0.335);
+  heartShadow.scale.set(0.74, 0.74, 1);
   raisedChromeHeart.add(heartShadow);
 
+  const heartChromeRim = new THREE.Mesh(
+    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.055, 0.014, 6),
+    heartRimMaterial,
+  );
+  heartChromeRim.name = 'chromeHeartOuterRim';
+  heartChromeRim.position.set(0, -0.006, 0.382);
+  heartChromeRim.scale.set(0.69, 0.69, 1);
+  raisedChromeHeart.add(heartChromeRim);
+
   const heartBody = new THREE.Mesh(
-    createExtrudedShapeGeometry(createPuffyHeartShape(), 0.17, 0.044, 9),
+    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.105, 0.026, 9),
     chromeMaterial,
   );
   heartBody.name = 'chromeHeartBody';
-  heartBody.position.set(0, 0, 0.42);
-  heartBody.scale.set(0.82, 0.82, 1);
+  heartBody.position.set(0, 0, 0.438);
+  heartBody.scale.set(0.62, 0.62, 1);
   raisedChromeHeart.add(heartBody);
+
+  const chromeHeartInnerGlow = new THREE.Mesh(
+    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.012, 0.004, 3),
+    new THREE.MeshBasicMaterial({
+      color: '#EFCBFF',
+      transparent: true,
+      opacity: 0.42,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }),
+  );
+  chromeHeartInnerGlow.name = 'chromeHeartInnerGlow';
+  chromeHeartInnerGlow.position.set(0.02, 0.02, 0.56);
+  chromeHeartInnerGlow.scale.set(0.47, 0.47, 1);
+  raisedChromeHeart.add(chromeHeartInnerGlow);
 
   const heartHighlight = createRoundedPlate({
     name: 'heartWhiteHighlight',
-    width: 0.11,
-    height: 0.48,
+    width: 0.085,
+    height: 0.42,
     depth: 0.01,
     radius: 0.06,
     material: whiteShineMaterial,
-    x: -0.2,
-    y: 0.1,
-    z: 0.525,
-    rotationZ: -0.52,
+    x: -0.18,
+    y: 0.105,
+    z: 0.59,
+    rotationZ: -0.58,
     bevelSize: 0.004,
   });
   raisedChromeHeart.add(heartHighlight);
 
+  const leftEye = createDisc({ name: 'leftEye', radius: 0.044, depth: 0.012, material: eyeMaterial, x: -0.13, y: 0.025, z: 0.61 });
+  leftEye.scale.set(0.76, 1.28, 1);
+  const rightEye = createDisc({ name: 'rightEye', radius: 0.044, depth: 0.012, material: eyeMaterial, x: 0.13, y: 0.025, z: 0.61 });
+  rightEye.scale.set(0.76, 1.28, 1);
   const faceParts = [
-    createDisc({ name: 'leftEye', radius: 0.056, depth: 0.012, material: eyeMaterial, x: -0.15, y: 0.03, z: 0.595 }),
-    createDisc({ name: 'rightEye', radius: 0.056, depth: 0.012, material: eyeMaterial, x: 0.15, y: 0.03, z: 0.595 }),
-    createDisc({ name: 'leftCheek', radius: 0.07, depth: 0.01, material: cheekMaterial, x: -0.28, y: -0.1, z: 0.597 }),
-    createDisc({ name: 'rightCheek', radius: 0.07, depth: 0.01, material: cheekMaterial, x: 0.28, y: -0.1, z: 0.597 }),
+    leftEye,
+    rightEye,
+    createDisc({ name: 'heartEyeHighlightLeft', radius: 0.014, depth: 0.006, material: whiteShineMaterial, x: -0.142, y: 0.046, z: 0.622 }),
+    createDisc({ name: 'heartEyeHighlightRight', radius: 0.014, depth: 0.006, material: whiteShineMaterial, x: 0.118, y: 0.046, z: 0.622 }),
+    createDisc({ name: 'leftCheek', radius: 0.05, depth: 0.01, material: cheekMaterial, x: -0.26, y: -0.09, z: 0.614 }),
+    createDisc({ name: 'rightCheek', radius: 0.05, depth: 0.01, material: cheekMaterial, x: 0.26, y: -0.09, z: 0.614 }),
   ];
   raisedChromeHeart.add(...faceParts);
 
   const smileCurve = new THREE.QuadraticBezierCurve3(
-    new THREE.Vector3(-0.07, -0.07, 0.603),
-    new THREE.Vector3(0, -0.125, 0.603),
-    new THREE.Vector3(0.07, -0.07, 0.603),
+    new THREE.Vector3(-0.052, -0.058, 0.626),
+    new THREE.Vector3(0, -0.102, 0.626),
+    new THREE.Vector3(0.052, -0.058, 0.626),
   );
-  const smile = new THREE.Mesh(new THREE.TubeGeometry(smileCurve, 16, 0.01, 8, false), eyeMaterial);
+  const smile = new THREE.Mesh(new THREE.TubeGeometry(smileCurve, 16, 0.007, 8, false), eyeMaterial);
   smile.name = 'heartSmile';
   raisedChromeHeart.add(smile);
 
@@ -696,38 +795,58 @@ function createChromeHeartToyCard({
   bottomBadgePlate.name = 'bottomBadgePlate';
   const badgeBase = createRoundedPlate({
     name: 'badgeBase',
-    width: 0.62,
-    height: 0.27,
-    depth: 0.08,
-    radius: 0.11,
+    width: 0.58,
+    height: 0.22,
+    depth: 0.045,
+    radius: 0.095,
     material: chromeMaterial,
     x: 0.39,
     y: -0.86,
-    z: 0.34,
-    bevelSize: 0.02,
+    z: 0.325,
+    bevelSize: 0.014,
   });
   const badgeInset = createRoundedPlate({
     name: 'badgeInset',
-    width: 0.46,
-    height: 0.16,
-    depth: 0.035,
-    radius: 0.07,
+    width: 0.42,
+    height: 0.12,
+    depth: 0.022,
+    radius: 0.055,
     material: purplePlateMaterial,
     x: 0.39,
     y: -0.86,
-    z: 0.41,
-    bevelSize: 0.012,
+    z: 0.365,
+    bevelSize: 0.008,
   });
   const badgeSparkle = createSparkleMesh({
     name: 'badgeSparkle',
     material: yellowShineMaterial,
     x: 0.22,
     y: -0.86,
-    z: 0.445,
-    scale: 0.55,
+    z: 0.392,
+    scale: 0.42,
     rotationZ: 0.12,
   });
-  bottomBadgePlate.add(badgeBase, badgeInset, badgeSparkle);
+  const referenceBadgeDetails = new THREE.Group();
+  referenceBadgeDetails.name = 'referenceBadgeDetails';
+  [
+    ['badgeLeftTab', 0.055, 0.06, 0.14, -0.86, pinkMaterial],
+    ['badgeRightTab', 0.055, 0.06, 0.64, -0.86, yellowShineMaterial],
+    ['badgeInnerLine', 0.24, 0.018, 0.43, -0.86, whiteShineMaterial],
+  ].forEach(([detailName, width, height, x, y, material]) => {
+    referenceBadgeDetails.add(createRoundedPlate({
+      name: detailName,
+      width,
+      height,
+      depth: 0.01,
+      radius: 0.012,
+      material,
+      x,
+      y,
+      z: 0.397,
+      bevelSize: 0.003,
+    }));
+  });
+  bottomBadgePlate.add(badgeBase, badgeInset, badgeSparkle, referenceBadgeDetails);
   addOutline(bottomBadgePlate, badgeBase, brand, 0.18);
   chromeHeartPreset.add(bottomBadgePlate);
 
@@ -764,14 +883,14 @@ function createChromeHeartToyCard({
   });
   chromeHeartPreset.add(toyShelfDetails);
 
-  chromeHeartPreset.add(createJellyCaseRails({ railMaterial }));
-  chromeHeartPreset.add(createGumdropCornerGuards({ pinkMaterial }));
+  chromeHeartPreset.add(createSlimGlassRails({ railMaterial }));
+  chromeHeartPreset.add(createSlimCornerProtectors({ pinkMaterial }));
 
   return chromeHeartPreset;
 }
 
 function cardPresetFor() {
-  return createChromeHeartToyCard;
+  return createHighDetailChromeHeartCard;
 }
 
 function disposeMaterial(material) {
