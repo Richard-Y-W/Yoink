@@ -89,7 +89,7 @@ function defaultState() {
   };
 }
 
-export function createStore({ file = null, state = null, random = Math.random } = {}) {
+export function createStore({ file = null, state = null, random = Math.random, persist = null, shared = null } = {}) {
   let data = state ?? null;
 
   if (!data && file && existsSync(file)) {
@@ -110,7 +110,14 @@ export function createStore({ file = null, state = null, random = Math.random } 
   if (!Array.isArray(data.bell.buys)) data.bell.buys = [];
   if (!Array.isArray(data.bell.flow)) data.bell.flow = [];
 
+  // Market flow (player impact on the tape) lives in `shared` when many
+  // users trade one market (see hub.js); solo stores fall back to their
+  // own bell state so legacy tests/dev behave identically.
+  const market = shared ?? data.bell;
+  if (!Array.isArray(market.flow)) market.flow = [];
+
   const save = () => {
+    if (persist) return persist(data);
     if (!file) return;
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, JSON.stringify(data, null, 2));
@@ -288,10 +295,10 @@ export function createStore({ file = null, state = null, random = Math.random } 
   // own decaying market impact. Every fill the player makes pushes the tape;
   // deterministic replay means candles show those pushes at the right bars.
   const pruneFlow = (now) => {
-    data.bell.flow = data.bell.flow.filter((fill) => now - fill.at < 4 * 3600 * 1000);
+    market.flow = market.flow.filter((fill) => now - fill.at < 4 * 3600 * 1000);
   };
 
-  const playerFlowImpact = (tickerId, t) => data.bell.flow.reduce(
+  const playerFlowImpact = (tickerId, t) => market.flow.reduce(
     (sum, fill) => (fill.tickerId === tickerId ? sum + decayedImpact(fill.delta, fill.at, t) : sum),
     0,
   );
@@ -305,7 +312,7 @@ export function createStore({ file = null, state = null, random = Math.random } 
 
   const pushPlayerFlow = (tickerId, direction, qty, now) => {
     const delta = direction * Math.min(PLAYER_IMPACT_PER_ITEM * qty, PLAYER_IMPACT_CAP);
-    data.bell.flow.push({ tickerId, delta, at: now });
+    market.flow.push({ tickerId, delta, at: now });
     pruneFlow(now);
   };
 

@@ -13,6 +13,21 @@ const post = (path, body) => request(path, {
   body: JSON.stringify(body ?? {}),
 });
 
+export const fetchMe = () => request('/api/auth/me');
+export const startGuestSession = () => post('/api/auth/guest');
+export const claimAccount = (username, password) => post('/api/auth/claim', { username, password });
+export const loginAccount = (username, password) => post('/api/auth/login', { username, password });
+export const logoutAccount = () => post('/api/auth/logout');
+
+// Resolve the current user, silently creating a guest account on first
+// launch — nobody hits a signup wall.
+export async function ensureSession() {
+  const me = await fetchMe();
+  if (me.ok) return me.user;
+  const guest = await startGuestSession();
+  return guest.ok ? guest.user : null;
+}
+
 export const fetchWallet = () => request('/api/wallet');
 export const claimAllowance = () => post('/api/wallet/claim');
 export const spinWheel = () => post('/api/spin');

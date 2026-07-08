@@ -5,13 +5,17 @@ import { createServer } from 'node:http';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createStore } from './store.js';
+import { openDb } from './db.js';
+import { createHub } from './hub.js';
 import { createApiMiddleware } from './api.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
-const store = createStore({ file: join(root, 'server', 'db.json') });
-const api = createApiMiddleware(store);
+// On Railway, mount a volume and set YOINK_DB=/data/yoink.db so state
+// survives deploys. Defaults to a local file for `npm run serve`.
+const db = openDb(process.env.YOINK_DB ?? join(root, 'server', 'data', 'yoink.db'));
+const hub = createHub({ db });
+const api = createApiMiddleware(hub);
 
 const MIME = {
   '.html': 'text/html',

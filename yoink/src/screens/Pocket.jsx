@@ -3,7 +3,7 @@ import { s } from '../style.js';
 import ItemArt from '../components/ItemArt.jsx';
 import Mochi from '../components/Mochi.jsx';
 import { sets, pocketItems } from '../data.js';
-import { fetchCollection } from '../api.js';
+import { claimAccount, ensureSession, fetchCollection, loginAccount, logoutAccount } from '../api.js';
 import { artStageBackground, resolveArtKind } from '../itemArt.js';
 import { marketTheme } from '../marketTheme.js';
 
@@ -19,7 +19,105 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-export default function Pocket({ balance = 0, streak = 0, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl' }) {
+// Guest-first account card: guests get a nudge to save their progress
+// (claim = attach username + password to the same account) or sign in to
+// one they made on another device; claimed accounts just show who's in.
+function AccountCard({ account, onAccountChange, onToast }) {
+  const [mode, setMode] = useState('idle'); // idle | claim | login
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const inputStyle = s(`width:100%;box-sizing:border-box;height:44px;border:1.5px solid ${line};border-radius:12px;background:${wash};padding:0 13px;font:600 13.5px 'Nunito';color:${ink};outline:none`);
+  const primaryButton = s(`flex:1;height:42px;border:0;border-radius:12px;background:${brand};color:#fff;font:700 13.5px 'Fredoka';cursor:pointer`);
+  const ghostButton = s(`flex:1;height:42px;border:1.5px solid ${line};border-radius:12px;background:#fff;color:${ink};font:700 13.5px 'Fredoka';cursor:pointer`);
+
+  const submit = async () => {
+    if (busy) return;
+    setBusy(true);
+    const action = mode === 'claim' ? claimAccount : loginAccount;
+    const result = await action(username.trim(), password).catch(() => null);
+    setBusy(false);
+    if (!result?.ok) {
+      onToast(result?.error ?? 'Something went wrong — try again');
+      return;
+    }
+    onToast(mode === 'claim' ? 'Account saved — your pocket is safe!' : `Welcome back, @${result.user.username}!`);
+    setMode('idle');
+    setUsername('');
+    setPassword('');
+    onAccountChange(result.user);
+  };
+
+  const logout = async () => {
+    await logoutAccount().catch(() => {});
+    const user = await ensureSession().catch(() => null);
+    onAccountChange(user);
+    onToast('Logged out — playing as a guest');
+  };
+
+  if (!account) return null;
+
+  return (
+    <div style={s("background:#fff;border-radius:20px;padding:14px;border:1px solid #EDEAF6;box-shadow:0 2px 8px rgba(23,19,38,.05)")}>
+      {account.guest ? (
+        <>
+          <div style={s("display:flex;align-items:center;gap:9px;margin-bottom:4px")}>
+            <span className="mi" style={s(`font-size:20px;color:${brand};font-variation-settings:'FILL' 1`)}>shield</span>
+            <div style={s(`font:700 15px 'Fredoka';color:${ink}`)}>Playing as guest</div>
+          </div>
+          <div style={s(`font:600 12.5px/1.45 'Nunito';color:${muted};margin-bottom:11px`)}>
+            Save your account to keep your coins and collection forever — and to sign in from other devices.
+          </div>
+          {mode === 'idle' ? (
+            <div style={s("display:flex;gap:8px")}>
+              <button type="button" onClick={() => setMode('claim')} style={primaryButton}>Save account</button>
+              <button type="button" onClick={() => setMode('login')} style={ghostButton}>Sign in</button>
+            </div>
+          ) : (
+            <div style={s("display:flex;flex-direction:column;gap:8px")}>
+              <input
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder="Username"
+                aria-label="Username"
+                autoCapitalize="none"
+                style={inputStyle}
+              />
+              <input
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder={mode === 'claim' ? 'Password (8+ characters)' : 'Password'}
+                aria-label="Password"
+                type="password"
+                style={inputStyle}
+              />
+              <div style={s("display:flex;gap:8px")}>
+                <button type="button" onClick={submit} disabled={busy} style={primaryButton}>
+                  {busy ? '…' : mode === 'claim' ? 'Save account' : 'Sign in'}
+                </button>
+                <button type="button" onClick={() => setMode('idle')} style={ghostButton}>Cancel</button>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div style={s("display:flex;align-items:center;gap:10px")}>
+          <span className="mi" style={s(`font-size:22px;color:${brand};font-variation-settings:'FILL' 1`)}>account_circle</span>
+          <div style={s("flex:1;min-width:0")}>
+            <div style={s(`font:700 14.5px 'Fredoka';color:${ink}`)}>@{account.username}</div>
+            <div style={s(`font:600 11.5px 'Nunito';color:${muted}`)}>Signed in — progress synced</div>
+          </div>
+          <button type="button" onClick={logout} style={s(`border:1.5px solid ${line};border-radius:11px;background:#fff;color:${ink};font:700 12px 'Fredoka';padding:8px 12px;cursor:pointer`)}>
+            Log out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function Pocket({ balance = 0, streak = 0, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl', account = null, onAccountChange = () => {} }) {
   const [collection, setCollection] = useState([]);
   const [justAdded, setJustAdded] = useState(null);
   const [query, setQuery] = useState('');
@@ -45,7 +143,7 @@ export default function Pocket({ balance = 0, streak = 0, cartCount = 0, onAddTo
     fetchCollection().then((data) => {
       if (Array.isArray(data.collection)) setCollection(data.collection);
     }).catch(() => {});
-  }, []);
+  }, [account?.id]);
 
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
@@ -103,6 +201,8 @@ export default function Pocket({ balance = 0, streak = 0, cartCount = 0, onAddTo
 
       {/* ── content ── */}
       <div style={s("flex:1;padding:14px 14px 98px;display:flex;flex-direction:column;gap:15px")}>
+
+        <AccountCard account={account} onAccountChange={onAccountChange} onToast={onToast} />
 
         {collection.length > 0 && (
           <>

@@ -1,8 +1,14 @@
-// Connect-style middleware exposing the Yoink store as a JSON API.
-// Mounted into Vite's dev server (see vite.config.js) and reused by the
-// standalone production server (server/index.js). No dependencies.
+// Connect-style middleware exposing the Yoink hub (auth + per-user game
+// stores) as a JSON API. Mounted into Vite's dev server (vite.config.js)
+// and reused by the standalone production server (server/index.js).
+//
+// Sessions ride an httpOnly cookie for the web app; a native app can send
+// the same token as `Authorization: Bearer <token>` instead.
 
 import { BELL_MINUTES, SESSION_MS, liveSessionAt } from './bell.js';
+
+const SESSION_COOKIE = 'yoink_session';
+const SESSION_MAX_AGE = 365 * 24 * 3600; // seconds
 
 function demoBellTime(realNow = Date.now()) {
   if (liveSessionAt(realNow)) return realNow;
@@ -15,9 +21,28 @@ function demoBellTime(realNow = Date.now()) {
   return dayStart + dayOffset + minute * 60000 + 2 * 60000;
 }
 
-export function createApiMiddleware(store, { dev = false } = {}) {
+// Tiny fixed-window rate limiter, keyed per IP + bucket. Enough to blunt
+// password guessing and guest-account spam without any dependencies.
+function makeLimiter() {
+  const hits = new Map();
+  return (key, max, windowMs, now = Date.now()) => {
+    const entry = hits.get(key);
+    if (!entry || now - entry.start > windowMs) {
+      hits.set(key, { start: now, count: 1 });
+      if (hits.size > 10000) {
+        for (const [k, v] of hits) if (now - v.start > windowMs) hits.delete(k);
+      }
+      return true;
+    }
+    entry.count += 1;
+    return entry.count <= max;
+  };
+}
+
+export function createApiMiddleware(hub, { dev = false } = {}) {
   let nowOffset = null;
   const now = () => Date.now() + (nowOffset ?? 0);
+  const limit = makeLimiter();
 
   const json = (res, status, body) => {
     res.statusCode = status;
@@ -37,12 +62,76 @@ export function createApiMiddleware(store, { dev = false } = {}) {
     });
   });
 
+  const clientIp = (req) => String(req.headers['x-forwarded-for'] ?? '')
+    .split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
+
+  const tokenFrom = (req) => {
+    const bearer = String(req.headers.authorization ?? '');
+    if (bearer.startsWith('Bearer ')) return bearer.slice(7).trim();
+    const cookies = String(req.headers.cookie ?? '');
+    const match = cookies.match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]+)`));
+    return match ? match[1] : null;
+  };
+
+  const setSessionCookie = (req, res, token) => {
+    const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+    const value = token
+      ? `${SESSION_COOKIE}=${token}; Max-Age=${SESSION_MAX_AGE}`
+      : `${SESSION_COOKIE}=; Max-Age=0`;
+    res.setHeader('Set-Cookie', `${value}; Path=/; HttpOnly; SameSite=Lax${secure}`);
+  };
+
   return async function apiMiddleware(req, res, next) {
     const url = new URL(req.url, 'http://yoink.local');
     const path = url.pathname;
     if (!path.startsWith('/api/')) return next ? next() : json(res, 404, { error: 'Not found' });
 
     try {
+      const token = tokenFrom(req);
+      const user = hub.auth.userForToken(token, Date.now());
+
+      // ── auth ────────────────────────────────────────────────────────
+      if (req.method === 'POST' && path === '/api/auth/guest') {
+        // Reuse a live session instead of minting endless guest rows.
+        if (user) return json(res, 200, { ok: true, user, token });
+        if (!limit(`guest:${clientIp(req)}`, 20, 3600_000)) {
+          return json(res, 429, { ok: false, error: 'Too many new accounts — try again later' });
+        }
+        const created = hub.auth.createGuest(Date.now());
+        hub.storeFor(created.user.id); // materialize starting state
+        setSessionCookie(req, res, created.token);
+        return json(res, 200, created);
+      }
+      if (req.method === 'POST' && path === '/api/auth/login') {
+        if (!limit(`login:${clientIp(req)}`, 10, 600_000)) {
+          return json(res, 429, { ok: false, error: 'Too many attempts — try again in a few minutes' });
+        }
+        const body = await readBody(req);
+        if (!body) return json(res, 400, { ok: false, error: 'Invalid JSON body' });
+        const result = hub.auth.login(body.username, body.password, Date.now());
+        if (result.ok) setSessionCookie(req, res, result.token);
+        return json(res, result.ok ? 200 : 401, result);
+      }
+      if (req.method === 'POST' && path === '/api/auth/claim') {
+        if (!user) return json(res, 401, { ok: false, error: 'No session' });
+        const body = await readBody(req);
+        if (!body) return json(res, 400, { ok: false, error: 'Invalid JSON body' });
+        const result = hub.auth.claim(user.id, body.username, body.password);
+        return json(res, result.ok ? 200 : 422, result);
+      }
+      if (req.method === 'POST' && path === '/api/auth/logout') {
+        if (token) hub.auth.logout(token);
+        setSessionCookie(req, res, null);
+        return json(res, 200, { ok: true });
+      }
+      if (req.method === 'GET' && path === '/api/auth/me') {
+        return user ? json(res, 200, { ok: true, user }) : json(res, 401, { ok: false, error: 'No session' });
+      }
+
+      // ── everything below is per-user game state ─────────────────────
+      if (!user) return json(res, 401, { ok: false, error: 'No session' });
+      const store = hub.storeFor(user.id);
+
       if (dev && req.method === 'POST' && path === '/api/dev/bell/force-live') {
         const realNow = Date.now();
         const forcedNow = demoBellTime(realNow);

@@ -5,7 +5,7 @@ import SplashScreen from './components/SplashScreen.jsx';
 import OrderYoinked from './components/OrderYoinked.jsx';
 import YoinkNav from './components/YoinkNav.jsx';
 import { addListingToCart, getCartQuantity } from './cart.js';
-import { fetchBell, fetchOrders, fetchWallet, placeOrder } from './api.js';
+import { ensureSession, fetchBell, fetchOrders, fetchWallet, placeOrder } from './api.js';
 import { bellLabel } from './bellView.js';
 import Checkout from './screens/Checkout.jsx';
 import Exchange from './screens/Exchange.jsx';
@@ -42,6 +42,7 @@ export default function App() {
     selectedListing: null,
   }));
   const [cartItems, setCartItems] = useState([]);
+  const [account, setAccount] = useState(null);
   const [wallet, setWallet] = useState({ balance: 0, streak: 0, canClaim: false, canSpin: false });
   const [yoinkedOrder, setYoinkedOrder] = useState(null);
   const [ordersInFlight, setOrdersInFlight] = useState(0);
@@ -108,7 +109,18 @@ export default function App() {
     }).catch(() => {});
   }, []);
 
+  // Sign in (or silently create a guest account) before any game fetches;
+  // every /api route needs the session cookie this sets.
   useEffect(() => {
+    let cancelled = false;
+    ensureSession().then((user) => {
+      if (!cancelled) setAccount(user);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!account) return undefined;
     refreshWallet();
     refreshOrdersBadge();
     refreshBellStatus();
@@ -118,7 +130,7 @@ export default function App() {
       window.clearInterval(timer);
       window.clearInterval(bellTimer);
     };
-  }, [refreshWallet, refreshOrdersBadge, refreshBellStatus]);
+  }, [account, refreshWallet, refreshOrdersBadge, refreshBellStatus]);
 
   const isTabScreen = TAB_SCREENS.includes(flow.screen);
   const isProductDetail = flow.screen === APP_SCREENS.productDetail;
@@ -147,6 +159,16 @@ export default function App() {
     setCartItems([]);
     refreshOrdersBadge();
   }, [refreshOrdersBadge]);
+
+  if (!account) {
+    return (
+      <div style={s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center")}>
+        <IOSDevice>
+          <SplashScreen />
+        </IOSDevice>
+      </div>
+    );
+  }
 
   return (
     <div style={s("min-height:100vh;padding:28px 24px 46px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center")}>
@@ -201,6 +223,8 @@ export default function App() {
             onOpenCart={handleOpenCart}
             onToast={showToast}
             artStyle={artStyle}
+            account={account}
+            onAccountChange={setAccount}
           />
         ) : flow.screen === APP_SCREENS.orders ? (
           <Orders balance={wallet.balance} celebrateOrderId={flow.celebrateOrderId ?? null} />
