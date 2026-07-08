@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { existsSync } from 'node:fs';
 import { ART_HUES, ART_STYLES, ITEM_ART, artStageBackground, resolveArtKind } from './itemArt.js';
 import { makeMarketFeed, MARKET_PAGE_SIZE, dropItems, pocketItems } from './data.js';
 
@@ -12,12 +13,11 @@ test('every art definition is renderable: known hue, silhouette, details', () =>
   }
 });
 
-test('the full generated market feed resolves to drawn art, no stripes left', () => {
+test('the full generated market feed uses checked-in render assets', () => {
   const feed = makeMarketFeed(0, MARKET_PAGE_SIZE * 2);
   for (const item of feed) {
-    const kind = resolveArtKind(item);
-    assert.ok(kind, `feed item "${item.img}" has art`);
-    assert.ok(ITEM_ART[kind], `feed item "${item.img}" maps to a real definition`);
+    assert.match(item.imageUrl, /^\/yoink-items\/.+\.png$/);
+    assert.equal(existsSync(new URL(`../public${item.imageUrl}`, import.meta.url)), true);
   }
 });
 

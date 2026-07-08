@@ -5,7 +5,8 @@ function parsePrice(price) {
 }
 
 export function formatMoney(value) {
-  return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const coins = Math.round(Number(value) || 0);
+  return `Y ${coins.toLocaleString('en-US')}`;
 }
 
 export function makeCartItem(listing, quantity = 1) {
@@ -13,6 +14,7 @@ export function makeCartItem(listing, quantity = 1) {
     id: listing.id ?? listing.name ?? 'yoink-item',
     title: listing.name ?? 'Yoink item',
     imageLabel: listing.img ?? 'item',
+    imageUrl: listing.imageUrl ?? '',
     imageStripe: listing.stripe ?? 'repeating-linear-gradient(135deg,#F0EEF8 0 11px,#E6E3F2 11px 22px)',
     seller: listing.seller ?? 'yoink_seller',
     feedback: listing.fb ?? '99.0%',
@@ -33,6 +35,14 @@ export function addListingToCart(cartItems, listing, quantity = 1) {
       ? { ...cartItem, quantity: cartItem.quantity + nextQuantity }
       : cartItem
   ));
+}
+
+export function decrementCartItem(cartItems, itemId) {
+  return cartItems.flatMap((cartItem) => {
+    if (cartItem.id !== itemId) return [cartItem];
+    if (cartItem.quantity <= 1) return [];
+    return [{ ...cartItem, quantity: cartItem.quantity - 1 }];
+  });
 }
 
 export function getCartQuantity(cartItems) {
@@ -64,8 +74,8 @@ export function getPromoRate(code) {
 
 export function getCheckoutTotals(cartItems, { shippingPrice, promoCode } = {}) {
   const subtotal = getCartSubtotal(cartItems);
-  const shipping = cartItems.length > 0 ? Number(shippingPrice ?? getCartShipping(cartItems)) : 0;
-  const discount = Math.round(subtotal * getPromoRate(promoCode) * 100) / 100;
+  const shipping = cartItems.length > 0 ? Math.round(Number(shippingPrice ?? getCartShipping(cartItems)) || 0) : 0;
+  const discount = Math.round(subtotal * getPromoRate(promoCode));
 
   return {
     subtotal,

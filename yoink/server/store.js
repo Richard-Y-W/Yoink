@@ -239,6 +239,7 @@ export function createStore({ file = null, state = null, random = Math.random, p
       id: String(item.id ?? 'yoink-item'),
       title: String(item.title ?? 'Yoink item'),
       imageLabel: String(item.imageLabel ?? 'item'),
+      imageUrl: String(item.imageUrl ?? ''),
       imageStripe: String(item.imageStripe ?? ''),
       seller: String(item.seller ?? 'yoink_seller'),
       unitPrice: Number(item.unitPrice) || 0,

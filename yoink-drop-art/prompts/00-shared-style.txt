@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: Yoink marketplace collectible item render
+Style/medium: high-polish cartoon 3D toy render with thick dark outlines, soft vinyl/clay material, rounded chunky forms, pastel body colors, one bold accent color, subtle sticker-like details, clean studio lighting
+Composition/framing: single centered object, front three-quarter view, square composition, generous padding, readable at small mobile-card thumbnail size
+Scene/backdrop: clean pastel background, soft ambient shadow only, no environment props
+Lighting/mood: bright friendly shop lighting, playful collectible mood
+Constraints: no real brand logos, no exact existing characters, no readable fake text, no watermark, no human hands, no cluttered background, no dark horror styling, no casino or gambling cues
+

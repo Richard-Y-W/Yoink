@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { s } from '../style.js';
-import { appendMarketFeed, filterMarketFeed, makeMarketFeed, MARKET_MAX_ITEMS, MARKET_MODES, MARKET_PAGE_SIZE, MARKET_SORTS, marketCats, sortMarketFeed } from '../data.js';
+import { appendMarketFeed, DROP_REVEAL_WINDOWS, filterMarketFeed, makeMarketFeed, makeTimedDrop, MARKET_MAX_ITEMS, MARKET_MODES, MARKET_PAGE_SIZE, MARKET_SORTS, marketCats, randomDropDelay, sortMarketFeed } from '../data.js';
 import { fetchFeed } from '../api.js';
 import { marketTheme } from '../marketTheme.js';
 import ItemArt from '../components/ItemArt.jsx';
-import { ART_STYLE_LABELS, artStageBackground, resolveArtKind } from '../itemArt.js';
+import { artStageBackground, resolveArtKind } from '../itemArt.js';
+import { findRareDropInsertIndex } from '../marketDropPlacement.js';
 
 const {
   ink,
@@ -19,11 +20,62 @@ const {
   attentionBadgeText,
 } = marketTheme;
 
-function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl', bell = null, onBellTap = () => {} }) {
+const RARE_DROP_TOP_GUARD = 96;
+const RARE_DROP_FALLBACK_INDEX = 3;
+
+function UltraDropBurst({ item, onView = () => {}, onSkip = () => {} }) {
+  if (!item) return null;
   const artKind = resolveArtKind(item);
-  const onBell = Boolean(artKind && bell?.artKinds?.includes(artKind));
+
+  return (
+    <div style={s('position:fixed;inset:0;z-index:970;background:rgba(23,19,38,.28);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:18px;animation:ypop .22s ease both')}>
+      <div style={s("position:relative;width:100%;max-width:372px;overflow:hidden;border:2px solid #FF3D9A;border-radius:24px;background:#fff;padding:12px;box-shadow:0 16px 0 rgba(255,61,154,.18),0 24px 42px rgba(23,19,38,.30);text-align:center;animation:ypop .24s ease both")}>
+        <div style={s('position:relative;display:flex;flex-direction:column;align-items:center')}>
+          <div style={s('width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:10px')}>
+            <span style={s("display:inline-flex;align-items:center;gap:5px;background:#FF3D9A;color:#fff;border-radius:999px;padding:5px 10px;font:900 10px 'Fredoka';box-shadow:0 4px 0 #D11C77")}>
+              <span className="mi" style={s("font-size:13px;font-variation-settings:'FILL' 1")}>notifications_active</span>
+              ULTRA RARE SIGNAL
+            </span>
+          </div>
+          <div style={s(`position:relative;width:100%;height:250px;border-radius:25px;background:${item.imageUrl ? item.stripe : artKind ? artStageBackground('vinyl', artKind) : item.stripe};border:2px solid #FF3D9A;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 12px 24px rgba(23,19,38,.16)`)}>
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
+            ) : (
+              artKind && <ItemArt kind={artKind} artStyle="vinyl" width={184} />
+            )}
+          </div>
+          <div style={s(`margin-top:10px;font:900 22px/1 'Fredoka';color:${ink}`)}>{item.name}</div>
+          <div style={s(`display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;font:900 14px 'Fredoka';color:${brand}`)}>
+            <span style={s(`width:19px;height:19px;border-radius:50%;background:${ink};color:#fff;display:inline-flex;align-items:center;justify-content:center;font:900 10px 'Fredoka'`)}>Y</span>
+            {item.price}
+          </div>
+          <div style={s('display:grid;grid-template-columns:1.15fr .85fr;gap:9px;width:100%;margin-top:13px')}>
+            <button type="button" onClick={onView} style={s(`height:47px;border:0;border-radius:14px;background:${brand};color:#fff;font:900 13px Fredoka;cursor:pointer;box-shadow:0 5px 0 #4B3BA6`)}>
+              Open signal
+            </button>
+            <button type="button" onClick={onSkip} style={s(`height:47px;border:1.5px solid ${line};border-radius:14px;background:${wash};color:${ink};font:900 13px Fredoka;cursor:pointer`)}>
+              Keep scrolling
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSave = () => {}, artStyle = 'vinyl', cardRef = null }) {
+  const artKind = resolveArtKind(item);
+  const rare = item.flashTier === 'rare';
+  const ultra = item.flashTier === 'ultra';
+  const flashBorder = ultra ? '#FF3D9A' : rare ? '#FFB84D' : '#EDEAF6';
+  const flashShadow = ultra
+    ? '0 9px 0 rgba(255,61,154,.12),0 4px 14px rgba(23,19,38,.08)'
+    : rare
+      ? '0 9px 0 rgba(255,184,77,.16),0 4px 14px rgba(23,19,38,.08)'
+      : '0 2px 8px rgba(23,19,38,.05)';
   return (
     <div
+      ref={cardRef}
       role="button"
       tabIndex={0}
       onClick={() => onOpenProduct(item, 'listing')}
@@ -33,41 +85,24 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
           onOpenProduct(item, 'listing');
         }
       }}
-      style={s("position:relative;display:flex;gap:11px;background:#fff;border:1px solid #EDEAF6;border-radius:14px;padding:10px;box-shadow:0 2px 8px rgba(23,19,38,.05);cursor:pointer")}
+      style={s(`position:relative;display:flex;gap:11px;background:#fff;border:${rare || ultra ? '2px' : '1px'} solid ${flashBorder};border-radius:14px;padding:10px;box-shadow:${flashShadow};cursor:pointer;${rare || ultra ? 'animation:ypop .36s ease both' : ''}`)}
     >
-      <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center`)}>
-        {artKind && <ItemArt kind={artKind} artStyle={artStyle} width={86} />}
-        <div style={s("position:absolute;bottom:4px;left:4px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.85);font:600 8px ui-monospace,Menlo,monospace;color:#6E6A7A;white-space:nowrap")}>
-          {item.img}
+      {rare && (
+        <div style={s("position:absolute;top:-12px;left:14px;z-index:2;display:flex;align-items:center;gap:5px;background:#FF3D9A;color:#fff;border-radius:999px;padding:4px 9px;font:900 10px 'Fredoka';box-shadow:0 4px 0 rgba(209,28,119,.35)")}>
+          <span style={s("width:16px;height:16px;border-radius:7px;background:#fff;color:#FF3D9A;display:flex;align-items:center;justify-content:center;font:900 13px 'Fredoka'")}>!</span>
+          RARE FLASH
         </div>
+      )}
+      <div style={s(`position:relative;width:96px;height:96px;flex:none;border-radius:10px;overflow:hidden;background:${item.imageUrl ? '#fff' : artKind ? artStageBackground(artStyle, artKind) : item.stripe};display:flex;align-items:center;justify-content:center`)}>
+        {item.imageUrl ? (
+          <img src={item.imageUrl} alt={item.name} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
+        ) : artKind && <ItemArt kind={artKind} artStyle={artStyle} width={86} />}
       </div>
       <div style={s("flex:1;min-width:0;display:flex;flex-direction:column")}>
         <div style={s(`font:700 13px/1.28 'Nunito';color:${ink};max-height:34px;overflow:hidden;padding-right:22px`)}>
           {item.name}
         </div>
         <div style={s("display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:5px 0 6px")}>
-          {onBell && (
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label={bell.live ? 'On the floor now — open the Bell' : `On the next bell at ${bell.label} — open the Bell`}
-              onClick={(event) => {
-                event.stopPropagation();
-                onBellTap();
-              }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  onBellTap();
-                }
-              }}
-              style={s(`display:inline-flex;align-items:center;gap:2px;font:700 9.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:2px 7px 2px 5px;border-radius:6px;cursor:pointer;${bell.live ? 'animation:ypulse 1.6s infinite' : ''}`)}
-            >
-              <span className="mi" style={s("font-size:11px;font-variation-settings:'FILL' 1")}>notifications_active</span>
-              {bell.live ? 'On the floor now' : `Next bell ${bell.label}`}
-            </span>
-          )}
           <span style={s(`font:700 9.5px 'Nunito';color:${ink};background:${wash};padding:2px 7px;border-radius:6px`)}>
             {item.cond}
           </span>
@@ -78,15 +113,9 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
             </span>
           )}
           {item.isBin && <span style={s("font:700 10.5px 'Nunito';color:#7A7686")}>Buy It Now</span>}
-          {item.isOffer && <span style={s("font:700 10.5px 'Nunito';color:#7A7686")}>or Best Offer</span>}
-          {item.calm && (
+          {ultra && (
             <span style={s(`font:700 10.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:1px 6px;border-radius:5px`)}>
-              {item.bids} Bids &middot; {item.timeLeft} left
-            </span>
-          )}
-          {item.urgent && (
-            <span style={s(`font:700 10.5px 'Nunito';color:${attentionBadgeText};background:${attentionBadgeBackground};padding:1px 6px;border-radius:5px`)}>
-              {item.bids} Bids &middot; ends {item.timeLeft}
+              Ultra Rare Drop
             </span>
           )}
         </div>
@@ -140,48 +169,131 @@ function ListingCard({ item, onOpenProduct = () => {}, saved = false, onToggleSa
   );
 }
 
-export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () => {}, cartCount = 0, balance = 0, artStyle = 'vinyl', onCycleArtStyle = () => {}, bell = null, onBellTap = () => {} }) {
+export default function MonoMarket({
+  onOpenProduct = () => {},
+  onOpenCart = () => {},
+  onOpenWallet = () => {},
+  cartCount = 0,
+  balance = 0,
+  artStyle = 'vinyl',
+  watchedIds = [],
+  onToggleWatchedListing = () => {},
+  searchMode = false,
+  onSearchSubmit = () => {},
+  onPageLoad = () => {},
+  onRareFlash = () => {},
+  onUltraRareFlash = () => {},
+  bell = null,
+  onBellTap = () => {},
+}) {
   const [feed, setFeed] = useState(() => makeMarketFeed(0, MARKET_PAGE_SIZE));
   const [selectedCategory, setSelectedCategory] = useState('For you');
   const [query, setQuery] = useState('');
   const [mode, setMode] = useState('All');
   const [sortIndex, setSortIndex] = useState(0);
-  const [savedIds, setSavedIds] = useState(() => new Set());
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [rareFlashItem, setRareFlashItem] = useState(null);
+  const [rareFlashInsertIndex, setRareFlashInsertIndex] = useState(null);
+  const [ultraBurstItem, setUltraBurstItem] = useState(null);
 
   const cycleMode = () => setMode((current) => MARKET_MODES[(MARKET_MODES.indexOf(current) + 1) % MARKET_MODES.length]);
   const cycleSort = () => setSortIndex((current) => (current + 1) % MARKET_SORTS.length);
-  const toggleSave = (id) => setSavedIds((current) => {
-    const next = new Set(current);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    return next;
-  });
   const feedEndRef = useRef(null);
-  const pendingStartRef = useRef(-1);
+  const searchInputRef = useRef(null);
+  const lastLoadRef = useRef(0);
+  const loadingMoreRef = useRef(false);
+  const dropTimersRef = useRef([]);
+  const dropClockStartedRef = useRef(false);
+  const revealedDropTiersRef = useRef(new Set());
+  const visibleFeedRef = useRef([]);
+  const listingNodesRef = useRef(new Map());
   const hasMore = feed.length < MARKET_MAX_ITEMS;
 
   const feedLengthRef = useRef(MARKET_PAGE_SIZE);
+  const notifiedFeedLengthRef = useRef(MARKET_PAGE_SIZE);
   useEffect(() => {
     feedLengthRef.current = feed.length;
-  }, [feed]);
+    if (feed.length > notifiedFeedLengthRef.current) {
+      notifiedFeedLengthRef.current = feed.length;
+      onPageLoad();
+    }
+  }, [feed.length, onPageLoad]);
+
+  useEffect(() => {
+    if (!searchMode) return;
+    searchInputRef.current?.focus?.();
+  }, [searchMode]);
+
+  const setListingNode = useCallback((itemId, node) => {
+    if (node) {
+      listingNodesRef.current.set(itemId, node);
+      return;
+    }
+    listingNodesRef.current.delete(itemId);
+  }, []);
+
+  const getRareFlashInsertIndex = useCallback(() => findRareDropInsertIndex(
+    visibleFeedRef.current,
+    (listing) => listingNodesRef.current.get(listing.id)?.getBoundingClientRect?.(),
+    {
+      viewportHeight: typeof window !== 'undefined' ? window.innerHeight : 0,
+      topGuard: RARE_DROP_TOP_GUARD,
+      fallbackIndex: RARE_DROP_FALLBACK_INDEX,
+    },
+  ), []);
+
+  const revealTimedDrop = useCallback((tier) => {
+    if (revealedDropTiersRef.current.has(tier)) return;
+    const item = makeTimedDrop(tier);
+    if (!item) return;
+    revealedDropTiersRef.current.add(tier);
+
+    if (tier === 'ultra') {
+      onUltraRareFlash(item);
+      setUltraBurstItem(item);
+      return;
+    }
+
+    onRareFlash(item);
+    setRareFlashInsertIndex(getRareFlashInsertIndex());
+    setRareFlashItem(item);
+  }, [getRareFlashInsertIndex, onRareFlash, onUltraRareFlash]);
+
+  const startDropClock = useCallback(() => {
+    if (dropClockStartedRef.current) return;
+    dropClockStartedRef.current = true;
+    dropTimersRef.current = [
+      window.setTimeout(() => revealTimedDrop('rare'), randomDropDelay(DROP_REVEAL_WINDOWS.rare)),
+      window.setTimeout(() => revealTimedDrop('ultra'), randomDropDelay(DROP_REVEAL_WINDOWS.ultra)),
+    ];
+  }, [revealTimedDrop]);
+
+  useEffect(() => () => {
+    dropTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+  }, []);
 
   // Next pages come from the backend; the local generator (same logic the
   // server uses) stays as an offline fallback so scrolling never dead-ends.
-  // Guard by in-flight page, not by time: a time throttle silently drops
-  // the chained load that filtered search relies on, stalling the spinner.
   const loadMore = useCallback(() => {
+    startDropClock();
+    if (feedLengthRef.current >= MARKET_MAX_ITEMS) return;
+    if (loadingMoreRef.current) return;
+    const now = Date.now();
+    if (now - lastLoadRef.current < 200) return;
+    lastLoadRef.current = now;
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
     const start = feedLengthRef.current;
-    if (pendingStartRef.current === start) return;
-    pendingStartRef.current = start;
     fetchFeed(start, MARKET_PAGE_SIZE).then((page) => {
-      pendingStartRef.current = -1;
       if (!Array.isArray(page.items) || page.items.length === 0) return;
       setFeed((existing) => (existing.length === start ? existing.concat(page.items) : existing));
     }).catch(() => {
-      pendingStartRef.current = -1;
       setFeed((existing) => (existing.length === start ? appendMarketFeed(existing) : existing));
+    }).finally(() => {
+      loadingMoreRef.current = false;
+      setLoadingMore(false);
     });
-  }, []);
+  }, [startDropClock]);
 
   const categoryChips = useMemo(() => marketCats, []);
   const searchTerm = query.trim().toLowerCase();
@@ -190,6 +302,20 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
     filterMarketFeed(feed, { category: selectedCategory, mode, query }),
     MARKET_SORTS[sortIndex].id,
   );
+  useEffect(() => {
+    visibleFeedRef.current = visibleFeed;
+  }, [visibleFeed]);
+
+  const visibleFeedWithDrops = useMemo(() => {
+    if (!rareFlashItem) return visibleFeed;
+    if (visibleFeed.some((item) => item.id === rareFlashItem.id)) return visibleFeed;
+    const insertAt = Math.min(rareFlashInsertIndex ?? RARE_DROP_FALLBACK_INDEX, visibleFeed.length);
+    return [
+      ...visibleFeed.slice(0, insertAt),
+      rareFlashItem,
+      ...visibleFeed.slice(insertAt),
+    ];
+  }, [rareFlashInsertIndex, rareFlashItem, visibleFeed]);
 
   // While filtering, keep paging the backend until enough matches surface.
   useEffect(() => {
@@ -197,50 +323,67 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
   }, [filtersActive, hasMore, visibleFeed.length, loadMore, feed.length]);
 
   useEffect(() => {
-    let tries = 0;
-    let scrollContainer;
-    let timer;
+    const target = feedEndRef.current;
+    if (!target) return undefined;
 
-    const arm = () => {
-      let node = feedEndRef.current?.parentElement ?? null;
-      while (node) {
-        const overflowY = getComputedStyle(node).overflowY;
-        if (overflowY === 'auto' || overflowY === 'scroll') break;
-        node = node.parentElement;
-      }
+    if (typeof IntersectionObserver === 'function') {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) loadMore();
+      }, { root: null, rootMargin: '380px 0px 520px', threshold: 0.01 });
+      observer.observe(target);
+      return () => observer.disconnect();
+    }
 
-      if (!node) {
-        if (tries < 60) {
-          tries += 1;
-          timer = window.setTimeout(arm, 100);
-        }
-        return;
-      }
-
-      scrollContainer = node;
-      const onScroll = () => {
-        if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 380) {
-          loadMore();
-        }
-      };
-
-      scrollContainer.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      timer = () => scrollContainer.removeEventListener('scroll', onScroll);
+    const onScroll = () => {
+      const viewportBottom = window.scrollY + window.innerHeight;
+      const pageBottom = Math.max(
+        document.documentElement?.scrollHeight ?? 0,
+        document.body?.scrollHeight ?? 0,
+      );
+      if (viewportBottom >= pageBottom - 420) loadMore();
     };
 
-    arm();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
 
     return () => {
-      if (typeof timer === 'number') window.clearTimeout(timer);
-      if (typeof timer === 'function') timer();
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, [loadMore]);
 
+  const submitSearch = () => {
+    if (!query.trim() && !searchMode) return;
+    searchInputRef.current?.blur?.();
+    onSearchSubmit();
+  };
+  const searchStatusText = (() => {
+    if (filtersActive && visibleFeed.length > 0) {
+      return `${visibleFeed.length} find${visibleFeed.length === 1 ? '' : 's'} matched`;
+    }
+    if (filtersActive) return hasMore ? 'Searching the market...' : 'No more matching finds';
+    if (loadingMore) return 'Finding more finds...';
+    return hasMore ? 'Scroll for more finds' : 'All finds loaded';
+  })();
+  const showSearchSpinner = loadingMore && (!filtersActive || visibleFeed.length === 0);
+
   return (
-    <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
-      <div style={s("position:sticky;top:0;z-index:30;background:#FFFFFF;padding:47px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
+    <div
+      onWheelCapture={startDropClock}
+      onTouchMoveCapture={startDropClock}
+      style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}
+    >
+      <UltraDropBurst
+        item={ultraBurstItem}
+        onView={() => {
+          const item = ultraBurstItem;
+          setUltraBurstItem(null);
+          if (item) onOpenProduct(item, 'ultra-drop');
+        }}
+        onSkip={() => setUltraBurstItem(null)}
+      />
+      <div style={s("position:sticky;top:0;z-index:30;background:#FFFFFF;padding:18px 13px 11px;box-shadow:0 3px 14px rgba(23,19,38,.06)")}>
         <div style={s("display:flex;align-items:center;justify-content:space-between;margin-bottom:10px")}>
           <div style={s("display:flex;align-items:center;gap:8px")}>
             <div style={s(`font:700 23px 'Fredoka';color:${brand};letter-spacing:.2px`)}>Yoink!</div>
@@ -257,10 +400,15 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
             )}
           </div>
           <div style={s("display:flex;align-items:center;gap:7px")}>
-            <div style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px`)}>
+            <button
+              type="button"
+              aria-label="Open Yoink rewards"
+              onClick={onOpenWallet}
+              style={s(`display:flex;align-items:center;gap:5px;background:${currencyButtonBackground};border:1.5px solid ${currencyButtonBackground};border-radius:999px;padding:4px 10px 4px 5px;cursor:pointer`)}
+            >
               <span style={s(`width:16px;height:16px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;font:700 9px 'Fredoka';color:${currencyButtonBackground};flex:none`)}>Y</span>
               <span style={s("font:700 12px 'Fredoka';color:#fff")}>{balance.toLocaleString()}</span>
-            </div>
+            </button>
             <div
               role="button"
               tabIndex={0}
@@ -292,11 +440,16 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
             <span className="mi" style={s(`font-size:16px;color:${muted}`)}>expand_more</span>
           </button>
           <input
+            ref={searchInputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') submitSearch();
+            }}
             placeholder="Search 2M listings..."
             aria-label="Search listings"
-            style={s(`flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 11px;font:600 13px 'Nunito';color:${ink};outline:none`)}
+            autoFocus={searchMode}
+            style={s(`flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 11px;font:600 16px 'Nunito';color:${ink};outline:none`)}
           />
           {query && (
             <button
@@ -308,9 +461,14 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
               <span className="mi" style={s("font-size:19px")}>close</span>
             </button>
           )}
-          <div style={s(`width:48px;height:100%;background:${ink};display:flex;align-items:center;justify-content:center`)}>
+          <button
+            type="button"
+            aria-label="Search market"
+            onClick={submitSearch}
+            style={s(`width:48px;height:100%;border:0;background:${ink};display:flex;align-items:center;justify-content:center;cursor:pointer`)}
+          >
             <span className="mi" style={s("font-size:22px;color:#fff")}>search</span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -336,17 +494,8 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
         </div>
 
         <div style={s("display:flex;align-items:center;justify-content:space-between;padding:13px 13px 8px")}>
-          <div style={s(`font:700 16px 'Fredoka';color:${ink}`)}>{searchTerm ? `Finds for "${query.trim()}"` : 'Fresh listings'}</div>
+          <div style={s(`font:700 16px 'Fredoka';color:${ink}`)}>{searchTerm ? `Finds for "${query.trim()}"` : searchMode ? 'Search the market' : 'Fresh listings'}</div>
           <div style={s("display:flex;align-items:center;gap:12px")}>
-            <button
-              type="button"
-              aria-label={`Item art style: ${ART_STYLE_LABELS[artStyle]}. Tap to change`}
-              onClick={onCycleArtStyle}
-              style={s(`display:flex;align-items:center;gap:3px;border:1.5px solid ${line};background:#fff;padding:3px 8px;border-radius:8px;cursor:pointer`)}
-            >
-              <span className="mi" style={s(`font-size:14px;color:${brand}`)}>palette</span>
-              <span style={s(`font:700 11px 'Nunito';color:${brand}`)}>{ART_STYLE_LABELS[artStyle]}</span>
-            </button>
             <button
               type="button"
               aria-label={`Sort: ${MARKET_SORTS[sortIndex].label}. Tap to change`}
@@ -360,16 +509,15 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
         </div>
 
         <div style={s("display:flex;flex-direction:column;gap:10px;padding:0 13px 100px")}>
-          {visibleFeed.map((item) => (
+          {visibleFeedWithDrops.map((item) => (
             <ListingCard
-              key={item.id}
+              key={item.flashTier ? `flash-${item.id}` : item.id}
               item={item}
-              onOpenProduct={onOpenProduct}
-              saved={savedIds.has(item.id)}
-              onToggleSave={toggleSave}
+              onOpenProduct={(listing, trigger) => onOpenProduct(listing, listing.flashTier === 'rare' ? 'rare-flash' : trigger)}
+              saved={watchedIds.includes(item.id)}
+              onToggleSave={() => onToggleWatchedListing(item)}
               artStyle={artStyle}
-              bell={bell}
-              onBellTap={onBellTap}
+              cardRef={item.flashTier ? null : (node) => setListingNode(item.id, node)}
             />
           ))}
           {filtersActive && visibleFeed.length === 0 && !hasMore && (
@@ -378,9 +526,9 @@ export default function MonoMarket({ onOpenProduct = () => {}, onOpenCart = () =
             </div>
           )}
           <div ref={feedEndRef} style={s("display:flex;flex-direction:column;align-items:center;gap:9px;padding:20px 0 6px")}>
-            {hasMore && <div style={s(`width:28px;height:28px;border-radius:50%;border:3px solid ${line};border-top-color:${ink};animation:yspin .8s linear infinite`)} />}
+            {showSearchSpinner && <div style={s(`width:28px;height:28px;border-radius:50%;border:3px solid ${line};border-top-color:${ink};animation:yspin .8s linear infinite`)} />}
             <span style={s(`font:700 11px 'Nunito';color:${muted}`)}>
-              {hasMore ? (filtersActive ? 'Searching the market...' : 'Finding more finds...') : 'All finds loaded'}
+              {searchStatusText}
             </span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { s } from '../style.js';
 import { fetchOrders } from '../api.js';
 import { formatMoney } from '../cart.js';
@@ -62,7 +62,9 @@ function OrderCard({ order, celebrate }) {
       <div style={s("display:flex;align-items:center;gap:10px;margin-top:12px")}>
         <div style={s("display:flex")}>
           {order.items.slice(0, 3).map((item, index) => (
-            <div key={item.id} style={s(`width:44px;height:44px;border-radius:12px;border:2px solid #fff;background:${item.imageStripe};margin-left:${index === 0 ? '0' : '-12px'};box-shadow:0 2px 6px rgba(23,19,38,.1)`)} />
+            <div key={item.id} style={s(`width:44px;height:44px;border-radius:12px;border:2px solid #fff;background:${item.imageStripe};margin-left:${index === 0 ? '0' : '-12px'};box-shadow:0 2px 6px rgba(23,19,38,.1);overflow:hidden`)}>
+              {item.imageUrl && <img src={item.imageUrl} alt={item.title} style={s('width:100%;height:100%;object-fit:cover;display:block')} />}
+            </div>
           ))}
         </div>
         <div style={s("flex:1;min-width:0")}>
@@ -87,21 +89,36 @@ function OrderCard({ order, celebrate }) {
   );
 }
 
-export default function Orders({ balance = 0, celebrateOrderId = null }) {
+export default function Orders({ balance = 0, celebrateOrderId = null, onDeliveryUpdate = () => {} }) {
   const [orders, setOrders] = useState(null);
+  const stageIndexByOrderRef = useRef(new Map());
 
   useEffect(() => {
     let alive = true;
     const load = () => fetchOrders().then((data) => {
-      if (alive && data.orders) setOrders(data.orders);
+      if (!alive || !data.orders) return;
+      const nextStages = new Map();
+      let advanced = false;
+
+      for (const order of data.orders) {
+        const previousStageIndex = stageIndexByOrderRef.current.get(order.id);
+        if (typeof previousStageIndex === 'number' && order.stageIndex > previousStageIndex) {
+          advanced = true;
+        }
+        nextStages.set(order.id, order.stageIndex);
+      }
+
+      stageIndexByOrderRef.current = nextStages;
+      setOrders(data.orders);
+      if (advanced) onDeliveryUpdate();
     }).catch(() => {});
     load();
-    const timer = window.setInterval(load, 3000);
+    const timer = window.setInterval(load, 1000);
     return () => {
       alive = false;
       window.clearInterval(timer);
     };
-  }, []);
+  }, [onDeliveryUpdate]);
 
   return (
     <div style={s(`min-height:100%;background:${wash};display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>

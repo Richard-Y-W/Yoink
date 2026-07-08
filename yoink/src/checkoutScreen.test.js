@@ -39,8 +39,8 @@ test('checkout screen mirrors the recording with interactive accordion options',
   assert.match(checkout, /selectedPayment/);
   assert.match(checkout, /Home address - fastest checkout/);
   assert.match(checkout, /Campus pickup locker/);
-  assert.match(checkout, /Yoink Standard - \$3\.00/);
-  assert.match(checkout, /Yoink Rush - \$6\.50/);
+  assert.match(checkout, /Yoink Standard - Y 3/);
+  assert.match(checkout, /Yoink Rush - Y 7/);
   assert.match(checkout, /Hold for 15 minutes/);
   assert.match(checkout, /Apple Pay/);
   assert.match(checkout, /Yoink Wallet/);

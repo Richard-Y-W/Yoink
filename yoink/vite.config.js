@@ -20,4 +20,9 @@ function yoinkApi() {
 
 export default defineConfig({
   plugins: [react(), yoinkApi()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+  },
 });

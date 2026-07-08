@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { formatMoney, getCartQuantity, getCheckoutTotals, getPromoRate } from '../cart.js';
 import { marketTheme } from '../marketTheme.js';
 import { s } from '../style.js';
@@ -23,17 +23,17 @@ const checkoutOptions = {
   shipping: [
     {
       id: 'standard',
-      title: 'Yoink Standard - $3.00',
+      title: 'Yoink Standard - Y 3',
       subtitle: 'Arrives Sun, Jul 5',
       price: 3,
-      optionLabel: 'Yoink Standard - $3.00',
+      optionLabel: 'Yoink Standard - Y 3',
     },
     {
       id: 'rush',
-      title: 'Yoink Rush - $6.50',
+      title: 'Yoink Rush - Y 7',
       subtitle: 'Arrives Fri, Jul 3',
-      price: 6.5,
-      optionLabel: 'Yoink Rush - $6.50',
+      price: 7,
+      optionLabel: 'Yoink Rush - Y 7',
     },
   ],
   plan: [
@@ -144,13 +144,17 @@ function CartSummary({ cartItems, itemLabel }) {
   const firstItem = cartItems[0];
   const extraCount = cartItems.length - 1;
   const itemDescription = extraCount > 0
-    ? `${itemLabel} - ${firstItem.imageLabel} + ${extraCount} more`
-    : `${itemLabel} - ${firstItem.imageLabel}`;
+    ? `${itemLabel} - ${firstItem.title} + ${extraCount} more`
+    : `${itemLabel} - ${firstItem.title}`;
 
   return (
     <div style={s("display:flex;align-items:center;gap:13px")}>
       <div style={s(`position:relative;width:58px;height:58px;border-radius:17px;background:${firstItem.imageStripe};border:1.5px solid #EEEAF8;overflow:hidden;flex:none;box-shadow:0 8px 18px rgba(106,90,205,.12)`)}>
-        <div style={s("position:absolute;left:50%;top:50%;width:27px;height:36px;border-radius:8px 8px 11px 11px;background:#fff;transform:translate(-50%,-55%);box-shadow:0 13px 0 -5px #FF9DB2")} />
+        {firstItem.imageUrl ? (
+          <img src={firstItem.imageUrl} alt={firstItem.title} style={s('width:100%;height:100%;object-fit:cover;display:block')} />
+        ) : (
+          <div style={s("position:absolute;left:50%;top:50%;width:27px;height:36px;border-radius:8px 8px 11px 11px;background:#fff;transform:translate(-50%,-55%);box-shadow:0 13px 0 -5px #FF9DB2")} />
+        )}
         <span style={s(`position:absolute;right:-5px;top:-5px;min-width:23px;height:23px;border-radius:999px;background:${brand};border:2px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font:900 11px 'Fredoka'`)}>
           {getCartQuantity(cartItems)}
         </span>
@@ -165,10 +169,11 @@ function CartSummary({ cartItems, itemLabel }) {
   );
 }
 
-function CartItemRow({ item }) {
+function CartItemRow({ item, onDecreaseItem = () => {} }) {
   return (
     <div style={s("display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1.5px solid #EFECF6")}>
       <div style={s(`position:relative;width:54px;height:54px;border-radius:15px;background:${item.imageStripe};border:1.5px solid #EEEAF8;overflow:hidden;flex:none`)}>
+        {item.imageUrl && <img src={item.imageUrl} alt={item.title} style={s('width:100%;height:100%;object-fit:cover;display:block')} />}
         <span style={s(`position:absolute;right:-5px;top:-5px;min-width:23px;height:23px;border-radius:999px;background:${brand};border:2px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font:900 11px 'Fredoka'`)}>
           {item.quantity}
         </span>
@@ -178,15 +183,23 @@ function CartItemRow({ item }) {
           {item.title}
         </strong>
         <span style={s(`display:block;margin-top:2px;font:700 11.5px/1.25 'Nunito';color:${muted};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>
-          {item.imageLabel} - {item.seller} {item.feedback}
+          {item.seller} {item.feedback}
         </span>
       </div>
+      <button
+        type="button"
+        aria-label="Subtract item from cart"
+        onClick={() => onDecreaseItem(item.id)}
+        style={s(`width:32px;height:32px;border:1.5px solid ${line};border-radius:11px;background:${wash};display:flex;align-items:center;justify-content:center;cursor:pointer;color:${ink};flex:none`)}
+      >
+        <span className="mi" style={s('font-size:19px')}>remove</span>
+      </button>
       <div style={s(`font:900 13px 'Fredoka';color:${ink}`)}>{formatMoney(item.unitPrice * item.quantity)}</div>
     </div>
   );
 }
 
-export default function Checkout({ cartItems = [], balance = 0, onBack = () => {}, onPlaceOrder = null, onToast = () => {} }) {
+export default function Checkout({ cartItems = [], balance = 0, onBack = () => {}, onPlaceOrder = null, onDecreaseItem = () => {}, onToast = () => {} }) {
   const [expandedRow, setExpandedRow] = useState({
     address: false,
     shipping: false,
@@ -203,6 +216,7 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
   const [promoInput, setPromoInput] = useState('');
   const [promoCode, setPromoCode] = useState(null);
   const [promoError, setPromoError] = useState(false);
+  const placingRef = useRef(false);
 
   const applyPromo = () => {
     if (getPromoRate(promoInput) > 0) {
@@ -226,7 +240,8 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
   };
 
   const handleYoinkNow = async () => {
-    if (!onPlaceOrder || cartItems.length === 0 || placing) return;
+    if (!onPlaceOrder || cartItems.length === 0 || placing || placingRef.current) return;
+    placingRef.current = true;
     setPlacing(true);
     setOrderError(null);
     try {
@@ -241,7 +256,10 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
     } catch {
       setOrderError({ error: 'Something snagged — try again' });
     } finally {
-      setPlacing(false);
+      window.setTimeout(() => {
+        placingRef.current = false;
+        setPlacing(false);
+      }, 900);
     }
   };
 
@@ -366,7 +384,7 @@ export default function Checkout({ cartItems = [], balance = 0, onBack = () => {
         </div>
 
         <div style={s("margin-top:12px")}>
-          {cartItems.map((item) => <CartItemRow key={item.id} item={item} />)}
+          {cartItems.map((item) => <CartItemRow key={item.id} item={item} onDecreaseItem={onDecreaseItem} />)}
         </div>
 
         <div style={s("margin-top:16px;display:flex;flex-direction:column;gap:8px")}>

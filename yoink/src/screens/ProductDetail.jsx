@@ -43,10 +43,19 @@ const POLICY_DETAILS = {
   'Shipping policy': 'Yoink express: packed in 30 seconds, delivered in about 4 minutes. Watch it in Orders.',
 };
 
-export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToCart = () => {}, onOpenCart = () => {}, onToast = () => {}, artStyle = 'vinyl', bell = null }) {
+export default function ProductDetail({
+  listing,
+  onBack,
+  cartCount = 0,
+  onAddToCart = () => {},
+  onOpenCart = () => {},
+  onToast = () => {},
+  artStyle = 'vinyl',
+  isWatched = false,
+  onToggleWatchedListing = () => {},
+}) {
   const detail = useMemo(() => makeProductDetail(listing), [listing]);
   const artKind = useMemo(() => resolveArtKind(listing) ?? resolveArtKind(detail), [listing, detail]);
-  const onBell = Boolean(artKind && bell?.artKinds?.includes(artKind));
   const [spinDeg, setSpinDeg] = useState(null);
   const dragRef = useRef(null);
   const canSpin = artKind && artStyle === 'spin';
@@ -64,7 +73,6 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
     onPointerCancel: () => { dragRef.current = null; },
   } : {};
   const [qty, setQty] = useState(1);
-  const [favorite, setFavorite] = useState(false);
   const [cartMotionKey, setCartMotionKey] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
   const [reviewsExpanded, setReviewsExpanded] = useState(false);
@@ -108,9 +116,7 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
     onOpenCart();
   };
   const bidOrOffer = () => {
-    onToast(detail.primaryCta === 'Place bid'
-      ? 'Bidding wars open soon — Buy it now works today!'
-      : 'Haggling opens soon — Add to cart works today!');
+    onToast('This listing is direct-buy only right now.');
   };
   const handlePrimary = primaryAddsToCart ? playCartMotion : bidOrOffer;
   const handleSecondary = secondaryAddsToCart ? playCartMotion : buyNow;
@@ -119,7 +125,11 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
     <div style={s(`position:relative;min-height:100%;overflow:hidden;background:#fff;display:flex;flex-direction:column;font-family:'Nunito',sans-serif;color:${ink}`)}>
       <AddToCartMotion playKey={cartMotionKey} cartCount={cartCount} />
       <div style={s("position:relative;height:336px;flex:none;border-radius:0 0 26px 26px;overflow:hidden")}>
-        {artKind ? (
+        {detail.imageUrl ? (
+          <div style={s(`position:absolute;inset:0;background:${detail.imageStripe};display:flex;align-items:center;justify-content:center;filter:hue-rotate(${activeDot * 8}deg);transition:filter .35s ease`)}>
+            <img src={detail.imageUrl} alt={detail.title} style={s('width:100%;height:100%;object-fit:contain;display:block;padding:22px;box-sizing:border-box')} />
+          </div>
+        ) : artKind ? (
           <div
             {...spinHandlers}
             style={s(`position:absolute;inset:0;background:${artStageBackground(artStyle, artKind)};display:flex;align-items:center;justify-content:center;filter:hue-rotate(${activeDot * 28}deg);transition:filter .35s ease;${canSpin ? 'cursor:grab;touch-action:pan-y' : ''}`)}
@@ -139,7 +149,13 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
           <IconButton icon="arrow_back" label="Back to market" onClick={onBack} />
         </div>
         <div style={s("position:absolute;top:52px;right:14px;display:flex;gap:8px")}>
-          <IconButton icon="favorite" label="Favorite item" onClick={() => setFavorite((current) => !current)} filled={favorite} color={favorite ? brand : ink} />
+          <IconButton
+            icon="favorite"
+            label={isWatched ? 'Remove from watching' : 'Watch item'}
+            onClick={() => onToggleWatchedListing(listing)}
+            filled={isWatched}
+            color={isWatched ? '#FF3D9A' : ink}
+          />
           <div style={s("position:relative")}>
             <IconButton icon="shopping_cart" label="Open cart" onClick={onOpenCart} />
             <span style={s(`position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:${brand};color:#fff;font:700 9.5px 'Fredoka';display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff`)}>
@@ -151,9 +167,6 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
         <div style={s(`position:absolute;top:54px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:5px 12px 5px 9px;border-radius:999px;background:${attentionBadgeBackground};font:700 11px 'Fredoka';color:${attentionBadgeText};box-shadow:0 3px 10px rgba(23,19,38,.14)`)}>
           <span className="mi" style={s("font-size:14px;font-variation-settings:'FILL' 1")}>bolt</span>
           RARE FIND
-        </div>
-        <div style={s("position:absolute;bottom:14px;left:14px;padding:3px 9px;border-radius:8px;background:rgba(255,255,255,.82);font:600 9.5px ui-monospace,Menlo,monospace;color:#6E6A7A")}>
-          {detail.imageLabel}
         </div>
         <div style={s("position:absolute;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:6px")}>
           {detail.dots.map((dot, index) => (
@@ -209,17 +222,6 @@ export default function ProductDetail({ listing, onBack, cartCount = 0, onAddToC
             {detail.discount}
           </span>
         </div>
-
-        {onBell && (
-          <div style={s(`display:flex;align-items:center;gap:9px;margin-top:13px;padding:11px 13px;border-radius:14px;background:#171326;${bell.live ? 'animation:ypulse 1.6s infinite' : ''}`)}>
-            <span className="mi" style={s("font-size:19px;color:#FFB84D;font-variation-settings:'FILL' 1;flex:none")}>notifications_active</span>
-            <div style={s("font:700 12.5px 'Nunito';color:#fff")}>
-              {bell.live
-                ? <>This item is <span style={s("color:#FFB84D")}>on the floor right now</span> — it delivers in ~4 min, the bell is open longer</>
-                : <>On the <span style={s("color:#FFB84D")}>{bell.label} bell</span> — buy it now, flip it on the floor</>}
-            </div>
-          </div>
-        )}
 
         <div style={s(`display:flex;align-items:center;gap:9px;margin-top:13px;padding:11px 13px;border-radius:14px;background:${wash};border:1.5px dashed #C9BEF0`)}>
           <span style={s(`width:24px;height:24px;border-radius:50%;background:${brand};display:inline-flex;align-items:center;justify-content:center;font:700 12px 'Fredoka';color:#fff;flex:none`)}>

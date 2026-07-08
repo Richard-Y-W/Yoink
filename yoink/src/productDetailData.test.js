@@ -10,11 +10,12 @@ import {
 
 test('product detail data follows the 11a reviews and delivery layout', () => {
   const listing = {
-    id: 'f12',
-    name: 'Cassette Walkman + 12 tapes',
+    id: 'drop-pocket-tech-bubble-crt',
+    name: 'Bubble CRT',
     price: '640',
-    img: 'walkman',
-    seller: 'pixelpawn',
+    img: 'bubble crt',
+    imageUrl: '/yoink-items/pocket-tech-bubble-crt.png',
+    seller: 'yoink_drops',
     cta: 'Buy',
   };
 
@@ -22,14 +23,16 @@ test('product detail data follows the 11a reviews and delivery layout', () => {
 
   assert.equal(productDetailVariant, '11a');
   assert.equal(detail.variant, '11a');
-  assert.equal(detail.title, 'Cassette Walkman + 12 tapes');
+  assert.equal(detail.title, 'Bubble CRT');
+  assert.equal(detail.imageUrl, '/yoink-items/pocket-tech-bubble-crt.png');
   assert.equal(detail.price, '640');
   assert.equal(detail.primaryCta, 'Add to cart');
   assert.equal(detail.secondaryCta, 'Buy now');
-  assert.equal(detail.seller, 'pixelpawn');
-  assert.deepEqual(reviewHighlights.map((item) => item.label), ['Works great', 'Fast shipping', 'As described', 'Nostalgic']);
+  assert.equal(detail.seller, 'yoink_drops');
+  assert.deepEqual(reviewHighlights.map((item) => item.label), ['Looks cute', 'Fast shipping', 'As described', 'Drop quality']);
   assert.ok(reviewThread.length >= 2);
   assert.ok(reviewThread.every((review) => Number.isInteger(review.helpful)));
   assert.deepEqual(deliveryBenefits.map((item) => item.label), ['Ships in 24h', 'Free returns', 'Authenticity checked']);
-  assert.equal(detail.deliveryEstimate, 'Arrives Jul 3 - Jul 6');
+  assert.equal(detail.deliveryEstimate, 'Ships after drop packing');
+  assert.equal(detail.policyRows.find((row) => row.icon === 'storefront').label, 'Visit yoink_drops');
 });
