@@ -5,7 +5,7 @@ import { marketTheme } from '../marketTheme.js';
 
 const { ink, brand } = marketTheme;
 
-const DEFAULT_TRAITS = ['slabbed foil card', 'chrome heart icon', 'rainbow shimmer'];
+const DEFAULT_TRAITS = ['rainbow foil frame', 'chunky toy slab', 'sparkle flecks'];
 const POINTER_EVENT_NAME = 'pointermove';
 const HOLO_PALETTES = {
   pink: ['#FF3D9A', '#FFB84D', '#10B5A0'],
@@ -62,14 +62,16 @@ function createRoundedSlabGeometry(width, height, depth, radius, bevelSize = 0.0
   return geometry;
 }
 
-function createReferenceHeartShape() {
+function createPuffyHeartShape() {
   const shape = new THREE.Shape();
-  shape.moveTo(0, -0.58);
-  shape.bezierCurveTo(-0.52, -0.34, -0.78, -0.02, -0.68, 0.27);
-  shape.bezierCurveTo(-0.58, 0.58, -0.2, 0.59, -0.05, 0.31);
-  shape.bezierCurveTo(-0.02, 0.24, 0.02, 0.24, 0.05, 0.31);
-  shape.bezierCurveTo(0.2, 0.59, 0.58, 0.58, 0.68, 0.27);
-  shape.bezierCurveTo(0.78, -0.02, 0.52, -0.34, 0, -0.58);
+  // Bottom tip is a small rounded arc rather than a sharp cusp — a sharp point
+  // makes ExtrudeGeometry's bevel pinch/self-intersect into a jagged mess.
+  shape.moveTo(-0.06, -0.45);
+  shape.bezierCurveTo(-0.72, -0.16, -0.76, 0.28, -0.36, 0.43);
+  shape.bezierCurveTo(-0.18, 0.5, -0.04, 0.4, 0, 0.25);
+  shape.bezierCurveTo(0.04, 0.4, 0.18, 0.5, 0.36, 0.43);
+  shape.bezierCurveTo(0.76, 0.28, 0.72, -0.16, 0.06, -0.45);
+  shape.quadraticCurveTo(0, -0.5, -0.06, -0.45);
   return shape;
 }
 
@@ -139,31 +141,7 @@ function createSoftVinylMaterial(options) {
   });
 }
 
-function createIridescentChromeMaterial({
-  color = '#FFF8FF',
-  emissive = '#B8F6FF',
-  emissiveIntensity = 0.16,
-  metalness = 0.32,
-  roughness = 0.14,
-} = {}) {
-  return new THREE.MeshPhysicalMaterial({
-    color,
-    roughness,
-    metalness,
-    clearcoat: 1,
-    clearcoatRoughness: 0.05,
-    iridescence: 0.95,
-    iridescenceIOR: 1.45,
-    iridescenceThicknessRange: [120, 520],
-    reflectivity: 0.9,
-    sheen: 0.35,
-    sheenColor: new THREE.Color('#FF7BD5'),
-    emissive,
-    emissiveIntensity,
-  });
-}
-
-function createFoilGlitterMaterial({ palette, timeUniform, foilUniform }) {
+function createHoloFoilMaterial({ palette, timeUniform, foilUniform }) {
   return new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
     uniforms: {
@@ -187,31 +165,192 @@ function createFoilGlitterMaterial({ palette, timeUniform, foilUniform }) {
       uniform vec3 uAccent;
       uniform vec3 uAccentB;
       uniform vec3 uAccentC;
+
+      float hash21(vec2 p) {
+        p = fract(p * vec2(123.34, 345.45));
+        p += dot(p, p + 34.345);
+        return fract(p.x * p.y);
+      }
+
+      // Sparse twinkling stars with a soft cross flare, like glitter on foil.
+      float starLayer(vec2 uv, float scale, float thresh, float t) {
+        uv *= scale;
+        vec2 id = floor(uv);
+        vec2 gv = fract(uv) - 0.5;
+        float n = hash21(id);
+        if (n < thresh) return 0.0;
+        vec2 offs = vec2(hash21(id + 11.3), hash21(id + 41.7)) - 0.5;
+        vec2 d = gv - offs * 0.72;
+        float twinkle = 0.55 + 0.45 * sin(t * 2.4 + n * 42.0);
+        float core = smoothstep(0.05 * twinkle, 0.0, length(d));
+        float flare = smoothstep(0.42, 0.0, abs(d.x)) * smoothstep(0.02, 0.0, abs(d.y))
+                    + smoothstep(0.42, 0.0, abs(d.y)) * smoothstep(0.02, 0.0, abs(d.x));
+        return (core + flare * 0.3) * twinkle;
+      }
+
+      // Saturated candy stops: peach -> hot pink -> violet -> blue -> green -> gold.
+      // The 2D foil is vivid, not pale, so these carry real chroma.
+      vec3 candyBand(float t) {
+        t = clamp(t, 0.0, 1.0);
+        vec3 col = vec3(1.0, 0.74, 0.52);
+        col = mix(col, vec3(1.0, 0.42, 0.82), smoothstep(0.0, 0.2, t));
+        col = mix(col, vec3(0.66, 0.4, 1.0), smoothstep(0.2, 0.42, t));
+        col = mix(col, vec3(0.4, 0.74, 1.0), smoothstep(0.42, 0.62, t));
+        col = mix(col, vec3(0.5, 1.0, 0.76), smoothstep(0.62, 0.82, t));
+        col = mix(col, vec3(1.0, 0.88, 0.42), smoothstep(0.82, 1.0, t));
+        return col;
+      }
+
+      // Full-spectrum diffraction rainbow, always vivid (never muddy).
+      vec3 spectrum(float h) {
+        return 0.5 + 0.5 * cos(6.28318 * (vec3(0.0, 0.33, 0.67) + h));
+      }
+
       void main() {
-        float bandA = sin((vUv.x * 4.8 + vUv.y * 2.4 + uTime * 0.32) * 3.14159) * 0.5 + 0.5;
-        float bandB = sin((vUv.x * -2.2 + vUv.y * 5.8 - uTime * 0.18) * 3.14159) * 0.5 + 0.5;
-        float diagonal = smoothstep(0.58, 0.98, sin((vUv.x + vUv.y * 0.84 + uTime * 0.1) * 31.0) * 0.5 + 0.5);
-        float glitterA = smoothstep(0.93, 1.0, fract(sin(dot(floor(vUv * 62.0), vec2(12.9898, 78.233))) * 43758.5453));
-        float glitterB = smoothstep(0.965, 1.0, fract(sin(dot(floor(vUv * 118.0), vec2(39.346, 11.135))) * 24634.6345));
-        vec3 peach = vec3(1.0, 0.62, 0.42);
-        vec3 magenta = vec3(1.0, 0.18, 0.62);
-        vec3 violet = vec3(0.45, 0.22, 1.0);
-        vec3 cyan = vec3(0.22, 0.92, 1.0);
-        vec3 gold = vec3(1.0, 0.88, 0.28);
-        vec3 deepFoil = mix(peach, magenta, bandA);
-        deepFoil = mix(deepFoil, violet, bandB * 0.72);
-        deepFoil = mix(deepFoil, cyan, smoothstep(0.18, 0.92, vUv.x) * 0.38);
-        deepFoil = mix(deepFoil, gold, smoothstep(0.0, 1.0, vUv.y) * 0.24);
-        vec3 paletteWash = mix(uAccent, uAccentB, bandA * 0.42);
-        paletteWash = mix(paletteWash, uAccentC, bandB * 0.25);
-        vec3 color = mix(deepFoil, paletteWash, 0.16 + foilUniform * 0.08);
-        color += diagonal * vec3(0.34, 0.22, 0.32);
-        color += glitterA * vec3(0.95, 0.9, 1.0);
-        color += glitterB * vec3(1.0, 0.72, 0.86);
-        gl_FragColor = vec4(color, 1.0);
+        vec2 uv = vUv;
+        // Diagonal candy body sweep with a wavy iridescent ripple.
+        float t = 0.5 * uv.x + 0.62 * (1.0 - uv.y) + 0.1 * sin(uv.x * 3.2 + uTime * 0.2) + uTime * 0.015;
+        vec3 body = candyBand(t);
+
+        // Two crossing holographic diffraction bands = the signature holo shimmer.
+        float h1 = uv.x * 0.7 - uv.y * 1.15 + 0.12 * sin(uv.y * 6.0 + uTime * 0.3) + uTime * 0.05;
+        float h2 = uv.x * 1.35 + uv.y * 0.55 - uTime * 0.04;
+        vec3 rainbow = mix(spectrum(h1), spectrum(h2 + 0.2), 0.5);
+
+        // Blend the rainbow into the candy body — strong enough to read as foil.
+        vec3 base = mix(body, rainbow, 0.42);
+        // Palette whisper so each card varies.
+        base = mix(base, mix(uAccent, uAccentC, uv.x), 0.08);
+
+        // Galaxy core: push magenta/violet behind the heart.
+        float core = smoothstep(0.92, 0.12, distance(uv, vec2(0.5, 0.56)));
+        base = mix(base, base * vec3(1.12, 0.86, 1.18), core * 0.3);
+
+        // Keep it luminous like real holo foil, but hold the chroma.
+        base = mix(base, vec3(1.0), 0.06);
+        base = clamp(base * 1.06, 0.0, 1.0);
+
+        // Two layers of drifting stars for a dense starfield.
+        float s1 = starLayer(uv + vec2(0.0, uTime * 0.006), 22.0, 0.78, uTime);
+        float s2 = starLayer(uv * 1.7 + 4.1, 31.0, 0.84, uTime * 1.35);
+        float stars = clamp(s1 + s2 * 0.75, 0.0, 1.5);
+        base += stars * vec3(1.0, 0.99, 0.95) * (0.85 + foilUniform * 0.5);
+
+        // Bright diagonal holo sheen streak.
+        float sheen = smoothstep(0.78, 1.0, sin((uv.x * 4.2 - uv.y * 3.0 + uTime * 0.24) * 3.14159) * 0.5 + 0.5);
+        base += sheen * vec3(0.14, 0.15, 0.18);
+        gl_FragColor = vec4(base, 1.0);
       }
     `,
   });
+}
+
+// Prefiltered pastel-rainbow environment so the chrome heart picks up real
+// iridescent reflections instead of reading as flat matte white.
+function createHoloEnvTexture() {
+  const width = 512;
+  const height = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  // Candy-chrome studio. A domed metal heart samples mostly the middle latitudes
+  // of this equirect map, so the pink -> magenta -> lavender -> purple candy ramp
+  // lives in the middle band, a bright silver at the top, and a deep purple at the
+  // bottom edge. That vertical spread is what gives the heart its liquid-chrome
+  // gradient (bright top, saturated body, dark base) instead of one flat colour.
+  // The candy ramp is compressed into the middle latitudes the dome actually
+  // samples, so silver -> pink -> magenta -> lavender -> purple all read across
+  // the heart's height instead of it looking one flat pink.
+  const grad = ctx.createLinearGradient(0, 0, 0, height);
+  grad.addColorStop(0.0, '#FFFFFF');
+  grad.addColorStop(0.32, '#FFFFFF');
+  grad.addColorStop(0.4, '#FFEAF7');
+  grad.addColorStop(0.46, '#FFB4E8');
+  grad.addColorStop(0.5, '#EE8EE8');
+  grad.addColorStop(0.54, '#C880F0');
+  grad.addColorStop(0.6, '#A96CE6');
+  grad.addColorStop(0.7, '#8A58CE');
+  grad.addColorStop(0.82, '#6E48B4');
+  grad.addColorStop(0.94, '#5C3EA0');
+  grad.addColorStop(1.0, '#523894');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, width, height);
+
+  // Diagonal oil-slick bands add the holographic cyan/mint/gold flecks over the
+  // pink-purple base, so the chrome shifts colour like real holo foil.
+  ctx.save();
+  ctx.globalAlpha = 0.2;
+  ctx.translate(width / 2, height / 2);
+  ctx.rotate(-0.5);
+  [['#7FFFE0', -0.16], ['#9FD0FF', 0.02], ['#FFF0A0', 0.2], ['#7FFFE0', 0.36]].forEach(([c, off]) => {
+    ctx.fillStyle = c;
+    ctx.fillRect(-width, off * height, 2 * width, 0.1 * height);
+  });
+  ctx.restore();
+
+  // Crisp white specular streaks + pastel tints = the glinty chrome highlights.
+  ctx.globalAlpha = 0.6;
+  [[0.1, 0.035, '#FFFFFF'], [0.3, 0.03, '#FFE0F5'], [0.48, 0.05, '#FFFFFF'], [0.66, 0.03, '#DDF6FF'], [0.86, 0.035, '#FFFFFF']].forEach(([x, w, c]) => {
+    ctx.fillStyle = c;
+    ctx.fillRect(x * width, 0, w * width, height);
+  });
+  ctx.globalAlpha = 1;
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+// Holographic frame: the same rainbow diffraction as the foil, layered over a
+// tinted base and driven by WORLD position so the shimmer flows continuously
+// around the whole border instead of restarting on each rail.
+function createHoloFrameMaterial({ baseColor, timeUniform, foilUniform, alpha = 1, rainbowMix = 0.5 }) {
+  const material = new THREE.ShaderMaterial({
+    transparent: alpha < 1,
+    uniforms: {
+      uTime: timeUniform,
+      foilUniform,
+      uBase: { value: new THREE.Color(baseColor) },
+      uAlpha: { value: alpha },
+      uRainbow: { value: rainbowMix },
+    },
+    vertexShader: `
+      varying vec3 vWorld;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vWorld;
+      uniform float uTime;
+      uniform float foilUniform;
+      uniform vec3 uBase;
+      uniform float uAlpha;
+      uniform float uRainbow;
+      vec3 spectrum(float h) {
+        return 0.5 + 0.5 * cos(6.28318 * (vec3(0.0, 0.33, 0.67) + h));
+      }
+      void main() {
+        // Continuous diagonal rainbow keyed to world position so the shimmer
+        // flows across every rail instead of restarting per mesh.
+        float h = vWorld.x * 0.6 + vWorld.y * 0.5 + uTime * 0.06;
+        vec3 rainbow = spectrum(h);
+        vec3 col = mix(uBase, rainbow, uRainbow + foilUniform * 0.1);
+        // Bright travelling sheen band for the shiny holo edge.
+        float sheen = smoothstep(0.55, 1.0, sin((vWorld.x + vWorld.y) * 6.0 + uTime * 0.5) * 0.5 + 0.5);
+        col += sheen * vec3(0.22, 0.2, 0.24);
+        col = mix(col, vec3(1.0), 0.08);
+        gl_FragColor = vec4(col, uAlpha);
+      }
+    `,
+  });
+  if (alpha < 1) material.depthWrite = false;
+  return material;
 }
 
 function createRoundedPlate({
@@ -270,24 +409,24 @@ function createSparkleMesh({ name, material, x, y, z, scale = 1, rotationZ = 0 }
   return mesh;
 }
 
-function createSlimGlassRails({ railMaterial }) {
-  const slimGlassRails = new THREE.Group();
-  slimGlassRails.name = 'slimGlassRails';
-  const glassHighlightMaterial = createSoftVinylMaterial({
+function createJellyCaseRails({ railMaterial }) {
+  const jellyCaseRails = new THREE.Group();
+  jellyCaseRails.name = 'jellyCaseRails';
+  const jellyHighlightMaterial = createSoftVinylMaterial({
     color: '#FFFFFF',
-    roughness: 0.08,
+    roughness: 0.1,
     metalness: 0,
     clearcoat: 1,
     transparent: true,
-    opacity: 0.58,
+    opacity: 0.46,
   });
-  glassHighlightMaterial.depthWrite = false;
+  jellyHighlightMaterial.depthWrite = false;
 
   const rails = [
-    ['leftSlimGlassRail', 0.13, 2.42, -0.98, 0, 0],
-    ['rightSlimGlassRail', 0.13, 2.42, 0.98, 0, 0],
-    ['topSlimGlassRail', 1.42, 0.1, 0, 1.32, 0],
-    ['bottomSlimGlassRail', 1.42, 0.1, 0, -1.32, 0],
+    ['leftJellyRail', 0.22, 2.42, -0.98, 0, 0],
+    ['rightJellyRail', 0.22, 2.42, 0.98, 0, 0],
+    ['topJellyRail', 1.48, 0.18, 0, 1.33, 0],
+    ['bottomJellyRail', 1.48, 0.18, 0, -1.33, 0],
   ];
 
   rails.forEach(([name, width, height, x, y, rotationZ]) => {
@@ -295,38 +434,38 @@ function createSlimGlassRails({ railMaterial }) {
       name,
       width,
       height,
-      depth: 0.065,
-      radius: 0.055,
+      depth: 0.11,
+      radius: 0.08,
       material: railMaterial,
       x,
       y,
-      z: 0.17,
+      z: 0.2,
       rotationZ,
-      bevelSize: 0.018,
+      bevelSize: 0.035,
     });
     const highlight = createRoundedPlate({
       name: `${name}SoftHighlight`,
-      width: width * 0.36,
-      height: height * 0.86,
+      width: width * 0.42,
+      height: height * 0.74,
       depth: 0.012,
-      radius: Math.min(width, height) * 0.22,
-      material: glassHighlightMaterial,
-      x: x - width * 0.16,
-      y: y + height * 0.04,
-      z: 0.22,
+      radius: Math.min(width, height) * 0.2,
+      material: jellyHighlightMaterial,
+      x: x - width * 0.12,
+      y: y + height * 0.08,
+      z: 0.27,
       rotationZ,
       bevelSize: 0.004,
     });
-    slimGlassRails.add(rail, highlight);
-    addOutline(slimGlassRails, rail, ink, 0.18);
+    jellyCaseRails.add(rail, highlight);
+    addOutline(jellyCaseRails, rail, brand, 0.12);
   });
 
-  return slimGlassRails;
+  return jellyCaseRails;
 }
 
-function createSlimCornerProtectors({ pinkMaterial }) {
-  const slimCornerProtectors = new THREE.Group();
-  slimCornerProtectors.name = 'slimCornerProtectors';
+function createGumdropCornerGuards({ pinkMaterial }) {
+  const gumdropCornerGuards = new THREE.Group();
+  gumdropCornerGuards.name = 'gumdropCornerGuards';
   const guardHighlightMaterial = createSoftVinylMaterial({
     color: '#FFFFFF',
     roughness: 0.12,
@@ -339,84 +478,83 @@ function createSlimCornerProtectors({ pinkMaterial }) {
   [-1, 1].forEach((signX) => {
     [-1, 1].forEach((signY) => {
       const guardGroup = new THREE.Group();
-      guardGroup.name = `slimCornerProtector${signX > 0 ? 'Right' : 'Left'}${signY > 0 ? 'Top' : 'Bottom'}`;
+      guardGroup.name = `gumdropCornerGuard${signX > 0 ? 'Right' : 'Left'}${signY > 0 ? 'Top' : 'Bottom'}`;
 
       const horizontalGuard = createRoundedPlate({
         name: 'horizontalGuard',
-        width: 0.52,
-        height: 0.18,
-        depth: 0.1,
-        radius: 0.09,
+        width: 0.6,
+        height: 0.24,
+        depth: 0.16,
+        radius: 0.13,
         material: pinkMaterial,
-        x: signX * 0.69,
+        x: signX * 0.66,
         y: signY * 1.28,
-        z: 0.3,
-        bevelSize: 0.03,
+        z: 0.34,
+        bevelSize: 0.046,
       });
       const verticalGuard = createRoundedPlate({
         name: 'verticalGuard',
-        width: 0.18,
-        height: 0.54,
-        depth: 0.1,
-        radius: 0.09,
+        width: 0.24,
+        height: 0.62,
+        depth: 0.16,
+        radius: 0.13,
         material: pinkMaterial,
         x: signX * 0.91,
-        y: signY * 1.05,
-        z: 0.305,
-        bevelSize: 0.03,
+        y: signY * 1.02,
+        z: 0.35,
+        bevelSize: 0.046,
       });
       const elbow = createDisc({
-        name: 'curvedProtectorElbow',
-        radius: 0.135,
-        depth: 0.105,
+        name: 'gumdropElbow',
+        radius: 0.18,
+        depth: 0.165,
         material: pinkMaterial,
-        x: signX * 0.83,
-        y: signY * 1.19,
-        z: 0.315,
+        x: signX * 0.81,
+        y: signY * 1.18,
+        z: 0.36,
       });
       const guardGloss = createRoundedPlate({
-        name: 'cornerProtectorGloss',
-        width: 0.24,
-        height: 0.042,
+        name: 'gumdropCornerGloss',
+        width: 0.26,
+        height: 0.052,
         depth: 0.014,
         radius: 0.026,
         material: guardHighlightMaterial,
         x: signX * 0.72,
-        y: signY * 1.335,
-        z: 0.385,
+        y: signY * 1.34,
+        z: 0.45,
         rotationZ: signX * signY * -0.22,
         bevelSize: 0.004,
       });
 
       guardGroup.add(horizontalGuard, verticalGuard, elbow, guardGloss);
-      addOutline(guardGroup, horizontalGuard, ink, 0.28);
-      addOutline(guardGroup, verticalGuard, ink, 0.28);
-      addOutline(guardGroup, elbow, ink, 0.24);
-      slimCornerProtectors.add(guardGroup);
+      addOutline(guardGroup, horizontalGuard, brand, 0.18);
+      addOutline(guardGroup, verticalGuard, brand, 0.18);
+      addOutline(guardGroup, elbow, brand, 0.16);
+      gumdropCornerGuards.add(guardGroup);
     });
   });
 
-  return slimCornerProtectors;
+  return gumdropCornerGuards;
 }
 
-function createHighDetailChromeHeartCard({
+function createChromeHeartToyCard({
   palette,
   timeUniform,
   foilUniform,
   name,
   rarityLabel,
   traitLine,
+  envMap = null,
 }) {
   const chromeHeartPreset = new THREE.Group();
   chromeHeartPreset.name = 'chromeHeartPreset';
   chromeHeartPreset.userData = { name, rarityLabel, traitLine };
 
-  const holoMaterial = createFoilGlitterMaterial({ palette, timeUniform, foilUniform });
-  const backHoloMaterial = createFoilGlitterMaterial({ palette, timeUniform, foilUniform });
+  const holoMaterial = createHoloFoilMaterial({ palette, timeUniform, foilUniform });
+  const backHoloMaterial = createHoloFoilMaterial({ palette, timeUniform, foilUniform });
   const pinkMaterial = createSoftVinylMaterial({
-    color: '#FF8FC5',
-    roughness: 0.2,
-    metalness: 0.04,
+    color: '#FF7DB5',
     clearcoat: 1,
     emissive: '#FF3D9A',
     emissiveIntensity: 0.12,
@@ -435,30 +573,43 @@ function createHighDetailChromeHeartCard({
     emissive: brand,
     emissiveIntensity: 0.06,
   });
-  const railMaterial = createSoftVinylMaterial({
-    color: '#FFFFFF',
-    roughness: 0.06,
-    clearcoat: 1,
-    transparent: true,
-    opacity: 0.42,
+  // Clear toploader rails carry a translucent holographic sheen — the galaxy
+  // runs through the glass frame, not just the card behind it.
+  const railMaterial = createHoloFrameMaterial({
+    baseColor: '#FFE4F5',
+    timeUniform,
+    foilUniform,
+    alpha: 0.5,
+    rainbowMix: 0.42,
   });
-  railMaterial.depthWrite = false;
 
-  const chromeMaterial = createIridescentChromeMaterial({
-    color: '#FDF7FF',
-    emissive: '#D5F5FF',
-    emissiveIntensity: 0.16,
+  const chromeMaterial = new THREE.MeshPhysicalMaterial({
+    color: '#FBF6FF',
+    roughness: 0.05,
+    metalness: 1,
+    clearcoat: 1,
+    clearcoatRoughness: 0.04,
+    iridescence: 0.75,
+    iridescenceIOR: 1.35,
+    iridescenceThicknessRange: [180, 680],
+    envMap,
+    envMapIntensity: 1.15,
+    emissive: '#E4D6FF',
+    emissiveIntensity: 0.01,
   });
-  const heartRimMaterial = createIridescentChromeMaterial({
-    color: '#B39CFF',
-    emissive: '#FF7BD5',
-    emissiveIntensity: 0.1,
-    metalness: 0.22,
-    roughness: 0.2,
+  // Bright pearlescent raised lip around the heart — the embossed border in 2D.
+  const heartRimMaterial = createSoftVinylMaterial({
+    color: '#FBEFFF',
+    roughness: 0.18,
+    metalness: 0.35,
+    clearcoat: 1,
+    emissive: '#FFFFFF',
+    emissiveIntensity: 0.12,
   });
-  const darkRimMaterial = createSoftVinylMaterial({ color: '#24172F', roughness: 0.32, metalness: 0.02, clearcoat: 0.65 });
-  const cheekMaterial = new THREE.MeshBasicMaterial({ color: '#FF6B9D' });
-  const eyeMaterial = new THREE.MeshBasicMaterial({ color: '#171326' });
+  // polygonOffset biases the flat face decals forward in the depth buffer so
+  // they never z-fight (flicker) against the curved chrome surface behind them.
+  const cheekMaterial = new THREE.MeshBasicMaterial({ color: '#F26299', transparent: true, opacity: 0.82, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -6 });
+  const eyeMaterial = new THREE.MeshBasicMaterial({ color: '#141020', polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -6 });
   const whiteShineMaterial = new THREE.MeshBasicMaterial({
     color: '#FFFFFF',
     transparent: true,
@@ -481,186 +632,75 @@ function createHighDetailChromeHeartCard({
   });
   const creamMaterial = createSoftVinylMaterial({ color: '#FFF3D1', roughness: 0.34, clearcoat: 0.75 });
 
-  const mirroredToyBack = new THREE.Group();
-  mirroredToyBack.name = 'mirroredToyBack';
+  // All front card art lives in one group so the back can be an exact clone.
+  const cardFront = new THREE.Group();
+  cardFront.name = 'cardFront';
 
-  const backToyCardFace = createRoundedPlate({
-    name: 'backToyCardFace',
-    width: 1.52,
-    height: 2.16,
-    depth: 0.045,
-    radius: 0.18,
-    material: backHoloMaterial,
-    z: -0.12,
-    bevelSize: 0.015,
-  });
-  mirroredToyBack.add(backToyCardFace);
-  addOutline(mirroredToyBack, backToyCardFace, brand, 0.18);
-
-  const referenceBackDetails = new THREE.Group();
-  referenceBackDetails.name = 'referenceBackDetails';
-  [
-    ['backTopIridescentLine', 1.1, 0.05, 0, 0.82, pinkMaterial],
-    ['backBottomIridescentLine', 1.04, 0.05, 0.02, -0.82, yellowShineMaterial],
-    ['backLeftIridescentLine', 0.05, 1.46, -0.56, 0, mintMaterial],
-    ['backRightIridescentLine', 0.05, 1.46, 0.56, 0, lavenderMaterial],
-    ['backInnerTopLine', 0.84, 0.032, 0.04, 0.62, purplePlateMaterial],
-    ['backInnerBottomLine', 0.78, 0.032, -0.04, -0.62, purplePlateMaterial],
-  ].forEach(([detailName, width, height, x, y, material]) => {
-    referenceBackDetails.add(createRoundedPlate({
-      name: detailName,
-      width,
-      height,
-      depth: 0.02,
-      radius: 0.024,
-      material,
-      x,
-      y,
-      z: -0.205,
-      bevelSize: 0.005,
-    }));
-  });
-  mirroredToyBack.add(referenceBackDetails);
-
-  const backToyHeart = new THREE.Mesh(
-    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.055, 0.012, 5),
-    chromeMaterial,
-  );
-  backToyHeart.name = 'backToyHeart';
-  backToyHeart.position.set(0, 0.08, -0.245);
-  backToyHeart.scale.set(0.55, 0.55, 1);
-  mirroredToyBack.add(backToyHeart);
-  addOutline(mirroredToyBack, backToyHeart, brand, 0.15);
-
-  [
-    createDisc({ name: 'backLeftEye', radius: 0.032, depth: 0.012, material: eyeMaterial, x: -0.12, y: 0.08, z: -0.355 }),
-    createDisc({ name: 'backRightEye', radius: 0.032, depth: 0.012, material: eyeMaterial, x: 0.12, y: 0.08, z: -0.355 }),
-    createDisc({ name: 'backLeftCheek', radius: 0.042, depth: 0.01, material: cheekMaterial, x: -0.23, y: -0.03, z: -0.357 }),
-    createDisc({ name: 'backRightCheek', radius: 0.042, depth: 0.01, material: cheekMaterial, x: 0.23, y: -0.03, z: -0.357 }),
-  ].forEach((facePart) => mirroredToyBack.add(facePart));
-
-  const backToySparkles = new THREE.Group();
-  backToySparkles.name = 'backToySparkles';
-  [
-    [-0.36, 0.54, 0.58, 0.12, yellowShineMaterial],
-    [0.4, 0.48, 0.5, -0.18, pinkMaterial],
-    [-0.4, -0.56, 0.46, 0.28, mintMaterial],
-    [0.38, -0.6, 0.54, -0.12, lavenderMaterial],
-  ].forEach(([x, y, scale, rotationZ, material], index) => {
-    backToySparkles.add(createSparkleMesh({
-      name: `backToySparkle${index + 1}`,
-      material,
-      x,
-      y,
-      z: -0.265,
-      scale,
-      rotationZ,
-    }));
-  });
-  mirroredToyBack.add(backToySparkles);
-
-  const backToyRibbon = createRoundedPlate({
-    name: 'backToyRibbon',
-    width: 0.82,
-    height: 0.24,
-    depth: 0.032,
-    radius: 0.1,
-    material: creamMaterial,
-    x: 0,
-    y: -0.86,
-    z: -0.225,
-    bevelSize: 0.014,
-  });
-  mirroredToyBack.add(backToyRibbon);
-  chromeHeartPreset.add(mirroredToyBack);
-
-  const thinCardCore = new THREE.Group();
-  thinCardCore.name = 'thinCardCore';
   const frontToyCardFace = createRoundedPlate({
     name: 'frontToyCardFace',
-    width: 1.48,
-    height: 2.12,
-    depth: 0.045,
+    width: 1.52,
+    height: 2.18,
+    depth: 0.07,
     radius: 0.15,
     material: holoMaterial,
     z: 0.13,
-    bevelSize: 0.014,
+    bevelSize: 0.02,
   });
-  thinCardCore.add(frontToyCardFace);
-  addOutline(thinCardCore, frontToyCardFace, ink, 0.28);
-  chromeHeartPreset.add(thinCardCore);
+  cardFront.add(frontToyCardFace);
+  addOutline(cardFront, frontToyCardFace, brand, 0.2);
 
-  const nestedIridescentFrame = new THREE.Group();
-  nestedIridescentFrame.name = 'nestedIridescentFrame';
+  const frontCandyFrame = new THREE.Group();
+  frontCandyFrame.name = 'frontCandyFrame';
+  const frameMaterial = createHoloFrameMaterial({ baseColor: '#FF4FA6', timeUniform, foilUniform });
+  const innerFrameMaterial = createHoloFrameMaterial({ baseColor: '#9B5CFF', timeUniform, foilUniform });
+  // Outer magenta template border, matched insets so it reads as one clean rectangle.
   [
-    ['outerTopIridescentFrame', 1.14, 0.052, 0, 0.88, mintMaterial],
-    ['outerBottomIridescentFrame', 1.06, 0.052, -0.04, -0.9, yellowShineMaterial],
-    ['outerLeftIridescentFrame', 0.052, 1.62, -0.61, -0.02, pinkMaterial],
-    ['outerRightIridescentFrame', 0.052, 1.62, 0.61, 0.02, lavenderMaterial],
-    ['innerTopIridescentFrame', 0.86, 0.034, 0.08, 0.68, purplePlateMaterial],
-    ['innerBottomIridescentFrame', 0.78, 0.034, -0.06, -0.68, purplePlateMaterial],
-    ['innerLeftIridescentFrame', 0.034, 1.08, -0.46, -0.05, mintMaterial],
-    ['innerRightIridescentFrame', 0.034, 1.08, 0.46, 0.04, pinkMaterial],
+    ['topCandyRail', 1.2, 0.085, 0, 0.9, frameMaterial],
+    ['bottomCandyRail', 1.2, 0.085, 0, -0.9, frameMaterial],
+    ['leftCandyRail', 0.085, 1.78, -0.6, 0, frameMaterial],
+    ['rightCandyRail', 0.085, 1.78, 0.6, 0, frameMaterial],
+    // Thin inner purple line for the double-border card-template look.
+    ['topInnerRail', 0.98, 0.045, 0, 0.74, innerFrameMaterial],
+    ['bottomInnerRail', 0.98, 0.045, 0, -0.74, innerFrameMaterial],
+    ['leftInnerRail', 0.045, 1.46, -0.48, 0, innerFrameMaterial],
+    ['rightInnerRail', 0.045, 1.46, 0.48, 0, innerFrameMaterial],
   ].forEach(([frameName, width, height, x, y, material]) => {
     const frameMesh = createRoundedPlate({
       name: frameName,
       width,
       height,
-      depth: 0.024,
-      radius: 0.02,
+      depth: 0.035,
+      radius: 0.03,
       material,
       x,
       y,
-      z: 0.215,
-      bevelSize: 0.006,
+      z: 0.24,
+      bevelSize: 0.01,
     });
-    nestedIridescentFrame.add(frameMesh);
+    frontCandyFrame.add(frameMesh);
+    addOutline(frontCandyFrame, frameMesh, ink, 0.22);
   });
-  chromeHeartPreset.add(nestedIridescentFrame);
-
-  const microGlitterField = new THREE.Group();
-  microGlitterField.name = 'microGlitterField';
-  [
-    [-0.32, 0.52, 0.011, pinkMaterial],
-    [-0.08, 0.58, 0.008, yellowShineMaterial],
-    [0.22, 0.49, 0.01, mintMaterial],
-    [0.38, 0.32, 0.007, lavenderMaterial],
-    [-0.4, 0.16, 0.008, yellowShineMaterial],
-    [0.46, 0.04, 0.01, pinkMaterial],
-    [-0.3, -0.22, 0.007, mintMaterial],
-    [0.32, -0.3, 0.008, yellowShineMaterial],
-    [-0.44, -0.52, 0.01, lavenderMaterial],
-    [0.1, -0.55, 0.007, pinkMaterial],
-    [0.46, -0.62, 0.009, mintMaterial],
-    [-0.08, 0.3, 0.006, whiteShineMaterial],
-  ].forEach(([x, y, radius, material], index) => {
-    microGlitterField.add(createDisc({
-      name: `microGlitterFleck${index + 1}`,
-      radius,
-      depth: 0.006,
-      material,
-      x,
-      y,
-      z: 0.255 + index * 0.0005,
-    }));
-  });
-  chromeHeartPreset.add(microGlitterField);
+  cardFront.add(frontCandyFrame);
 
   const pastelStickerSparkles = new THREE.Group();
   pastelStickerSparkles.name = 'pastelStickerSparkles';
   const sparkleMaterials = [
-    yellowShineMaterial,
-    createSoftVinylMaterial({ color: '#FCEBFF', roughness: 0.2, metalness: 0.08, clearcoat: 1, emissive: '#FFFFFF', emissiveIntensity: 0.12 }),
-    createSoftVinylMaterial({ color: '#A7F5FF', roughness: 0.24, metalness: 0.08, clearcoat: 1, emissive: '#62D6FF', emissiveIntensity: 0.16 }),
-    createSoftVinylMaterial({ color: '#FF9BD1', roughness: 0.24, metalness: 0.04, clearcoat: 1, emissive: '#FF3D9A', emissiveIntensity: 0.12 }),
+    createSoftVinylMaterial({ color: '#FFFFFF', roughness: 0.16, metalness: 0.04, clearcoat: 1, emissive: '#FFFFFF', emissiveIntensity: 0.22 }),
+    createSoftVinylMaterial({ color: '#FFF6E4', roughness: 0.2, metalness: 0.04, clearcoat: 1, emissive: '#FFF0C4', emissiveIntensity: 0.18 }),
+    createSoftVinylMaterial({ color: '#FFEBFA', roughness: 0.2, metalness: 0.04, clearcoat: 1, emissive: '#FFD9F2', emissiveIntensity: 0.16 }),
   ];
   [
-    [-0.36, 0.76, 0.72, 0.12],
-    [0.42, 0.72, 0.86, -0.08],
-    [-0.5, -0.55, 0.9, 0.16],
-    [0.55, -0.46, 0.72, -0.18],
-    [-0.08, -0.78, 0.56, 0.12],
-    [0.08, 0.54, 0.48, 0.36],
+    [-0.38, 0.78, 0.68, 0.12],
+    [0.44, 0.72, 0.82, -0.08],
+    [-0.52, -0.52, 0.86, 0.16],
+    [0.56, -0.44, 0.66, -0.18],
+    [-0.1, -0.8, 0.5, 0.12],
+    [0.1, 0.56, 0.44, 0.36],
+    [0.5, 0.16, 0.4, 0.2],
+    [-0.56, 0.2, 0.38, -0.24],
+    [0.28, -0.66, 0.36, 0.3],
+    [-0.28, 0.44, 0.34, -0.14],
+    [0.0, 0.86, 0.42, 0.0],
   ].forEach(([x, y, scale, rotationZ], index) => {
     pastelStickerSparkles.add(createSparkleMesh({
       name: `pastelStickerSparkle${index + 1}`,
@@ -672,7 +712,7 @@ function createHighDetailChromeHeartCard({
       rotationZ,
     }));
   });
-  chromeHeartPreset.add(pastelStickerSparkles);
+  cardFront.add(pastelStickerSparkles);
 
   const topMedallion = new THREE.Group();
   topMedallion.name = 'topSparkleMedallion';
@@ -704,193 +744,164 @@ function createHighDetailChromeHeartCard({
   });
   topMedallion.add(medallionRim, medallion, medallionSparkle);
   addOutline(topMedallion, medallionRim, ink, 0.42);
-  chromeHeartPreset.add(topMedallion);
+  cardFront.add(topMedallion);
 
   const raisedChromeHeart = new THREE.Group();
   raisedChromeHeart.name = 'raisedChromeHeart';
 
-  const heartShadow = new THREE.Mesh(
-    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.07, 0.018, 7),
-    darkRimMaterial,
-  );
-  heartShadow.name = 'heartDarkRim';
-  heartShadow.position.set(0.012, -0.018, 0.335);
-  heartShadow.scale.set(0.74, 0.74, 1);
-  raisedChromeHeart.add(heartShadow);
-
-  const heartChromeRim = new THREE.Mesh(
-    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.055, 0.014, 6),
-    heartRimMaterial,
-  );
-  heartChromeRim.name = 'chromeHeartOuterRim';
-  heartChromeRim.position.set(0, -0.006, 0.382);
-  heartChromeRim.scale.set(0.69, 0.69, 1);
-  raisedChromeHeart.add(heartChromeRim);
-
-  const heartBody = new THREE.Mesh(
-    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.105, 0.026, 9),
-    chromeMaterial,
-  );
+  // Main body: a deeply-domed puffy heart. The big front bevel is what makes the
+  // metal reflect a full top-to-bottom gradient (liquid chrome), not one colour.
+  const domedHeartGeometry = new THREE.ExtrudeGeometry(createPuffyHeartShape(), {
+    depth: 0.16,
+    bevelEnabled: true,
+    bevelThickness: 0.14,
+    bevelSize: 0.07,
+    bevelSegments: 16,
+    curveSegments: 52,
+    steps: 1,
+  });
+  domedHeartGeometry.center();
+  const heartBody = new THREE.Mesh(domedHeartGeometry, chromeMaterial);
   heartBody.name = 'chromeHeartBody';
-  heartBody.position.set(0, 0, 0.438);
-  heartBody.scale.set(0.62, 0.62, 1);
+  heartBody.position.set(0, 0, 0.2);
+  heartBody.scale.set(0.82, 0.82, 1);
   raisedChromeHeart.add(heartBody);
 
-  const chromeHeartInnerGlow = new THREE.Mesh(
-    createExtrudedShapeGeometry(createReferenceHeartShape(), 0.012, 0.004, 3),
-    new THREE.MeshBasicMaterial({
-      color: '#EFCBFF',
-      transparent: true,
-      opacity: 0.42,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    }),
-  );
-  chromeHeartInnerGlow.name = 'chromeHeartInnerGlow';
-  chromeHeartInnerGlow.position.set(0.02, 0.02, 0.56);
-  chromeHeartInnerGlow.scale.set(0.47, 0.47, 1);
-  raisedChromeHeart.add(chromeHeartInnerGlow);
+  // Soft studio-gloss highlights on the upper lobes (broad falloff + bright core).
+  const glossCoreMaterial = new THREE.MeshBasicMaterial({ color: '#FFFFFF', transparent: true, opacity: 0.9, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -5, polygonOffsetUnits: -8 });
+  const glossSoftMaterial = new THREE.MeshBasicMaterial({ color: '#FFFFFF', transparent: true, opacity: 0.42, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -5, polygonOffsetUnits: -8 });
+  const bigGloss = new THREE.Mesh(new THREE.CircleGeometry(0.14, 40), glossSoftMaterial);
+  bigGloss.position.set(-0.19, 0.19, 0.5);
+  bigGloss.scale.set(1, 1.5, 1);
+  bigGloss.rotation.z = -0.5;
+  raisedChromeHeart.add(bigGloss);
+  const bigGlossCore = new THREE.Mesh(new THREE.CircleGeometry(0.06, 32), glossCoreMaterial);
+  bigGlossCore.position.set(-0.21, 0.23, 0.505);
+  bigGlossCore.scale.set(1, 1.6, 1);
+  bigGlossCore.rotation.z = -0.5;
+  raisedChromeHeart.add(bigGlossCore);
+  const rightGloss = new THREE.Mesh(new THREE.CircleGeometry(0.05, 32), glossSoftMaterial);
+  rightGloss.position.set(0.21, 0.27, 0.49);
+  rightGloss.scale.set(1, 1.3, 1);
+  raisedChromeHeart.add(rightGloss);
 
-  const heartHighlight = createRoundedPlate({
-    name: 'heartWhiteHighlight',
-    width: 0.085,
-    height: 0.42,
-    depth: 0.01,
-    radius: 0.06,
-    material: whiteShineMaterial,
-    x: -0.18,
-    y: 0.105,
-    z: 0.59,
-    rotationZ: -0.58,
-    bevelSize: 0.004,
+  // ----- Kawaii face (flat decals on the chrome front) -----
+  const eyeShineMaterial = new THREE.MeshBasicMaterial({ color: '#FFFFFF', polygonOffset: true, polygonOffsetFactor: -6, polygonOffsetUnits: -10 });
+  const eyeGeo = new THREE.CircleGeometry(0.088, 44);
+  const cheekGeo = new THREE.CircleGeometry(0.078, 40);
+  const shineGeo = new THREE.CircleGeometry(0.03, 28);
+  const shineSmallGeo = new THREE.CircleGeometry(0.013, 16);
+  const faceParts = [];
+  [['leftEye', -0.16], ['rightEye', 0.16]].forEach(([eyeName, ex]) => {
+    const eye = new THREE.Mesh(eyeGeo, eyeMaterial);
+    eye.name = eyeName;
+    eye.position.set(ex, 0.04, 0.49);
+    eye.scale.set(0.86, 1.16, 1);
+    faceParts.push(eye);
+    // one clean catchlight upper-left + a tiny one lower-right
+    const shine = new THREE.Mesh(shineGeo, eyeShineMaterial);
+    shine.position.set(ex - 0.036, 0.085, 0.502);
+    faceParts.push(shine);
+    const shineSmall = new THREE.Mesh(shineSmallGeo, eyeShineMaterial);
+    shineSmall.position.set(ex + 0.032, -0.005, 0.502);
+    faceParts.push(shineSmall);
   });
-  raisedChromeHeart.add(heartHighlight);
-
-  const leftEye = createDisc({ name: 'leftEye', radius: 0.044, depth: 0.012, material: eyeMaterial, x: -0.13, y: 0.025, z: 0.61 });
-  leftEye.scale.set(0.76, 1.28, 1);
-  const rightEye = createDisc({ name: 'rightEye', radius: 0.044, depth: 0.012, material: eyeMaterial, x: 0.13, y: 0.025, z: 0.61 });
-  rightEye.scale.set(0.76, 1.28, 1);
-  const faceParts = [
-    leftEye,
-    rightEye,
-    createDisc({ name: 'heartEyeHighlightLeft', radius: 0.014, depth: 0.006, material: whiteShineMaterial, x: -0.142, y: 0.046, z: 0.622 }),
-    createDisc({ name: 'heartEyeHighlightRight', radius: 0.014, depth: 0.006, material: whiteShineMaterial, x: 0.118, y: 0.046, z: 0.622 }),
-    createDisc({ name: 'leftCheek', radius: 0.05, depth: 0.01, material: cheekMaterial, x: -0.26, y: -0.09, z: 0.614 }),
-    createDisc({ name: 'rightCheek', radius: 0.05, depth: 0.01, material: cheekMaterial, x: 0.26, y: -0.09, z: 0.614 }),
-  ];
+  [['leftCheek', -0.3], ['rightCheek', 0.3]].forEach(([cheekName, cx]) => {
+    const cheek = new THREE.Mesh(cheekGeo, cheekMaterial);
+    cheek.name = cheekName;
+    cheek.position.set(cx, -0.1, 0.44);
+    cheek.scale.set(1.28, 0.8, 1);
+    faceParts.push(cheek);
+  });
   raisedChromeHeart.add(...faceParts);
 
   const smileCurve = new THREE.QuadraticBezierCurve3(
-    new THREE.Vector3(-0.052, -0.058, 0.626),
-    new THREE.Vector3(0, -0.102, 0.626),
-    new THREE.Vector3(0.052, -0.058, 0.626),
+    new THREE.Vector3(-0.09, -0.085, 0.5),
+    new THREE.Vector3(0, -0.16, 0.5),
+    new THREE.Vector3(0.09, -0.085, 0.5),
   );
-  const smile = new THREE.Mesh(new THREE.TubeGeometry(smileCurve, 16, 0.007, 8, false), eyeMaterial);
+  const smile = new THREE.Mesh(new THREE.TubeGeometry(smileCurve, 24, 0.014, 8, false), eyeMaterial);
   smile.name = 'heartSmile';
   raisedChromeHeart.add(smile);
 
-  chromeHeartPreset.add(raisedChromeHeart);
+  // Puffy chrome heart, sized to sit inside the inner frame border. The z-scale
+  // keeps the dome depth reasonable while the metal still reads as liquid chrome.
+  raisedChromeHeart.scale.set(0.86, 0.86, 0.62);
+  cardFront.add(raisedChromeHeart);
 
+  // Nameplate: pink border, purple inset, and a light ticket label inside it —
+  // sits in the lower area of the card like the 2D.
   const bottomBadgePlate = new THREE.Group();
   bottomBadgePlate.name = 'bottomBadgePlate';
   const badgeBase = createRoundedPlate({
     name: 'badgeBase',
-    width: 0.58,
-    height: 0.22,
-    depth: 0.045,
-    radius: 0.095,
-    material: chromeMaterial,
-    x: 0.39,
-    y: -0.86,
-    z: 0.325,
-    bevelSize: 0.014,
+    width: 0.4,
+    height: 0.155,
+    depth: 0.06,
+    radius: 0.075,
+    material: pinkMaterial,
+    x: 0.3,
+    y: -0.56,
+    z: 0.34,
+    bevelSize: 0.016,
   });
   const badgeInset = createRoundedPlate({
     name: 'badgeInset',
-    width: 0.42,
-    height: 0.12,
-    depth: 0.022,
-    radius: 0.055,
+    width: 0.29,
+    height: 0.085,
+    depth: 0.028,
+    radius: 0.04,
     material: purplePlateMaterial,
-    x: 0.39,
-    y: -0.86,
-    z: 0.365,
+    x: 0.3,
+    y: -0.56,
+    z: 0.4,
     bevelSize: 0.008,
   });
-  const badgeSparkle = createSparkleMesh({
-    name: 'badgeSparkle',
-    material: yellowShineMaterial,
-    x: 0.22,
-    y: -0.86,
-    z: 0.392,
-    scale: 0.42,
-    rotationZ: 0.12,
+  const badgeLabel = createRoundedPlate({
+    name: 'badgeLabel',
+    width: 0.2,
+    height: 0.052,
+    depth: 0.018,
+    radius: 0.022,
+    material: creamMaterial,
+    x: 0.3,
+    y: -0.56,
+    z: 0.44,
+    bevelSize: 0.005,
   });
-  const referenceBadgeDetails = new THREE.Group();
-  referenceBadgeDetails.name = 'referenceBadgeDetails';
-  [
-    ['badgeLeftTab', 0.055, 0.06, 0.14, -0.86, pinkMaterial],
-    ['badgeRightTab', 0.055, 0.06, 0.64, -0.86, yellowShineMaterial],
-    ['badgeInnerLine', 0.24, 0.018, 0.43, -0.86, whiteShineMaterial],
-  ].forEach(([detailName, width, height, x, y, material]) => {
-    referenceBadgeDetails.add(createRoundedPlate({
-      name: detailName,
-      width,
-      height,
-      depth: 0.01,
-      radius: 0.012,
-      material,
-      x,
-      y,
-      z: 0.397,
-      bevelSize: 0.003,
-    }));
-  });
-  bottomBadgePlate.add(badgeBase, badgeInset, badgeSparkle, referenceBadgeDetails);
-  addOutline(bottomBadgePlate, badgeBase, brand, 0.18);
-  chromeHeartPreset.add(bottomBadgePlate);
+  bottomBadgePlate.add(badgeBase, badgeInset, badgeLabel);
+  addOutline(bottomBadgePlate, badgeBase, ink, 0.22);
+  cardFront.add(bottomBadgePlate);
 
   const toyShelfDetails = new THREE.Group();
   toyShelfDetails.name = 'toyShelfDetails';
-  [
-    ['leftCandyDashA', -0.47, -0.88, 0.2],
-    ['leftCandyDashB', -0.5, -0.97, 0.15],
-    ['leftCandyDashC', -0.43, -0.97, 0.11],
-  ].forEach(([detailName, x, y, width]) => {
-    toyShelfDetails.add(createRoundedPlate({
-      name: detailName,
-      width,
-      height: 0.032,
-      depth: 0.02,
-      radius: 0.016,
-      material: creamMaterial,
-      x,
-      y,
-      z: 0.34,
-      bevelSize: 0.004,
-    }));
-  });
-  [palette[0], palette[1], palette[2]].forEach((color, index) => {
+  // Three little status dots directly below the nameplate.
+  const statusDotMaterial = createSoftVinylMaterial({ color: '#FFF3D1', roughness: 0.3, clearcoat: 0.85, emissive: '#FFE9B0', emissiveIntensity: 0.12 });
+  [0.22, 0.3, 0.38].forEach((x, index) => {
     toyShelfDetails.add(createDisc({
-      name: `toyPebble${index + 1}`,
-      radius: 0.024,
-      depth: 0.018,
-      material: createSoftVinylMaterial({ color, roughness: 0.3, clearcoat: 0.8, emissive: color, emissiveIntensity: 0.1 }),
-      x: 0.18 + index * 0.12,
-      y: -1.08,
+      name: `statusDot${index + 1}`,
+      radius: 0.018,
+      depth: 0.014,
+      material: statusDotMaterial,
+      x,
+      y: -0.67,
       z: 0.34,
     }));
   });
-  chromeHeartPreset.add(toyShelfDetails);
+  cardFront.add(toyShelfDetails);
 
-  chromeHeartPreset.add(createSlimGlassRails({ railMaterial }));
-  chromeHeartPreset.add(createSlimCornerProtectors({ pinkMaterial }));
+  chromeHeartPreset.add(cardFront);
+  // No separate back panel: from behind, the blank holographic back of the
+  // card face shows through and the front art is occluded by it.
+
+  chromeHeartPreset.add(createJellyCaseRails({ railMaterial }));
+  chromeHeartPreset.add(createGumdropCornerGuards({ pinkMaterial }));
 
   return chromeHeartPreset;
 }
 
 function cardPresetFor() {
-  return createHighDetailChromeHeartCard;
+  return createChromeHeartToyCard;
 }
 
 function disposeMaterial(material) {
@@ -945,6 +956,13 @@ export default function HoloSlab3D({ item = {} }) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
+    // Prefilter a pastel-rainbow environment for the chrome/glass reflections.
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envSource = createHoloEnvTexture();
+    const envMap = pmrem.fromEquirectangular(envSource).texture;
+    envSource.dispose();
+    pmrem.dispose();
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     camera.position.set(0, 0.04, 6.2);
@@ -965,15 +983,20 @@ export default function HoloSlab3D({ item = {} }) {
     const caseGeometry = createRoundedSlabGeometry(2.12, 3.08, 0.24, 0.22, 0.035);
     const caseMaterial = new THREE.MeshPhysicalMaterial({
       color: '#FFFFFF',
-      roughness: 0.2,
+      roughness: 0.14,
       metalness: 0.02,
       transparent: true,
-      opacity: 0.24,
+      opacity: 0.18,
       depthWrite: false,
-      transmission: 0.42,
-      thickness: 0.45,
+      transmission: 0.6,
+      thickness: 0.5,
       clearcoat: 1,
-      clearcoatRoughness: 0.08,
+      clearcoatRoughness: 0.06,
+      iridescence: 1,
+      iridescenceIOR: 1.3,
+      iridescenceThicknessRange: [200, 720],
+      envMap,
+      envMapIntensity: 1.35,
     });
     const caseMesh = new THREE.Mesh(caseGeometry, caseMaterial);
     slabGroup.add(caseMesh);
@@ -993,11 +1016,18 @@ export default function HoloSlab3D({ item = {} }) {
       name,
       rarityLabel,
       traitLine,
+      envMap,
     });
     slabGroup.add(chromeHeartPreset);
 
-    const raisedChromeHeart = chromeHeartPreset.getObjectByName('raisedChromeHeart');
-    const pastelStickerSparkles = chromeHeartPreset.getObjectByName('pastelStickerSparkles');
+    // Front and back share names (back is a clone), so collect every copy and
+    // animate them together to keep the two faces identical.
+    const raisedHearts = [];
+    const sparkleGroups = [];
+    chromeHeartPreset.traverse((object) => {
+      if (object.name === 'raisedChromeHeart') raisedHearts.push(object);
+      if (object.name === 'pastelStickerSparkles') sparkleGroups.push(object);
+    });
 
     const shineBand = new THREE.Mesh(
       new THREE.PlaneGeometry(0.34, 2.62),
@@ -1061,13 +1091,18 @@ export default function HoloSlab3D({ item = {} }) {
       chromeHeartPreset.rotation.z = reducedMotion ? 0 : Math.sin(t * 0.9) * 0.012;
       chromeHeartPreset.position.y = reducedMotion ? 0 : Math.sin(t * 1.15) * 0.018;
 
-      if (raisedChromeHeart) {
-        raisedChromeHeart.position.z = reducedMotion ? 0 : Math.sin(t * 1.55) * 0.018;
-      }
+      // Base lift keeps each heart proud of the inner frame at every angle;
+      // the sin term is just a gentle bob on top of that.
+      const heartLift = 0.12 + (reducedMotion ? 0 : Math.sin(t * 1.55) * 0.014);
+      raisedHearts.forEach((heart) => {
+        heart.position.z = heartLift;
+      });
 
-      pastelStickerSparkles?.children.forEach((sparkle, index) => {
-        sparkle.rotation.z += reducedMotion ? 0 : 0.003 + index * 0.0009;
-        sparkle.scale.z = reducedMotion ? 1 : 1 + Math.sin(t * 2.2 + index) * 0.08;
+      sparkleGroups.forEach((group) => {
+        group.children.forEach((sparkle, index) => {
+          sparkle.rotation.z += reducedMotion ? 0 : 0.003 + index * 0.0009;
+          sparkle.scale.z = reducedMotion ? 1 : 1 + Math.sin(t * 2.2 + index) * 0.08;
+        });
       });
 
       shineBand.position.x = reducedMotion ? -0.45 : -0.45 + Math.sin(t * 1.25) * 0.52;
@@ -1179,6 +1214,7 @@ export default function HoloSlab3D({ item = {} }) {
       }
 
       disposeScene(scene);
+      envMap.dispose();
       renderer.dispose();
       renderer.forceContextLoss?.();
 
