@@ -35,18 +35,22 @@ test('Holo slab source reserves the Task 5 Three.js interaction hooks', () => {
 });
 
 test('Holo slab builds the Chrome Heart card as sculpted 3D layers', () => {
-  assert.match(slabSource, /createChromeHeartSculptedCard/);
-  assert.match(slabSource, /createHeartShape/);
+  assert.match(slabSource, /createChromeHeartToyCard/);
+  assert.match(slabSource, /createPuffyHeartShape/);
   assert.match(slabSource, /createSparkleShape/);
+  assert.match(slabSource, /createSoftVinylMaterial/);
   assert.match(slabSource, /chromeHeartPreset/);
-  assert.match(slabSource, /pinkCornerGuards/);
-  assert.match(slabSource, /transparentCaseRails/);
+  assert.match(slabSource, /gumdropCornerGuards/);
+  assert.match(slabSource, /jellyCaseRails/);
   assert.match(slabSource, /raisedChromeHeart/);
-  assert.match(slabSource, /holoCardFace/);
+  assert.match(slabSource, /frontToyCardFace/);
   assert.match(slabSource, /bottomBadgePlate/);
-  assert.match(slabSource, /sparkleRelief/);
-  assert.match(slabSource, /reverseHoloBack/);
-  assert.match(slabSource, /reverseSerialDots/);
+  assert.match(slabSource, /pastelStickerSparkles/);
+  assert.match(slabSource, /mirroredToyBack/);
+  assert.match(slabSource, /backToyHeart/);
+  assert.doesNotMatch(slabSource, /rainbowCircuitFrame/);
+  assert.doesNotMatch(slabSource, /reverseSerialDots/);
+  assert.doesNotMatch(slabSource, /serialDot/);
   assert.doesNotMatch(slabSource, /new THREE\.TextureLoader/);
   assert.doesNotMatch(slabSource, /createLabelTexture/);
 });
