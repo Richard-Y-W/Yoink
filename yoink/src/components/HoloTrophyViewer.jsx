@@ -179,7 +179,7 @@ export default function HoloTrophyViewer({ item = null, onClose = noop }) {
 
           <div style={s(`display:flex;align-items:center;justify-content:center;gap:6px;border-radius:16px;background:#fff;border:1.5px solid ${line};padding:9px 10px;color:${muted};font:900 11.5px 'Nunito';box-shadow:0 4px 0 rgba(106,90,205,.08)`)}>
             <span className="mi" style={s(`font-size:16px;color:${brand}`)}>open_with</span>
-            Drag to rotate
+            Spin 360
             <span style={s('color:#D2CCE8')}>/</span>
             tilt to shimmer
           </div>
