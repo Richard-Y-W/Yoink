@@ -38,7 +38,7 @@ test('Pocket shelf centers owned Holo items with carousel trophy controls', () =
 });
 
 test('Pocket shelf keeps pop animation off the transformed carousel card', () => {
-  const shelfCardStyle = shelfSource.match(/function shelfCardStyle[\s\S]*?\n}\n/)?.[0] ?? '';
+  const shelfCardStyle = shelfSource.match(/function shelfCardStyle[\s\S]*?\r?\n}\r?\n/)?.[0] ?? '';
   assert.match(shelfCardStyle, /transform:/);
   assert.doesNotMatch(shelfCardStyle, /animation:ypop/);
   assert.match(shelfSource, /activeCardContentStyle/);
