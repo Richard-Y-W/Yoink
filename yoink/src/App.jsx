@@ -16,13 +16,13 @@ import OrderYoinked from './components/OrderYoinked.jsx';
 import UltraSignalPreview from './components/UltraSignalPreview.jsx';
 import YoinkNav from './components/YoinkNav.jsx';
 import { addListingToCart, decrementCartItem, getCartQuantity } from './cart.js';
-import { claimAllowance, ensureSession, fetchOrders, fetchWallet, placeOrder, spinWheel } from './api.js';
+import { claimAllowance, ensureSession, fetchCollection, fetchOrders, fetchWallet, placeOrder, spinWheel } from './api.js';
 import Account from './screens/Account.jsx';
 import Checkout from './screens/Checkout.jsx';
 import MonoMarket from './screens/MonoMarket.jsx';
 import Orders from './screens/Orders.jsx';
+import Pocket from './screens/Pocket.jsx';
 import ProductDetail from './screens/ProductDetail.jsx';
-import Watching from './screens/Watching.jsx';
 import { ART_STYLES } from './itemArt.js';
 import {
   APP_SCREENS,
@@ -35,12 +35,13 @@ import {
   returnFromCheckout,
   returnToMarket,
 } from './appFlow.js';
+import { makePocketHoloItems } from './pocketItems.js';
 
 const TAB_ACCENTS = {
   [APP_SCREENS.home]: '#6A5ACD',
   [APP_SCREENS.search]: '#6A5ACD',
   [APP_SCREENS.orders]: '#6A5ACD',
-  [APP_SCREENS.watching]: '#6A5ACD',
+  [APP_SCREENS.pocket]: '#6A5ACD',
   [APP_SCREENS.account]: '#6A5ACD',
 };
 
@@ -152,6 +153,7 @@ function YoinkApp() {
   const [wallet, setWallet] = useState({ balance: 0, streak: 0, canClaim: false, canSpin: false });
   const [yoinkedOrder, setYoinkedOrder] = useState(null);
   const [ordersInFlight, setOrdersInFlight] = useState(0);
+  const [pocketCount, setPocketCount] = useState(0);
   const [rewardsOpen, setRewardsOpen] = useState(false);
   const [busyReward, setBusyReward] = useState(null);
   const [watchedListings, setWatchedListings] = useState(() => {
@@ -203,6 +205,11 @@ function YoinkApp() {
       if (data.orders) setOrdersInFlight(data.orders.filter((order) => order.stage !== 'delivered').length);
     }).catch(() => {});
   }, []);
+  const refreshPocketCount = useCallback(() => {
+    fetchCollection().then((data) => {
+      if (Array.isArray(data?.collection)) setPocketCount(makePocketHoloItems(data.collection).length);
+    }).catch(() => {});
+  }, []);
 
   // Sign in (or silently create a guest account) before any game fetches;
   // every /api route needs the session cookie this sets.
@@ -218,11 +225,15 @@ function YoinkApp() {
     if (!account) return undefined;
     refreshWallet();
     refreshOrdersBadge();
-    const timer = window.setInterval(refreshOrdersBadge, 5000);
+    refreshPocketCount();
+    const timer = window.setInterval(() => {
+      refreshOrdersBadge();
+      refreshPocketCount();
+    }, 5000);
     return () => {
       window.clearInterval(timer);
     };
-  }, [account, refreshWallet, refreshOrdersBadge]);
+  }, [account, refreshWallet, refreshOrdersBadge, refreshPocketCount]);
 
   useLayoutEffect(() => {
     scrollToScreenTop(screenRootRef.current);
@@ -287,7 +298,8 @@ function YoinkApp() {
       body: 'A Yoink order just moved to the next tracking stage.',
     });
     refreshOrdersBadge();
-  }, [refreshOrdersBadge]);
+    refreshPocketCount();
+  }, [refreshOrdersBadge, refreshPocketCount]);
   const handleToggleWatchedListing = useCallback((listing) => {
     const alreadyWatched = watchedIds.includes(listing?.id);
     emitHaptic(alreadyWatched ? HAPTIC_EVENTS.unwatch : HAPTIC_EVENTS.watch);
@@ -418,14 +430,13 @@ function YoinkApp() {
             isWatched={watchedIds.includes(flow.selectedListing?.id)}
             onToggleWatchedListing={handleToggleWatchedListing}
           />
-        ) : flow.screen === APP_SCREENS.watching ? (
-          <Watching
+        ) : flow.screen === APP_SCREENS.pocket ? (
+          <Pocket
+            balance={wallet.balance}
             cartCount={cartCount}
             onOpenCart={handleOpenCart}
-            watchedListings={watchedListings}
-            onOpenProduct={(listing, trigger) => setFlow(openProductDetail(listing, trigger))}
-            onToggleWatchedListing={handleToggleWatchedListing}
-            artStyle={artStyle}
+            onOpenMarket={() => handleSelectTab(APP_SCREENS.home)}
+            onToast={showToast}
           />
         ) : flow.screen === APP_SCREENS.orders ? (
           <Orders
@@ -439,9 +450,9 @@ function YoinkApp() {
             streak={wallet.streak}
             ordersInFlight={ordersInFlight}
             cartCount={cartCount}
-            watchedCount={watchedListings.length}
+            pocketCount={pocketCount}
             onOpenCart={handleOpenCart}
-            onOpenWatching={() => handleSelectTab(APP_SCREENS.watching)}
+            onOpenPocket={() => handleSelectTab(APP_SCREENS.pocket)}
             onOpenOrders={() => handleSelectTab(APP_SCREENS.orders)}
             onToast={showToast}
             account={account}

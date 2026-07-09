@@ -48,7 +48,7 @@ test('app flow opens checkout from the current screen and returns to the previou
 });
 
 test('market copy bottom nav switches between the five market tabs and rejects exchange', () => {
-  assert.deepEqual(TAB_SCREENS, ['home', 'search', 'orders', 'watching', 'account']);
+  assert.deepEqual(TAB_SCREENS, ['home', 'search', 'orders', 'pocket', 'account']);
 
   const fromHome = openTab({ screen: APP_SCREENS.home, selectedListing: { id: 'f1' } }, APP_SCREENS.search);
   assert.deepEqual(fromHome, { screen: APP_SCREENS.search, selectedListing: null });
@@ -56,12 +56,13 @@ test('market copy bottom nav switches between the five market tabs and rejects e
   const fromSearch = openTab({ screen: APP_SCREENS.search }, APP_SCREENS.orders);
   assert.deepEqual(fromSearch, { screen: APP_SCREENS.orders, selectedListing: null });
 
-  const fromOrders = openTab({ screen: APP_SCREENS.orders }, APP_SCREENS.watching);
-  assert.deepEqual(fromOrders, { screen: APP_SCREENS.watching, selectedListing: null });
+  const fromOrders = openTab({ screen: APP_SCREENS.orders }, APP_SCREENS.pocket);
+  assert.deepEqual(fromOrders, { screen: APP_SCREENS.pocket, selectedListing: null });
 
   const unchangedCheckout = openTab({ screen: APP_SCREENS.home }, APP_SCREENS.checkout);
   assert.deepEqual(unchangedCheckout, { screen: APP_SCREENS.home });
 
+  assert.equal(APP_SCREENS.watching, undefined);
   assert.equal(APP_SCREENS.exchange, undefined);
   const unchangedExchange = openTab({ screen: APP_SCREENS.home }, 'exchange');
   assert.deepEqual(unchangedExchange, { screen: APP_SCREENS.home });

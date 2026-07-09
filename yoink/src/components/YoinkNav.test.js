@@ -5,11 +5,14 @@ import test from 'node:test';
 const navSource = readFileSync(new URL('./YoinkNav.jsx', import.meta.url), 'utf8');
 
 test('market copy nav exposes five level tabs with orders as a normal tab', () => {
-  for (const label of ['Home', 'Search', 'Orders', 'Watching', 'Account']) {
+  for (const label of ['Home', 'Search', 'Orders', 'Pocket', 'Account']) {
     assert.match(navSource, new RegExp(`label: '${label}'`));
   }
 
   assert.match(navSource, /id: APP_SCREENS\.orders/);
+  assert.doesNotMatch(navSource, /Watching/);
+  assert.match(navSource, /id: APP_SCREENS\.pocket/);
+  assert.match(navSource, /inventory_2/);
   assert.doesNotMatch(navSource, /center: true/);
   assert.doesNotMatch(navSource, /translateY\(-9px\)/);
   assert.doesNotMatch(navSource, /Open the Bell/);

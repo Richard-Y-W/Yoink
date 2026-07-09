@@ -977,6 +977,16 @@ export function makeTimedDrop(tier, random = Math.random) {
   return decorateDropListing(item, Math.max(0, index));
 }
 
+export function getDropCatalogItem(itemId) {
+  return ALL_MARKET_DROP_CATALOG.find((item) => item.id === itemId) ?? null;
+}
+
+export function getDecoratedDropListingById(itemId) {
+  const index = ALL_MARKET_DROP_CATALOG.findIndex((item) => item.id === itemId);
+  if (index < 0) return null;
+  return decorateDropListing(ALL_MARKET_DROP_CATALOG[index], index);
+}
+
 // Listing-mode filter behind the search bar's "All" chip.
 export const MARKET_MODES = ['All', 'Buy now'];
 

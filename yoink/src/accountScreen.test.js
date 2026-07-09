@@ -3,14 +3,14 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const accountSource = readFileSync(new URL('./screens/Account.jsx', import.meta.url), 'utf8');
-const watchingSource = readFileSync(new URL('./screens/Watching.jsx', import.meta.url), 'utf8');
+const pocketSource = readFileSync(new URL('./screens/Pocket.jsx', import.meta.url), 'utf8');
 const appSource = readFileSync(new URL('./App.jsx', import.meta.url), 'utf8');
 
-test('account and watching header cart buttons use the cart icon', () => {
+test('account and pocket header cart buttons use the cart icon', () => {
   assert.match(accountSource, /shopping_cart/);
-  assert.match(watchingSource, /shopping_cart/);
+  assert.match(pocketSource, /shopping_cart/);
   assert.doesNotMatch(accountSource, /shopping_bag/);
-  assert.doesNotMatch(watchingSource, /shopping_bag/);
+  assert.doesNotMatch(pocketSource, /shopping_bag/);
 });
 
 test('account screen is a shopping-app dashboard with cartoon market actions', () => {
@@ -18,12 +18,14 @@ test('account screen is a shopping-app dashboard with cartoon market actions', (
     assert.match(accountSource, new RegExp(copy));
   }
 
-  for (const action of ['Orders', 'Watching', 'Wallet', 'Support', 'Settings']) {
+  for (const action of ['Orders', 'Pocket', 'Wallet', 'Support', 'Settings']) {
     assert.match(accountSource, new RegExp(`label: '${action}'`));
   }
 
   assert.match(accountSource, /onToast = \(\) => \{\}/);
-  assert.match(accountSource, /onOpenWatching = \(\) => \{\}/);
+  assert.match(accountSource, /onOpenPocket = \(\) => \{\}/);
+  assert.doesNotMatch(accountSource, /onOpenWatching/);
+  assert.doesNotMatch(accountSource, /Watching/);
   assert.match(accountSource, /onOpenOrders = \(\) => \{\}/);
   assert.match(accountSource, /action\.onPress/);
   assert.match(accountSource, /stageMarkers/);
@@ -33,6 +35,16 @@ test('account screen is a shopping-app dashboard with cartoon market actions', (
 
 test('app gives account quick actions real handlers', () => {
   assert.match(appSource, /onToast=\{showToast\}/);
-  assert.match(appSource, /onOpenWatching=\{\(\) => handleSelectTab\(APP_SCREENS\.watching\)\}/);
+  assert.match(appSource, /onOpenPocket=\{\(\) => handleSelectTab\(APP_SCREENS\.pocket\)\}/);
+  assert.doesNotMatch(appSource, /onOpenWatching=/);
   assert.match(appSource, /onOpenOrders=\{\(\) => handleSelectTab\(APP_SCREENS\.orders\)\}/);
+});
+
+test('account Pocket stats are not wired to watched listings', () => {
+  assert.match(accountSource, /pocketCount = 0/);
+  assert.match(accountSource, /holo troph/);
+  assert.match(appSource, /pocketCount=\{pocketCount\}/);
+  assert.doesNotMatch(accountSource, /watchedCount/);
+  assert.doesNotMatch(accountSource, /saved find/);
+  assert.doesNotMatch(appSource, /watchedCount=\{watchedListings\.length\}/);
 });

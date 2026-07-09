@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { s } from '../style.js';
+import { claimAccount, ensureSession, loginAccount, logoutAccount } from '../api.js';
 import { marketTheme } from '../marketTheme.js';
 
 const {
@@ -31,16 +33,116 @@ function ActionTile({ action }) {
   );
 }
 
+// Guest-first account card: guests get a nudge to save their progress
+// (claim = attach username + password to the same account) or sign in to
+// one they made on another device; claimed accounts just show who's in.
+function AccountAuthCard({ account, onAccountChange, onToast }) {
+  const [mode, setMode] = useState('idle'); // idle | claim | login
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const inputStyle = s(`width:100%;box-sizing:border-box;height:44px;border:1.5px solid ${line};border-radius:8px;background:${wash};padding:0 13px;font:600 13.5px 'Nunito';color:${ink};outline:none`);
+  const primaryButton = s(`flex:1;height:42px;border:0;border-radius:8px;background:${brand};color:#fff;font:800 13px 'Fredoka';cursor:pointer;box-shadow:0 4px 0 #4B3BA6`);
+  const ghostButton = s(`flex:1;height:42px;border:1.5px solid ${line};border-radius:8px;background:#fff;color:${ink};font:800 13px 'Fredoka';cursor:pointer`);
+
+  const submit = async () => {
+    if (busy) return;
+    setBusy(true);
+    const action = mode === 'claim' ? claimAccount : loginAccount;
+    const result = await action(username.trim(), password).catch(() => null);
+    setBusy(false);
+    if (!result?.ok) {
+      onToast(result?.error ?? 'Something went wrong — try again');
+      return;
+    }
+    onToast(mode === 'claim' ? 'Account saved — your progress is safe!' : `Welcome back, @${result.user.username}!`);
+    setMode('idle');
+    setUsername('');
+    setPassword('');
+    onAccountChange(result.user);
+  };
+
+  const logout = async () => {
+    await logoutAccount().catch(() => {});
+    const user = await ensureSession().catch(() => null);
+    onAccountChange(user);
+    onToast('Logged out — playing as a guest');
+  };
+
+  if (!account) return null;
+
+  return (
+    <section style={s(`border:1.5px solid ${line};background:#fff;border-radius:8px;padding:14px;display:grid;gap:10px`)}>
+      {account.guest ? (
+        <>
+          <div style={s('display:flex;align-items:center;gap:9px')}>
+            <span className="mi" style={s(`font-size:20px;color:${brand};font-variation-settings:'FILL' 1`)}>shield</span>
+            <div style={s(`font:900 15px 'Fredoka';color:${ink}`)}>Playing as guest</div>
+          </div>
+          <div style={s(`font:700 12px/1.45 'Nunito';color:${muted}`)}>
+            Save your account to keep your coins and Pocket forever — and to sign in from other devices.
+          </div>
+          {mode === 'idle' ? (
+            <div style={s('display:flex;gap:8px')}>
+              <button type="button" onClick={() => setMode('claim')} style={primaryButton}>Save account</button>
+              <button type="button" onClick={() => setMode('login')} style={ghostButton}>Sign in</button>
+            </div>
+          ) : (
+            <div style={s('display:grid;gap:8px')}>
+              <input
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder="Username"
+                aria-label="Username"
+                autoCapitalize="none"
+                style={inputStyle}
+              />
+              <input
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder={mode === 'claim' ? 'Password (8+ characters)' : 'Password'}
+                aria-label="Password"
+                type="password"
+                style={inputStyle}
+              />
+              <div style={s('display:flex;gap:8px')}>
+                <button type="button" onClick={submit} disabled={busy} style={primaryButton}>
+                  {busy ? '…' : mode === 'claim' ? 'Save account' : 'Sign in'}
+                </button>
+                <button type="button" onClick={() => setMode('idle')} style={ghostButton}>Cancel</button>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div style={s('display:flex;align-items:center;gap:10px')}>
+          <span className="mi" style={s(`font-size:22px;color:${brand};font-variation-settings:'FILL' 1`)}>account_circle</span>
+          <div style={s('flex:1;min-width:0')}>
+            <div style={s(`font:900 14.5px 'Fredoka';color:${ink}`)}>@{account.username}</div>
+            <div style={s(`font:700 11.5px 'Nunito';color:${muted}`)}>Signed in — progress synced</div>
+          </div>
+          <button type="button" onClick={logout} style={s(`border:1.5px solid ${line};border-radius:8px;background:#fff;color:${ink};font:800 12px 'Fredoka';padding:8px 12px;cursor:pointer`)}>
+            Log out
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function Account({
   balance = 0,
   streak = 0,
   ordersInFlight = 0,
   cartCount = 0,
-  watchedCount = 0,
+  pocketCount = 0,
   onOpenCart = () => {},
-  onOpenWatching = () => {},
+  onOpenPocket = () => {},
   onOpenOrders = () => {},
   onToast = () => {},
+  account = null,
+  onAccountChange = () => {},
 }) {
   const stageMarkers = [
     { label: 'Packing', icon: 'inventory_2' },
@@ -58,13 +160,13 @@ export default function Account({
       onPress: onOpenOrders,
     },
     {
-      label: 'Watching',
-      detail: `${watchedCount} saved find${watchedCount === 1 ? '' : 's'}`,
-      icon: 'favorite',
-      bg: '#FFE4F1',
-      tint: '#FF3D9A',
-      shadow: 'rgba(255,61,154,.20)',
-      onPress: onOpenWatching,
+      label: 'Pocket',
+      detail: pocketCount ? `${pocketCount} holo troph${pocketCount === 1 ? 'y' : 'ies'}` : 'Open Holo shelf',
+      icon: 'inventory_2',
+      bg: '#C7F5EC',
+      tint: '#12865A',
+      shadow: 'rgba(18,134,90,.20)',
+      onPress: onOpenPocket,
     },
     {
       label: 'Wallet',
@@ -101,7 +203,7 @@ export default function Account({
       <div style={s('position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid #EEEAF6;padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px')}>
         <div>
           <div style={s(`font:800 22px 'Fredoka';color:${ink}`)}>Account</div>
-          <div style={s(`font:700 12px 'Nunito';color:${muted}`)}>Orders, wallet, and saved finds</div>
+          <div style={s(`font:700 12px 'Nunito';color:${muted}`)}>Orders, wallet, and Pocket</div>
         </div>
         <button type="button" aria-label="Open cart" onClick={onOpenCart} style={s(`border:0;border-radius:16px;background:${brand};color:#fff;padding:8px 11px;font:800 12px 'Fredoka';display:flex;align-items:center;gap:5px;cursor:pointer;box-shadow:0 5px 12px rgba(106,90,205,.30)`)}>
           <span className="mi" style={s("font-size:16px;font-variation-settings:'FILL' 1")}>shopping_cart</span>
@@ -119,20 +221,20 @@ export default function Account({
             </div>
             <div style={s("min-width:0;flex:1")}>
               <div style={s(`font:800 11px 'Nunito';color:${brand};text-transform:uppercase;letter-spacing:.6px`)}>Yoink ID</div>
-              <div style={s(`font:900 22px 'Fredoka';color:${ink};line-height:1.05`)}>Market Copy</div>
+              <div style={s(`font:900 22px 'Fredoka';color:${ink};line-height:1.05`)}>{account?.username ? `@${account.username}` : 'Guest shopper'}</div>
               <div style={s("display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap")}>
                 <span style={s(`display:inline-flex;align-items:center;gap:4px;background:${attentionBadgeBackground};color:${attentionBadgeText};font:800 10.5px 'Fredoka';padding:4px 8px;border-radius:8px`)}>
                   <span className="mi" style={s("font-size:13px;font-variation-settings:'FILL' 1")}>verified</span>
                   Top shopper
                 </span>
-                <span style={s(`font:800 10.5px 'Fredoka';color:${muted}`)}>Local profile</span>
+                <span style={s(`font:800 10.5px 'Fredoka';color:${muted}`)}>{account?.username ? 'Synced profile' : 'Guest profile'}</span>
               </div>
             </div>
           </div>
           <div style={s("position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px")}>
             {[
               { label: 'Streak', value: `${streak}d` },
-              { label: 'Watching', value: watchedCount },
+              { label: 'Pocket', value: pocketCount },
               { label: 'Orders', value: ordersInFlight },
             ].map((stat) => (
               <div key={stat.label} style={s(`background:${wash};border:1.5px solid ${line};border-radius:8px;padding:9px 6px;text-align:center`)}>
@@ -142,6 +244,8 @@ export default function Account({
             ))}
           </div>
         </section>
+
+        <AccountAuthCard account={account} onAccountChange={onAccountChange} onToast={onToast} />
 
         <section style={s(`border:1.5px solid ${line};background:#fff;border-radius:8px;padding:14px;display:grid;gap:12px`)}>
           <div style={s("display:flex;align-items:center;justify-content:space-between;gap:10px")}>

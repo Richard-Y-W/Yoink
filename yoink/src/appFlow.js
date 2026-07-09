@@ -2,7 +2,7 @@ export const APP_SCREENS = {
   home: 'home',
   search: 'search',
   orders: 'orders',
-  watching: 'watching',
+  pocket: 'pocket',
   account: 'account',
   productDetail: 'product-detail',
   checkout: 'checkout',
@@ -14,7 +14,7 @@ export const TAB_SCREENS = [
   APP_SCREENS.home,
   APP_SCREENS.search,
   APP_SCREENS.orders,
-  APP_SCREENS.watching,
+  APP_SCREENS.pocket,
   APP_SCREENS.account,
 ];
 
